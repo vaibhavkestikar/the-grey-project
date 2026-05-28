@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
         email,
         {
           redirectTo:
-            "http://localhost:3000/reset-password",
+            `${window.location.origin}/login`,
         }
       );
 
