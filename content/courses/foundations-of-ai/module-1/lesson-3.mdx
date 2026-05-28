@@ -1,0 +1,665 @@
+---
+title: "The Real Machine Learning Workflow"
+description: "A cinematic deep dive into how real-world machine learning systems are actually built, deployed, monitored, and scaled in industry."
+---
+
+
+import Insight from '@/components/education/insight'
+
+
+
+Most beginners think machine learning looks like this:
+
+```python
+model.fit(X_train, y_train)
+```
+
+And that’s where the story ends.
+
+But real-world machine learning systems are infinitely more complex.
+
+Production AI is not just:
+
+- training models
+- writing notebooks
+- importing scikit-learn
+- tuning hyperparameters
+
+Modern machine learning is an engineering discipline.
+
+Real systems require:
+
+- problem formulation
+- data pipelines
+- experimentation
+- evaluation
+- deployment
+- monitoring
+- feedback loops
+- infrastructure
+- MLOps
+
+The model itself is often just a tiny piece of the system.
+
+---
+
+<Insight
+  title="Machine Learning Is a System, Not a Notebook"
+  description="Real-world AI products are distributed engineering systems built around continuous data, prediction, deployment, and monitoring pipelines."
+/>
+
+## The Biggest Beginner Mistake
+
+Most newcomers think ML starts with:
+
+```txt
+Choose Algorithm → Train Model
+```
+
+Industry systems do not work this way.
+
+The actual workflow begins much earlier:
+
+```txt
+Business Problem → Data → Modeling → Deployment → Monitoring → Iteration
+```
+
+This workflow is strongly reflected in the IISc AI/ML lifecycle discussions and CRISP-DM inspired process models. :contentReference[oaicite:0]{index=0}
+
+The most successful ML engineers spend more time understanding:
+
+- business constraints
+- data quality
+- deployment realities
+- failure modes
+
+than choosing algorithms.
+
+---
+
+## The Real ML Workflow
+
+Modern ML systems usually follow a lifecycle like this:
+
+| Stage | Goal |
+| --- | --- |
+| Problem Framing | define what matters |
+| Data Collection | gather signals |
+| Data Preparation | clean + transform |
+| Feature Engineering | improve signal quality |
+| Modeling | learn predictive patterns |
+| Evaluation | measure usefulness |
+| Deployment | serve predictions |
+| Monitoring | detect failures |
+| Iteration | continuously improve |
+
+This workflow is one of the most important mental models in AI engineering.
+
+---
+
+<Insight
+  title="Machine Learning Begins With Business"
+  description="The best ML systems are not the most complex systems. They are the systems that solve valuable business problems reliably."
+/>
+
+# 1. Problem Framing
+
+Everything starts with the business problem.
+
+This is where many ML projects fail.
+
+Before touching data, engineers must answer:
+
+- What are we predicting?
+- Why does this prediction matter?
+- What business metric improves?
+- What is the cost of mistakes?
+- What does success look like?
+
+The IISc workflow lecture emphasizes framing the ML problem through business needs before touching models. :contentReference[oaicite:1]{index=1}
+
+---
+
+## Example: Fraud Detection
+
+A company notices increasing payment fraud.
+
+The business goal becomes:
+
+```txt
+Reduce fraudulent transactions.
+```
+
+But the ML framing becomes:
+
+```txt
+Predict probability(transaction is fraudulent)
+```
+
+Notice the shift.
+
+Business problems become prediction problems.
+
+This is one of the deepest ideas in AI engineering.
+
+---
+
+## Why Problem Framing Matters
+
+Poorly framed problems destroy projects.
+
+Example:
+
+### Bad Objective
+
+```txt
+Maximize clicks
+```
+
+This can create:
+
+- clickbait
+- addiction loops
+- spammy systems
+
+### Better Objective
+
+```txt
+Maximize long-term user satisfaction
+```
+
+The objective function defines system behavior.
+
+In AI:
+
+```txt
+You get what you optimize for.
+```
+
+---
+
+# 2. Data Collection
+
+After defining the problem, the next step is gathering data.
+
+Machine learning systems learn from historical examples.
+
+Without data:
+
+- there is no learning
+- no optimization
+- no intelligence
+
+This is why data pipelines are critical infrastructure.
+
+---
+
+## Sources of ML Data
+
+| Source | Example |
+| --- | --- |
+| User interactions | clicks, likes, purchases |
+| Sensors | IoT devices, cameras |
+| Logs | server events |
+| APIs | third-party datasets |
+| Human labeling | annotation platforms |
+| Transactions | banking records |
+| Documents | PDFs, text corpora |
+
+---
+
+## Data Types in Machine Learning
+
+The IISc lectures categorize ML data into several forms. :contentReference[oaicite:2]{index=2}
+
+| Data Type | Example |
+| --- | --- |
+| Tabular | banking records |
+| Time Series | stock prices |
+| Images | medical scans |
+| Text | emails, chats |
+| Speech | voice assistants |
+| Video | autonomous driving |
+
+Different data types require different architectures.
+
+---
+
+<Insight
+  title="Data Is the Real Fuel of AI"
+  description="Machine learning systems derive intelligence from data distributions, not from manually encoded symbolic logic."
+/>
+
+# 3. Data Preparation
+
+Raw data is messy.
+
+Very messy.
+
+Real-world datasets contain:
+
+- missing values
+- duplicates
+- corruption
+- outliers
+- inconsistent schemas
+- bad labels
+- noisy signals
+
+Industry ML teams spend enormous effort on cleaning data.
+
+This stage is often called:
+
+- data wrangling
+- data munging
+- preprocessing
+
+The IISc workflow specifically emphasizes data munging and wrangling before downstream modeling. :contentReference[oaicite:3]{index=3}
+
+---
+
+## Example: E-Commerce Data
+
+Raw user data might contain:
+
+| User ID | Country | Purchase |
+| --- | --- | --- |
+| 101 | India | ₹500 |
+| NULL | USA | ₹100 |
+| 203 | ??? | ₹700 |
+
+Models trained on dirty data behave badly.
+
+Garbage in.
+
+Garbage out.
+
+---
+
+# 4. Feature Engineering
+
+Features are the signals used by ML systems.
+
+Examples:
+
+| Problem | Features |
+| --- | --- |
+| Fraud detection | transaction frequency |
+| Housing prices | area, rooms, locality |
+| NLP | token embeddings |
+| Vision | pixel values |
+| Recommenders | watch history |
+
+Feature quality heavily impacts prediction quality.
+
+Experienced ML engineers obsess over features.
+
+---
+
+## Why Features Matter
+
+A weak model with excellent features often outperforms:
+
+```txt
+Complex Model + Bad Features
+```
+
+This is one reason why data engineering is so valuable.
+
+---
+
+# 5. Model Selection
+
+Only now do we finally reach the modeling stage.
+
+This is where engineers choose algorithms.
+
+Examples:
+
+| Problem | Common Models |
+| --- | --- |
+| Classification | Logistic Regression |
+| Tabular Data | XGBoost |
+| Vision | CNNs |
+| NLP | Transformers |
+| Time Series | RNNs / Transformers |
+| Recommendation | Matrix Factorization |
+
+---
+
+## The Biggest Industry Secret
+
+Most production ML systems are not cutting-edge research.
+
+Industry prioritizes:
+
+- reliability
+- latency
+- scalability
+- maintainability
+- interpretability
+
+Very often:
+
+```txt
+Simple model + good infrastructure
+```
+
+beats:
+
+```txt
+Fancy model + poor engineering
+```
+
+---
+
+
+# 6. Training the Model
+
+Training means learning parameters from data.
+
+The system repeatedly:
+
+1. makes predictions
+2. measures error
+3. updates weights
+4. improves predictions
+
+This optimization loop powers modern AI.
+
+---
+
+## Training Loop
+
+```txt
+Prediction → Error → Update → Better Prediction
+```
+
+Repeated millions or billions of times.
+
+---
+
+## Common Training Components
+
+| Component | Purpose |
+| --- | --- |
+| Loss Function | measure mistakes |
+| Optimizer | update weights |
+| Gradients | direction of improvement |
+| Epochs | full dataset passes |
+| Batch Size | samples per update |
+
+---
+
+# 7. Model Evaluation
+
+Training accuracy alone is meaningless.
+
+Models must generalize to unseen data.
+
+This is why we split datasets into:
+
+- training data
+- validation data
+- test data
+
+The IISc lectures emphasize development-testing paradigms and validation strategies. :contentReference[oaicite:4]{index=4}
+
+---
+
+## Common Evaluation Metrics
+
+### Classification
+
+| Metric | Meaning |
+| --- | --- |
+| Accuracy | overall correctness |
+| Precision | correctness of positive predictions |
+| Recall | coverage of positives |
+| F1 Score | precision-recall balance |
+
+### Regression
+
+| Metric | Meaning |
+| --- | --- |
+| MSE | squared error |
+| RMSE | interpretable error |
+| MAE | average absolute error |
+
+---
+
+## Why Accuracy Can Be Misleading
+
+Imagine fraud detection:
+
+| Transactions | Fraudulent |
+| --- | --- |
+| 1,000,000 | 1,000 |
+
+A model predicting:
+
+```txt
+Always Not Fraud
+```
+
+gets:
+
+```txt
+99.9% accuracy
+```
+
+But it is useless.
+
+This is why metrics matter deeply.
+
+---
+
+<Insight
+  title="Evaluation Is About Business Impact"
+  description="The best ML metric is the metric that best aligns with real-world outcomes and business objectives."
+/>
+
+# 8. Deployment
+
+A trained model in a notebook is not a product.
+
+Deployment is where AI becomes useful.
+
+The IISc AI workflow explicitly includes deployment as a core stage of ML systems. :contentReference[oaicite:5]{index=5}
+
+Deployment options include:
+
+| Deployment Type | Example |
+| --- | --- |
+| Batch inference | nightly predictions |
+| Real-time APIs | fraud scoring |
+| Edge deployment | mobile AI |
+| Streaming inference | recommendation systems |
+
+---
+
+## Real Production Requirements
+
+Production systems require:
+
+- low latency
+- scalability
+- fault tolerance
+- observability
+- security
+- rollback systems
+- CI/CD pipelines
+
+This is why MLOps exists.
+
+---
+
+# 9. Monitoring and Drift Detection
+
+Real-world data changes constantly.
+
+This creates:
+
+- concept drift
+- data drift
+- performance degradation
+
+Example:
+
+A fraud model trained in 2023 may fail badly in 2025.
+
+Why?
+
+Fraud patterns evolve.
+
+---
+
+## What ML Teams Monitor
+
+| Signal | Why It Matters |
+| --- | --- |
+| Prediction quality | detect degradation |
+| Latency | user experience |
+| Drift | changing distributions |
+| Bias | fairness concerns |
+| Cost | infrastructure efficiency |
+
+Monitoring is one of the hardest problems in production AI.
+
+---
+
+# 10. Continuous Iteration
+
+ML systems are never truly finished.
+
+They continuously evolve.
+
+Modern AI systems operate in loops:
+
+```txt
+Users → Data → Models → Predictions → Feedback → Better Models
+```
+
+This feedback loop powers:
+
+- TikTok
+- YouTube
+- Netflix
+- Instagram
+- ChatGPT
+- recommendation systems
+
+Continuous learning creates competitive advantage.
+
+---
+
+<Insight
+  title="Modern AI Systems Are Feedback Loops"
+  description="The strongest AI companies continuously improve models through data flywheels and iterative learning systems."
+/>
+
+# CRISP-DM: The Industry Workflow Standard
+
+One of the most influential ML workflows is CRISP-DM:
+
+- Business Understanding
+- Data Understanding
+- Data Preparation
+- Modeling
+- Evaluation
+- Deployment
+
+The IISc lecture references CRISP-DM as one of the foundational process frameworks in AI/ML engineering. :contentReference[oaicite:6]{index=6}
+
+Even modern MLOps systems still follow these ideas.
+
+---
+
+# The Hidden Reality of Machine Learning
+
+Most AI work in industry is not model research.
+
+It is:
+
+- infrastructure
+- pipelines
+- debugging
+- deployment
+- data engineering
+- monitoring
+- optimization
+
+This surprises many beginners.
+
+The glamorous part is model training.
+
+The hard part is production engineering.
+
+---
+
+## The Most Important Mental Model
+
+The workflow is not:
+
+```txt
+Train Model → Done
+```
+
+The real workflow is:
+
+```txt
+Business Problem
+    ↓
+Data Collection
+    ↓
+Data Preparation
+    ↓
+Feature Engineering
+    ↓
+Model Training
+    ↓
+Evaluation
+    ↓
+Deployment
+    ↓
+Monitoring
+    ↓
+Iteration
+```
+
+This cycle never truly ends.
+
+---
+
+<Insight
+  title="Machine Learning Is Continuous Engineering"
+  description="Production AI systems are living systems that continuously evolve through data, feedback, retraining, and optimization."
+/>
+
+# Final Mental Model
+
+The real machine learning workflow is not about:
+
+- choosing fancy algorithms
+- maximizing benchmark scores
+- training giant models
+
+It is about building reliable systems that continuously create value through prediction.
+
+Modern ML engineering combines:
+
+- software engineering
+- distributed systems
+- statistics
+- optimization
+- infrastructure
+- data engineering
+- product thinking
+
+The model is only one piece.
+
+The workflow is the real product.
+
+Once this clicks, you stop seeing AI as isolated model training.
+
+And start seeing it as end-to-end intelligent system engineering.

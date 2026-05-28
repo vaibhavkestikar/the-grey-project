@@ -1,0 +1,728 @@
+---
+title: "Neural Networks, Tensors & Deep Learning"
+description: "A cinematic deep dive into neural networks, tensors, representation learning, backpropagation, and the deep learning revolution that transformed modern AI."
+---
+
+import NeuralNetworkVisual from '@/components/education/neural-network-visual'
+import Insight from '@/components/education/insight'
+
+For decades, machine learning systems struggled with one major limitation:
+
+> Humans had to manually design intelligence.
+
+Engineers handcrafted:
+
+- features
+- rules
+- edge detectors
+- statistical transformations
+- domain heuristics
+
+But deep learning changed everything.
+
+Instead of manually engineering intelligence:
+
+```txt
+Neural networks began learning representations automatically.
+```
+
+This single breakthrough triggered the modern AI revolution.
+
+Today, deep learning powers:
+
+- ChatGPT
+- image generation
+- speech recognition
+- autonomous vehicles
+- recommendation systems
+- medical AI
+- robotics
+- computer vision
+
+Understanding deep learning means understanding:
+
+- neural networks
+- tensors
+- optimization
+- representation learning
+- backpropagation
+- scaling
+
+This is where modern AI truly begins.
+
+---
+
+<Insight
+  title="Deep Learning Changed AI Forever"
+  description="Deep learning systems automatically learn hierarchical representations directly from raw data instead of relying on handcrafted human-designed features."
+/>
+
+# The Core Mental Model
+
+At its core, a neural network is:
+
+```txt
+A giant mathematical function approximator.
+```
+
+The goal is simple:
+
+```txt
+Input → Learn Patterns → Predict Output
+```
+
+Example:
+
+| Input | Output |
+| --- | --- |
+| Image pixels | Cat / Dog |
+| Audio waveform | Spoken words |
+| Previous tokens | Next token |
+| User history | Recommendation |
+| Sensor data | Fraud probability |
+
+Neural networks learn statistical structure automatically from data.
+
+---
+
+# Biological Inspiration
+
+Neural networks were loosely inspired by the human brain.
+
+Biological neurons:
+
+- receive signals
+- process information
+- activate outputs
+
+Artificial neurons follow a similar abstraction.
+
+Example:
+
+```txt
+Inputs → Weighted Sum → Activation → Output
+```
+
+But modern neural networks are not realistic brain simulations.
+
+They are optimization systems built using mathematics and linear algebra.
+
+---
+
+# The Artificial Neuron
+
+The simplest building block is the neuron.
+
+A neuron receives inputs:
+
+```txt
+x1, x2, x3...
+```
+
+Each input has a weight:
+
+```txt
+w1, w2, w3...
+```
+
+The neuron computes:
+
+```txt
+z = w1x1 + w2x2 + w3x3 + b
+```
+
+Then applies an activation function.
+
+Example:
+
+```txt
+output = activation(z)
+```
+
+This tiny operation powers the modern AI revolution.
+
+---
+
+## Why We Need Activation Functions
+
+Without activations:
+
+```txt
+Neural networks collapse into linear systems.
+```
+
+Activation functions introduce:
+
+- nonlinearity
+- complexity
+- expressiveness
+
+Common activations:
+
+| Activation | Purpose |
+| --- | --- |
+| ReLU | modern deep learning default |
+| Sigmoid | probability outputs |
+| Tanh | normalized activations |
+| Softmax | probability distributions |
+
+Nonlinearity allows networks to model complex real-world patterns.
+
+---
+
+<NeuralNetworkVisual />
+
+# Layers and Hierarchies
+
+Neural networks stack neurons into layers.
+
+Typical structure:
+
+```txt
+Input Layer
+    ↓
+Hidden Layers
+    ↓
+Output Layer
+```
+
+Each layer learns progressively more abstract representations.
+
+Example in vision systems:
+
+```txt
+Pixels
+→ edges
+→ textures
+→ shapes
+→ objects
+→ concepts
+```
+
+This hierarchical representation learning is one of the deepest ideas in AI.
+
+---
+
+# Why Deep Learning Is Called “Deep”
+
+“Deep” simply means:
+
+```txt
+Many layers.
+```
+
+Early ML systems were shallow.
+
+Modern systems may contain:
+
+- dozens of layers
+- hundreds of layers
+- thousands of layers
+
+Large Language Models contain billions of parameters across extremely deep architectures.
+
+Depth increases representational power.
+
+---
+
+# Tensors: The Language of Deep Learning
+
+Deep learning systems operate on tensors.
+
+A tensor is simply:
+
+```txt
+A multidimensional array.
+```
+
+Examples:
+
+| Tensor Type | Example |
+| --- | --- |
+| Scalar | single number |
+| Vector | 1D array |
+| Matrix | 2D array |
+| Tensor | higher-dimensional structure |
+
+Examples in AI:
+
+| Data | Tensor Shape |
+| --- | --- |
+| Image | height × width × channels |
+| Video | frames × height × width |
+| Audio | time × frequency |
+| Text embeddings | token × embedding dimension |
+
+Modern AI is fundamentally tensor computation.
+
+---
+
+## Why GPUs Became Essential
+
+Neural networks require massive matrix operations.
+
+GPUs excel at:
+
+- parallel computation
+- matrix multiplication
+- tensor operations
+
+This is why GPUs became central to modern AI.
+
+Deep learning exploded because:
+
+```txt
+Large Data + GPUs + Neural Networks
+```
+
+became possible simultaneously.
+
+---
+
+<Insight
+  title="Modern AI Is Tensor Computation at Scale"
+  description="Underneath every LLM, image generator, and deep learning system lies massive tensor computation optimized across distributed GPU infrastructure."
+/>
+
+# Forward Propagation
+
+During prediction:
+
+1. Inputs enter the network
+2. Activations flow layer by layer
+3. Final predictions emerge
+
+This process is called:
+
+```txt
+Forward Propagation
+```
+
+Example:
+
+```txt
+Image → Layers → Prediction
+```
+
+The network transforms raw inputs into increasingly meaningful representations.
+
+---
+
+# The Learning Problem
+
+Initially, network weights are random.
+
+Predictions are terrible.
+
+The network must learn:
+
+```txt
+Which weights produce good predictions?
+```
+
+This is where optimization enters.
+
+---
+
+# Loss Functions
+
+Neural networks measure mistakes using loss functions.
+
+Examples:
+
+| Problem | Common Loss |
+| --- | --- |
+| Classification | Cross Entropy |
+| Regression | Mean Squared Error |
+| Language Models | Token Cross Entropy |
+
+The loss quantifies:
+
+```txt
+How wrong was the prediction?
+```
+
+Training becomes:
+
+```txt
+Minimize Loss
+```
+
+---
+
+# Backpropagation
+
+Backpropagation is one of the most important algorithms in AI history.
+
+It allows networks to learn efficiently.
+
+The process:
+
+1. Make prediction
+2. Measure error
+3. Compute gradients
+4. Update weights
+5. Improve predictions
+
+This loop repeats millions or billions of times.
+
+---
+
+## Intuition Behind Backpropagation
+
+Backpropagation answers:
+
+> Which weights caused the mistake?
+
+The algorithm computes gradients showing:
+
+```txt
+How much each parameter contributed to the error.
+```
+
+Then optimization algorithms update parameters.
+
+---
+
+# Gradient Descent
+
+The most common optimization strategy is:
+
+```txt
+Gradient Descent
+```
+
+Imagine standing on a mountain in fog.
+
+Your goal:
+
+```txt
+Find the lowest point.
+```
+
+Gradients indicate:
+
+```txt
+Which direction decreases loss fastest.
+```
+
+The network repeatedly moves downhill.
+
+This process powers modern AI learning.
+
+---
+
+# Training at Scale
+
+Modern deep learning systems train on enormous datasets.
+
+Examples:
+
+| System | Scale |
+| --- | --- |
+| GPT models | trillions of tokens |
+| Vision models | billions of images |
+| Recommendation systems | petabytes of interactions |
+
+Training requires:
+
+- distributed systems
+- GPU clusters
+- massive storage
+- networking infrastructure
+- parallel computation
+
+Deep learning is as much infrastructure engineering as mathematics.
+
+---
+
+<Insight
+  title="Training Modern AI Requires Planet-Scale Infrastructure"
+  description="Large-scale deep learning systems depend on distributed GPU clusters, networking systems, storage pipelines, and massive parallel optimization."
+/>
+
+# Representation Learning
+
+One of deep learning’s greatest breakthroughs is:
+
+```txt
+Automatic Representation Learning
+```
+
+Earlier ML systems relied heavily on handcrafted features.
+
+Deep learning learns representations automatically.
+
+This changed everything.
+
+Example:
+
+### Classical Vision Systems
+
+Humans engineered:
+
+- edge detectors
+- texture extractors
+- handcrafted filters
+
+### Deep Learning Systems
+
+Networks learned representations directly from pixels.
+
+This massively improved performance.
+
+---
+
+# Overfitting
+
+Neural networks are extremely powerful.
+
+Too powerful sometimes.
+
+They can memorize training data instead of learning general patterns.
+
+This problem is called:
+
+```txt
+Overfitting
+```
+
+Example:
+
+```txt
+Perfect training accuracy
+Poor real-world performance
+```
+
+This is dangerous.
+
+---
+
+# Techniques to Reduce Overfitting
+
+| Technique | Purpose |
+| --- | --- |
+| Dropout | random regularization |
+| Data augmentation | more diverse examples |
+| Early stopping | avoid memorization |
+| Weight decay | penalize complexity |
+
+Generalization matters more than memorization.
+
+---
+
+# Batch Training
+
+Modern networks train using mini-batches.
+
+Instead of processing all data at once:
+
+```txt
+Small subsets are processed iteratively.
+```
+
+Benefits:
+
+- memory efficiency
+- faster optimization
+- stable gradient updates
+
+This became essential for scaling deep learning.
+
+---
+
+# Why Deep Learning Became Dominant
+
+Deep learning succeeded because it scaled incredibly well.
+
+As systems received:
+
+- more data
+- larger models
+- more compute
+
+performance improved dramatically.
+
+This scaling behavior transformed AI.
+
+---
+
+# The Deep Learning Revolution
+
+Deep learning revolutionized:
+
+| Domain | Breakthrough |
+| --- | --- |
+| Vision | ImageNet |
+| NLP | Transformers |
+| Speech | Deep speech systems |
+| Games | AlphaGo |
+| Generative AI | LLMs + diffusion |
+
+The modern AI boom emerged from deep learning scaling.
+
+---
+
+# Neural Networks vs Decision Trees
+
+| Neural Networks | Decision Trees |
+| --- | --- |
+| Great for unstructured data | Great for tabular data |
+| Requires large datasets | Works with smaller datasets |
+| Harder interpretability | More interpretable |
+| GPU-heavy | Lightweight |
+| Massive scaling potential | Strong business ML performance |
+
+Both remain incredibly important.
+
+---
+
+<Insight
+  title="Deep Learning Excels at Representation Learning"
+  description="Neural networks became dominant because they automatically learn hierarchical representations from raw unstructured data."
+/>
+
+# Deep Learning Is Not Magic
+
+This is extremely important.
+
+Neural networks are not conscious.
+
+They do not “understand” reality the way humans do.
+
+They are:
+
+```txt
+Statistical optimization systems.
+```
+
+They learn patterns from enormous datasets.
+
+The outputs appear intelligent because:
+
+- data is massive
+- models are powerful
+- optimization is sophisticated
+- scaling laws are strong
+
+But underneath:
+
+It is still prediction and optimization.
+
+---
+
+# The Hidden Engineering Layer
+
+Most beginners focus only on architectures.
+
+Real deep learning systems require:
+
+- distributed training
+- GPU orchestration
+- memory optimization
+- inference infrastructure
+- quantization
+- model serving
+- monitoring
+- retraining systems
+
+Deep learning is inseparable from systems engineering.
+
+---
+
+# Scaling Laws
+
+One of the most important discoveries in modern AI:
+
+```txt
+Larger Models + More Data + More Compute
+        ↓
+Better Performance
+```
+
+This became known as:
+
+```txt
+Scaling Laws
+```
+
+This insight drove the race toward:
+
+- larger LLMs
+- bigger datasets
+- larger GPU clusters
+
+Modern AI strategy heavily revolves around scaling.
+
+---
+
+# Common Misconceptions
+
+### Misconception 1: Neural Networks Think Like Humans
+
+They optimize statistical prediction objectives.
+
+---
+
+### Misconception 2: Deep Learning Eliminated Feature Engineering
+
+Feature engineering still matters heavily in production systems.
+
+---
+
+### Misconception 3: Bigger Models Automatically Solve Everything
+
+Without quality data and infrastructure, larger systems fail badly.
+
+---
+
+### Misconception 4: AI Is Just About Models
+
+Most production deep learning work involves:
+
+- infrastructure
+- deployment
+- optimization
+- data pipelines
+- distributed systems
+
+---
+
+<Insight
+  title="Deep Learning Is Representation Learning at Scale"
+  description="Modern AI systems automatically learn hierarchical statistical representations through massive tensor optimization across distributed compute infrastructure."
+/>
+
+# Final Mental Model
+
+Neural networks introduced a revolutionary idea:
+
+```txt
+Machines can automatically learn representations directly from raw data.
+```
+
+Deep learning scaled this idea dramatically.
+
+Today, modern AI systems:
+
+- optimize tensors
+- learn representations
+- minimize loss
+- update parameters
+- improve predictions
+
+at enormous scale.
+
+Everything from:
+
+- ChatGPT
+- diffusion models
+- autonomous vehicles
+- recommendation systems
+- robotics
+
+emerges from this foundation.
+
+Once this clicks, deep learning stops looking mystical.
+
+And starts looking like large-scale statistical optimization powered by tensors, compute, and representation learning.
