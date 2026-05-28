@@ -4,6 +4,9 @@ export const foundationsCourse = {
   subtitle:
     "How AI Actually Thinks",
 
+   description:
+    "A deep first-principles learning path covering prediction systems, machine learning, neural networks, deep learning, production AI systems, and modern AI engineering.",
+
   duration: "5+ Hours",
 
   level: "Beginner → Intermediate",
