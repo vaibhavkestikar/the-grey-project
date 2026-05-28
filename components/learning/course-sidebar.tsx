@@ -1,3 +1,5 @@
+// components/learning/course-sidebar.tsx
+
 import Link from "next/link";
 
 import { foundationsCourse } from "@/data/foundations-course";
@@ -6,27 +8,27 @@ export default function CourseSidebar() {
 
   return (
 
-    <aside className="sticky top-24 h-fit overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
+    <aside className="h-fit overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm lg:sticky lg:top-24 md:rounded-[2rem]">
 
       {/* HEADER */}
 
-      <div className="border-b border-slate-100 bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 p-8 text-white">
+      <div className="border-b border-slate-100 bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 p-5 text-white md:p-8">
 
-        <div className="inline-flex rounded-full bg-white/20 px-4 py-2 text-sm font-semibold backdrop-blur">
+        <div className="inline-flex rounded-full bg-white/20 px-4 py-2 text-xs font-semibold backdrop-blur md:text-sm">
           Foundations of AI
         </div>
 
-        <h2 className="mt-6 text-4xl font-black leading-tight">
+        <h2 className="mt-5 text-3xl font-black leading-tight md:mt-6 md:text-4xl">
           {foundationsCourse.title}
         </h2>
 
-        <p className="mt-5 leading-relaxed text-violet-100">
+        <p className="mt-4 text-sm leading-relaxed text-violet-100 md:mt-5 md:text-base">
           {foundationsCourse.description}
         </p>
 
         {/* OVERALL PROGRESS */}
 
-        <div className="mt-8">
+        <div className="mt-6 md:mt-8">
 
           <div className="mb-3 flex items-center justify-between">
 
@@ -57,7 +59,7 @@ export default function CourseSidebar() {
 
       {/* MODULES */}
 
-      <div className="space-y-4 p-5">
+      <div className="space-y-4 p-4 md:p-5">
 
         {foundationsCourse.modules.map(
           (module, index) => {
@@ -77,7 +79,7 @@ export default function CourseSidebar() {
                     ? `/learning/foundations-of-ai/${module.slug}`
                     : "#"
                 }
-                className={`group block rounded-[1.5rem] border p-5 transition-all duration-300 ${
+                className={`group block rounded-[1.25rem] border p-4 transition-all duration-300 md:rounded-[1.5rem] md:p-5 ${
                   active
                     ? "border-violet-200 bg-violet-50 shadow-md"
                     : "border-slate-200 bg-white hover:border-violet-200 hover:bg-violet-50/50 hover:shadow-md"
@@ -88,15 +90,15 @@ export default function CourseSidebar() {
                 }`}
               >
 
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
                   {/* LEFT */}
 
                   <div className="min-w-0">
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
 
-                      <div className="text-sm font-bold uppercase tracking-wide text-violet-600">
+                      <div className="text-xs font-bold uppercase tracking-wide text-violet-600 md:text-sm">
                         Module {module.id}
                       </div>
 
@@ -110,7 +112,7 @@ export default function CourseSidebar() {
 
                     </div>
 
-                    <h3 className="mt-3 text-lg font-black leading-snug text-slate-900">
+                    <h3 className="mt-3 text-base font-black leading-snug text-slate-900 md:text-lg">
 
                       {module.title}
 
@@ -126,9 +128,9 @@ export default function CourseSidebar() {
 
                   {/* RIGHT */}
 
-                  <div className="shrink-0 rounded-2xl bg-slate-100 px-4 py-3 text-center">
+                  <div className="w-fit shrink-0 rounded-2xl bg-slate-100 px-4 py-3 text-center">
 
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500 md:text-xs">
                       Duration
                     </p>
 
@@ -184,22 +186,22 @@ export default function CourseSidebar() {
 
       {/* CAPSTONE */}
 
-      <div className="border-t border-slate-200 bg-slate-50 p-6">
+      <div className="border-t border-slate-200 bg-slate-50 p-4 md:p-6">
 
-        <div className="rounded-[1.5rem] border border-dashed border-violet-300 bg-white p-6">
+        <div className="rounded-[1.25rem] border border-dashed border-violet-300 bg-white p-5 md:rounded-[1.5rem] md:p-6">
 
-          <div className="inline-flex rounded-full bg-violet-100 px-4 py-2 text-xs font-bold uppercase tracking-wide text-violet-700">
+          <div className="inline-flex rounded-full bg-violet-100 px-4 py-2 text-[10px] font-bold uppercase tracking-wide text-violet-700 md:text-xs">
             Capstone Project
           </div>
 
-          <h3 className="mt-5 text-2xl font-black leading-tight text-slate-900">
+          <h3 className="mt-5 text-xl font-black leading-tight text-slate-900 md:text-2xl">
 
             Build An AI Chatbot
             From Scratch
 
           </h3>
 
-          <p className="mt-4 leading-relaxed text-slate-600">
+          <p className="mt-4 text-sm leading-relaxed text-slate-600 md:text-base">
 
             Apply everything from neural networks,
             embeddings, prompting, retrieval systems,

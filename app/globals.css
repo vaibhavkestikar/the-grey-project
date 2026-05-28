@@ -1,3 +1,5 @@
+/* app/globals.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,6 +19,29 @@ body {
       rgba(124, 58, 237, 0.08),
       transparent 30%
     );
+}
+
+/* =========================================
+   GLOBAL RESPONSIVE FIXES
+========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+pre {
+  overflow-x: auto;
+}
+
+table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
 }
 
 /* =========================================
@@ -51,6 +76,17 @@ body {
   filter: blur(100px);
 
   pointer-events: none;
+}
+
+@media (max-width: 768px) {
+
+  .hero-glow {
+
+    width: 500px;
+    height: 500px;
+
+  }
+
 }
 
 /* =========================================
@@ -116,9 +152,17 @@ body {
 
   background: #0f172a;
 
-  padding: 1.5rem;
+  padding: 1rem;
 
   color: white;
+}
+
+@media (min-width: 768px) {
+
+  .mdx-content pre {
+    padding: 1.5rem;
+  }
+
 }
 
 .mdx-content pre code {
