@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+
 import { toast } from "sonner";
+
 import Link from "next/link";
+
 import { useRouter } from "next/navigation";
 
 import AuthHeader from "@/components/auth/auth-header";
@@ -107,7 +110,7 @@ export default function RegisterPage() {
       setLoading(false);
 
       toast.success(
-      "Account created successfully"
+        "Account created successfully"
       );
 
       router.push("/login");
@@ -116,7 +119,7 @@ export default function RegisterPage() {
 
       console.error(err);
 
-      alert(
+      toast.error(
         "Something went wrong during registration."
       );
 
@@ -128,188 +131,190 @@ export default function RegisterPage() {
 
   return (
 
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 px-6 py-16">
-
+    <>
       <AuthHeader />
 
-      <div className="hero-glow left-1/2 top-0 -translate-x-1/2" />
+      <main className="relative flex min-h-[calc(100vh-80px)] items-center justify-center overflow-hidden bg-slate-50 px-4 py-10 md:px-6 md:py-16">
 
-      <div className="relative z-10 w-full max-w-2xl rounded-[2rem] border border-slate-200 bg-white p-10 shadow-2xl">
+        <div className="hero-glow left-1/2 top-0 -translate-x-1/2" />
 
-        <h1 className="text-5xl font-black text-slate-900">
-          Join The Grey Project
-        </h1>
+        <div className="relative z-10 w-full max-w-2xl rounded-[2rem] border border-slate-200 bg-white p-6 shadow-2xl md:p-10">
 
-        <p className="mt-4 text-lg text-slate-600">
-          Learn AI deeply from first principles.
-        </p>
+          <h1 className="text-4xl font-black leading-tight text-slate-900 md:text-5xl">
+            Join The Grey Project
+          </h1>
 
-        <form
-          onSubmit={handleRegister}
-          className="mt-10 grid gap-5"
-        >
+          <p className="mt-4 text-base text-slate-600 md:text-lg">
+            Learn AI deeply from first principles.
+          </p>
 
-          <input
-            type="text"
-            placeholder="Full Name"
-            required
-            value={form.full_name}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                full_name:
-                  e.target.value,
-              })
-            }
-            className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
-          />
-
-          <input
-            type="email"
-            placeholder="Email"
-            required
-            value={form.email}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                email:
-                  e.target.value,
-              })
-            }
-            className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            required
-            value={form.password}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                password:
-                  e.target.value,
-              })
-            }
-            className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
-          />
-
-          <select
-            required
-            value={form.current_job_role}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                current_job_role:
-                  e.target.value,
-              })
-            }
-            className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+          <form
+            onSubmit={handleRegister}
+            className="mt-8 grid gap-5 md:mt-10"
           >
 
-            <option value="">
-              Current Role
-            </option>
+            <input
+              type="text"
+              placeholder="Full Name"
+              required
+              value={form.full_name}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  full_name:
+                    e.target.value,
+                })
+              }
+              className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+            />
 
-            <option>
-              Student
-            </option>
+            <input
+              type="email"
+              placeholder="Email"
+              required
+              value={form.email}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  email:
+                    e.target.value,
+                })
+              }
+              className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+            />
 
-            <option>
-              Software Engineer
-            </option>
+            <input
+              type="password"
+              placeholder="Password"
+              required
+              value={form.password}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  password:
+                    e.target.value,
+                })
+              }
+              className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+            />
 
-            <option>
-              Data Analyst
-            </option>
+            <select
+              required
+              value={form.current_job_role}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  current_job_role:
+                    e.target.value,
+                })
+              }
+              className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+            >
 
-            <option>
-              ML Engineer
-            </option>
+              <option value="">
+                Current Role
+              </option>
 
-            <option>
-              Product Manager
-            </option>
+              <option>
+                Student
+              </option>
 
-            <option>
-              Founder
-            </option>
+              <option>
+                Software Engineer
+              </option>
 
-            <option>
-              Data Scientist
-            </option>
+              <option>
+                Data Analyst
+              </option>
 
-          </select>
+              <option>
+                ML Engineer
+              </option>
 
-          <select
-            required
-            value={form.learning_goal}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                learning_goal:
-                  e.target.value,
-              })
-            }
-            className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
-          >
+              <option>
+                Product Manager
+              </option>
 
-            <option value="">
-              Why are you learning AI?
-            </option>
+              <option>
+                Founder
+              </option>
 
-            <option>
-              Get AI Job
-            </option>
+              <option>
+                Data Scientist
+              </option>
 
-            <option>
-              Build AI Startup
-            </option>
+            </select>
 
-            <option>
-              Learn GenAI
-            </option>
+            <select
+              required
+              value={form.learning_goal}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  learning_goal:
+                    e.target.value,
+                })
+              }
+              className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+            >
 
-            <option>
-              AI Research
-            </option>
+              <option value="">
+                Why are you learning AI?
+              </option>
 
-            <option>
-              Production ML
-            </option>
+              <option>
+                Get AI Job
+              </option>
 
-            <option>
-              AI Agents
-            </option>
+              <option>
+                Build AI Startup
+              </option>
 
-          </select>
+              <option>
+                Learn GenAI
+              </option>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-4 rounded-2xl bg-violet-600 py-4 font-semibold text-white transition hover:bg-violet-700 disabled:opacity-50"
-          >
-            {loading
-              ? "Creating Account..."
-              : "Create Account"}
-          </button>
+              <option>
+                AI Research
+              </option>
 
-        </form>
+              <option>
+                Production ML
+              </option>
 
-        <div className="mt-8 text-center text-sm">
+              <option>
+                AI Agents
+              </option>
 
-          <Link
-            href="/login"
-            className="font-medium text-violet-600"
-          >
-            Already have an account?
-          </Link>
+            </select>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-2 rounded-2xl bg-violet-600 py-4 font-semibold text-white transition hover:bg-violet-700 disabled:opacity-50"
+            >
+              {loading
+                ? "Creating Account..."
+                : "Create Account"}
+            </button>
+
+          </form>
+
+          <div className="mt-8 text-center text-sm">
+
+            <Link
+              href="/login"
+              className="font-medium text-violet-600"
+            >
+              Already have an account?
+            </Link>
+
+          </div>
 
         </div>
 
-      </div>
-
-    </main>
+      </main>
+    </>
 
   );
 }
