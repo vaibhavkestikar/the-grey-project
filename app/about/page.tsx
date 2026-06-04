@@ -1,32 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import Navbar from "@/components/layout/navbar";
+import SiteNavbar from "@/components/marketing/site-navbar";
 
 const experiences = [
 
   {
     company: "ZScaler",
     role: "Senior Data Scientist",
-    duration: "2025 — Present",
+    duration: "2025 to Present",
     description:
-      "Building applied AI and advanced analytics systems focused on scalable enterprise impact, decision intelligence, and production-grade machine learning workflows.",
+      "Building applied AI and advanced analytics systems focused on scalable enterprise impact, decision intelligence, and production grade machine learning workflows.",
   },
 
   {
     company: "Tesco Bengaluru",
     role: "Lead Decision Scientist",
-    duration: "2022 — 2025",
+    duration: "2022 to 2025",
     description:
-      "Worked across machine learning, recommendation systems, customer intelligence, pricing analytics, and large-scale data science systems powering retail decisions.",
+      "Worked across machine learning, recommendation systems, customer intelligence, pricing analytics, and large scale data science systems powering retail decisions.",
   },
 
   {
     company: "Mu Sigma",
     role: "Decision Scientist",
-    duration: "2019 — 2022",
+    duration: "2019 to 2022",
     description:
-      "Built foundations in analytical thinking, statistical systems, business intelligence, experimentation, and enterprise problem-solving at scale.",
+      "Built foundations in analytical thinking, statistical systems, business intelligence, experimentation, and enterprise problem solving at scale.",
   },
 
 ];
@@ -39,7 +39,7 @@ export default function AboutPage() {
 
       {/* NAVBAR */}
 
-      <Navbar />
+      <SiteNavbar />
 
       {/* HERO */}
 
@@ -179,7 +179,7 @@ export default function AboutPage() {
 
             Systems thinking.
 
-            The understanding that real-world AI engineering is neither magic nor fear —
+            The understanding that real world AI engineering is neither magic nor fear,
             but careful engineering, probabilistic systems, infrastructure, and learning.
 
           </p>
@@ -285,7 +285,7 @@ export default function AboutPage() {
             The Grey Project is designed to help learners build:
             durable intuition,
             engineering clarity,
-            and long-term understanding of AI systems.
+            and lasting understanding of AI systems.
 
           </p>
 

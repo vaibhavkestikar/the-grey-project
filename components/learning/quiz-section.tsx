@@ -262,7 +262,7 @@ export default function QuizSection() {
           </h3>
 
           <p className="mt-4 text-lg text-green-700">
-            Strong AI engineers understand systems deeply —
+            Strong AI engineers understand systems deeply,
             not just tools and APIs.
           </p>
 

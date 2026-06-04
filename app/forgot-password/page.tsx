@@ -6,6 +6,8 @@ import { toast } from "sonner";
 
 import AuthHeader from "@/components/auth/auth-header";
 
+import { getAuthCallbackUrlWithType } from "@/lib/auth/redirect-url";
+
 import { createClient } from "@/lib/supabase/client";
 
 export default function ForgotPasswordPage() {
@@ -31,7 +33,7 @@ export default function ForgotPasswordPage() {
         email,
         {
           redirectTo:
-            `${window.location.origin}/reset-password`,
+            getAuthCallbackUrlWithType("recovery"),
         }
       );
 

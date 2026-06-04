@@ -53,7 +53,7 @@ export default function LessonContent() {
           </p>
 
           <p className="mt-4 text-lg leading-relaxed text-slate-700">
-            AI systems work similarly — but at much larger scales.
+            AI systems work similarly, but at much larger scales.
           </p>
 
         </div>

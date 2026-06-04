@@ -1,0 +1,111 @@
+import Insight from "@/components/education/insight";
+
+You type a question, press Enter, and words appear. It feels like the machine is thinking in real time. Under the hood, nothing mystical is happening. **ChatGPT is running a frozen neural network** that predicts one token at a time, over and over, until it decides to stop.
+
+This article walks through that pipeline in plain language: what runs when you hit Enter, why answers take seconds, and where things can go wrong.
+
+<Insight
+  title="The core idea"
+  description="Chat is inference, not training. The model does not learn from your message. It uses weights that were already trained, then predicts the most likely next token again and again."
+/>
+
+## Step 1: Your prompt becomes tokens
+
+Language models do not read letters or words the way you do. A **tokenizer** splits your text into **tokens**, chunks that might be whole words or pieces of words (OpenAI, n.d.; Wolfram, 2023).
+
+Why it matters:
+
+- **Cost and speed** are billed per token, not per word.
+- **Context limits** (for example 128k tokens) are token counts.
+- Oddities like struggling to count letters happen because the model sees tokens, not characters.
+
+Your message, system instructions, and earlier chat history are all tokenized into one long integer sequence.
+
+## Step 2: Tokens become vectors
+
+Each token ID is mapped to a high-dimensional **embedding**, a list of numbers that encodes meaning in context. Positional information is added so the model knows order (Vaswani et al., 2017).
+
+At this point your prompt is a matrix of numbers sliding into the GPU. No search engine step, no database lookup of facts unless the product adds a separate retrieval layer on top.
+
+## Step 3: The Transformer forward pass
+
+The stack of Transformer layers runs **self-attention** and feed-forward blocks on the full context. Each layer refines representations so later tokens can depend on earlier ones (see [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/) by Alammar, 2018).
+
+For chat models, this is usually a **decoder-only** setup: the model can attend to all prior tokens in the window and produces a distribution over what token should come next at the final position.
+
+This pass is the expensive part in terms of compute, especially for long conversations. Hardware optimizations (kernels, batching, KV caching) exist so the model does not recompute the entire history from scratch for every new token (Pope et al., 2023).
+
+<Insight
+  title="KV cache in one line"
+  description="After the first forward pass, earlier keys and values can be stored. Each new token only needs a small extra computation instead of reprocessing the whole chat from zero."
+/>
+
+## Step 4: Picking the next token (sampling)
+
+The final layer outputs logits: scores for every token in the vocabulary. Those become probabilities, often with a **softmax**.
+
+The product then **samples** one token. Common knobs:
+
+- **Temperature**: higher means more random, lower means more deterministic.
+- **Top-p (nucleus)**: only sample from the smallest set of tokens whose cumulative probability exceeds p.
+
+That single token is appended to the sequence. Then the model runs again to predict the one after it. This loop is called **autoregressive generation** (Radford et al., 2018).
+
+So when you see a long answer stream in, you are watching dozens or hundreds of forward passes, each adding one token.
+
+## Step 5: Stopping and streaming
+
+Generation stops when the model emits an end-of-sequence token or hits a max length cap. **Streaming** shows each token as it is produced, which makes latency feel lower even though total work is similar.
+
+Nothing in this loop checks truth. The model predicts **plausible** continuations. That is why confident wrong answers (hallucinations) happen and why tools add grounding, search, or policies on top of raw generation (Ji et al., 2023).
+
+## What is not happening when you press Enter
+
+Clarifying common myths helps:
+
+| Myth | Reality |
+|------|---------|
+| It searches the web by default | Base chat uses learned weights; browsing is a separate feature |
+| It retrains on your message | Weights are fixed at inference; your text is only input |
+| It understands like a human | It computes statistical next-token predictions |
+| Bigger answers mean more thinking | More tokens mean more serial generation steps |
+
+Training happened months earlier on massive datasets. Your session is **inference only**.
+
+## Why the same prompt can give different answers
+
+Sampling is stochastic unless temperature is set to zero. Hardware non-determinism can add small variation. System prompts, tool calls, and safety filters also change what you see without changing the core Transformer math.
+
+## Context windows and long conversations
+
+Your chat history is not stored as prose inside the model. It is re-tokenized within a **context window**, a fixed maximum length measured in tokens. Everything beyond that limit must be dropped, summarized, or retrieved from an external memory system.
+
+That is why very long threads sometimes "forget" early details. The model literally no longer has those tokens in the input matrix for the next forward pass. Product teams respond with summarization, RAG (retrieval augmented generation), or sliding windows (Lewis et al., 2020).
+
+Understanding the window helps you design prompts: put the most important instructions and facts where they will survive truncation, usually near the end of the context for decoder models.
+
+## How this connects to products you build
+
+If you are building with LLMs, the pipeline above is your mental model:
+
+1. **Token budget** shapes cost and what you can fit in context.
+2. **Latency** grows with output length and model size.
+3. **Reliability** needs evals, retrieval, or constraints, not hope.
+
+Want hands-on intuition first? Try the free [AI Is Prediction](/try/prediction) lesson on The Grey Project, then explore [how tokens and embeddings work](/learning/curious-builders/tokens-embeddings) in our Curious Builders path.
+
+## References
+
+- Alammar, J. (2018). The Illustrated Transformer. https://jalammar.github.io/illustrated-transformer/
+- Brown, T. B., et al. (2020). Language models are few-shot learners. https://arxiv.org/abs/2005.14165
+- Ji, Z., et al. (2023). Survey of hallucination in natural language generation. *ACM Computing Surveys*. https://arxiv.org/abs/2202.03629
+- OpenAI. (n.d.). Tokenizer documentation. https://platform.openai.com/tokenizer
+- Pope, R., et al. (2023). Efficiently scaling transformer inference. *MLSys*. https://arxiv.org/abs/2211.05102
+- Radford, A., et al. (2018). Improving language understanding by generative pre-training. OpenAI.
+- Vaswani, A., et al. (2017). Attention is all you need. https://arxiv.org/abs/1706.03762
+- Lewis, P., et al. (2020). Retrieval-augmented generation for knowledge-intensive NLP tasks. https://arxiv.org/abs/2005.11401
+- Wolfram, S. (2023). What is ChatGPT doing and why does it work? https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/
+
+## About the author
+
+**Vaibhav Kestikar** is a Senior Data Scientist and the founder of [The Grey Project](https://thegreyproject.com). He writes and builds interactive lessons that explain AI systems without hype. [Connect on LinkedIn](https://www.linkedin.com/in/vaibhavkestikar/).

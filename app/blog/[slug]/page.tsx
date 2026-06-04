@@ -1,19 +1,17 @@
 import fs from "fs";
-
 import path from "path";
-
+import Image from "next/image";
 import { notFound } from "next/navigation";
-
 import { compileMDX } from "next-mdx-remote/rsc";
 
-import Navbar from "@/components/layout/navbar";
-
-import { blogPosts } from "@/data/blog-posts";
-
+import SiteNavbar from "@/components/marketing/site-navbar";
+import BlogLearningCta from "@/components/growth/blog-learning-cta";
+import { blogPosts, getBlogPost } from "@/data/blog-posts";
 import { mdxComponents } from "@/components/mdx-components";
 
-export async function generateStaticParams() {
+const SITE = "https://thegreyproject.com";
 
+export async function generateStaticParams() {
   return blogPosts.map((post) => ({
     slug: post.slug,
   }));
@@ -24,20 +22,36 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-
   const { slug } = await params;
-
-  const post = blogPosts.find(
-    (p) => p.slug === slug
-  );
+  const post = getBlogPost(slug);
 
   if (!post) {
     return {};
   }
 
+  const url = `${SITE}/blog/${post.slug}`;
+
   return {
-    title: post.title,
+    title: `${post.title} | The Grey Project`,
     description: post.description,
+    keywords: post.keywords,
+    authors: [{ name: post.author }],
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      url,
+      type: "article",
+      publishedTime: post.publishedAt,
+      authors: [post.author],
+      images: [{ url: `${SITE}${post.image}`, alt: post.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: [`${SITE}${post.image}`],
+    },
+    alternates: { canonical: url },
   };
 }
 
@@ -46,12 +60,8 @@ export default async function BlogPostPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-
   const { slug } = await params;
-
-  const post = blogPosts.find(
-    (p) => p.slug === slug
-  );
+  const post = getBlogPost(slug);
 
   if (!post) {
     notFound();
@@ -63,132 +73,149 @@ export default async function BlogPostPage({
     `${slug}.mdx`
   );
 
-  const source =
-    fs.readFileSync(
-      filePath,
-      "utf8"
-    );
+  const source = fs.readFileSync(filePath, "utf8");
 
-  const { content } =
-    await compileMDX({
-      source,
-      components:
-        mdxComponents,
-      options: {
-        parseFrontmatter:
-          true,
-      },
-    });
+  const { content } = await compileMDX({
+    source,
+    components: mdxComponents,
+    options: {
+      parseFrontmatter: true,
+    },
+  });
+
+  const relatedLesson =
+    slug === "inside-chatgpt"
+      ? {
+          href: "/learning/curious-builders/tokens-embeddings",
+          title: "How AI reads: tokens and embeddings",
+        }
+      : {
+          href: "/try/prediction",
+          title: "AI Is Prediction, free sample",
+        };
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    image: `${SITE}${post.image}`,
+    datePublished: post.publishedAt,
+    author: {
+      "@type": "Person",
+      name: post.author,
+      url: "https://www.linkedin.com/in/vaibhavkestikar/",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "The Grey Project",
+      url: SITE,
+    },
+    mainEntityOfPage: `${SITE}/blog/${post.slug}`,
+  };
 
   return (
+    <main className="min-h-screen overflow-x-hidden bg-[#f8fafc]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
-    <main className="min-h-screen bg-[#f8fafc]">
+      <SiteNavbar />
 
-      <Navbar />
-
-      <article className="py-20">
-
-        <div className="mx-auto max-w-4xl px-6">
-
-          {/* HEADER */}
-
-          <div className="mb-10">
-
-            <div className="inline-flex rounded-full bg-violet-100 px-4 py-2 text-sm font-semibold text-violet-700">
-              AI RESEARCH BREAKDOWN
+      <article className="pb-20 pt-10 md:pt-14">
+        <div className="mx-auto max-w-4xl px-4 md:px-6">
+          <header className="mb-8">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-flex rounded-full bg-violet-100 px-4 py-2 text-sm font-semibold text-violet-700">
+                {post.category}
+              </span>
+              <time
+                dateTime={post.publishedAt}
+                className="text-sm text-slate-500"
+              >
+                {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </time>
             </div>
 
-            <h1 className="mt-8 text-5xl font-black leading-tight tracking-tight text-slate-950 md:text-7xl">
+            <h1 className="mt-6 text-4xl font-black leading-[1.1] tracking-tight text-slate-950 md:text-5xl lg:text-6xl">
               {post.title}
             </h1>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4 text-slate-600">
+            <p className="mt-5 text-lg leading-relaxed text-slate-600 md:text-xl">
+              {post.description}
+            </p>
 
-              <span>{post.author}</span>
-
-              <span>•</span>
-
+            <div className="mt-6 flex flex-wrap items-center gap-3 text-sm font-medium text-slate-600">
+              <span className="font-semibold text-slate-900">
+                {post.author}
+              </span>
+              <span aria-hidden>·</span>
               <span>{post.readTime}</span>
-
-              <span>•</span>
-
-              <span>{post.publishedAt}</span>
-
             </div>
+          </header>
 
+          <div className="relative overflow-hidden rounded-[2rem] shadow-2xl">
+            <Image
+              src={post.image}
+              alt={post.title}
+              width={1200}
+              height={630}
+              className="h-auto w-full object-cover"
+              priority
+            />
           </div>
-
-          {/* HERO */}
-
-          <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-violet-600 via-purple-600 to-blue-500 p-20 shadow-2xl">
-
-            <h2 className="text-5xl font-black leading-tight text-white md:text-6xl">
-              Attention
-              <br />
-              Changed AI Forever.
-            </h2>
-
-          </div>
-
-          {/* CONTENT */}
 
           <div
             className="
               mdx-content
               prose
-              prose-xl
-              mt-16
+              prose-lg
+              mt-14
               max-w-none
 
               prose-headings:font-black
               prose-headings:text-slate-950
+              prose-headings:tracking-tight
 
-              prose-h1:text-5xl
-              prose-h1:leading-tight
-
-              prose-h2:mt-16
+              prose-h2:mt-14
+              prose-h2:mb-4
               prose-h2:text-3xl
+              prose-h2:border-b
+              prose-h2:border-slate-200
+              prose-h2:pb-4
 
-              prose-p:my-6
+              prose-h3:mt-10
+              prose-h3:text-2xl
+
+              prose-p:my-5
               prose-p:text-slate-700
-              prose-p:leading-9
+              prose-p:leading-[1.85]
 
               prose-strong:text-slate-950
-
-              prose-li:my-2
               prose-li:text-slate-700
               prose-li:leading-8
 
-              prose-ul:my-8
-              prose-ul:list-disc
-              prose-ul:pl-6
-
-              prose-blockquote:border-violet-500
-              prose-blockquote:bg-violet-50
-              prose-blockquote:px-6
-              prose-blockquote:py-3
-              prose-blockquote:rounded-2xl
-              prose-blockquote:text-slate-800
-              prose-blockquote:font-medium
-
               prose-a:text-violet-600
               prose-a:font-semibold
-              prose-a:no-underline
               hover:prose-a:text-violet-800
 
-              prose-hr:my-14
+              prose-table:my-8
             "
           >
-
             {content}
-
           </div>
 
+          <BlogLearningCta
+            relatedLessonHref={relatedLesson.href}
+            relatedLessonTitle={relatedLesson.title}
+          />
         </div>
-
       </article>
-
     </main>
-
   );
 }

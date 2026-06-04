@@ -16,10 +16,21 @@ const inter = Inter({
 
 export const metadata: Metadata = {
 
-  title: "The Grey Project",
+  title: {
+    default: "The Grey Project",
+    template: "%s · The Grey Project",
+  },
 
   description:
-    "Understand AI Under The Hood",
+    "Understand AI Like You Built It. Interactive lessons for curious builders.",
+
+  openGraph: {
+    title: "The Grey Project",
+    description: "Understand AI Like You Built It.",
+    url: "https://thegreyproject.com",
+    siteName: "The Grey Project",
+    type: "website",
+  },
 
   icons: {
 

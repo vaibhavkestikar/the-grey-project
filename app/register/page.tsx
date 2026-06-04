@@ -10,6 +10,12 @@ import { useRouter } from "next/navigation";
 
 import AuthHeader from "@/components/auth/auth-header";
 
+import { getAuthCallbackUrl } from "@/lib/auth/redirect-url";
+
+import { trackAuthFunnelEvent } from "@/lib/auth/funnel";
+
+import { track } from "@/services/analytics/track";
+
 import { createClient } from "@/lib/supabase/client";
 
 export default function RegisterPage() {
@@ -29,6 +35,13 @@ export default function RegisterPage() {
     learning_goal: "",
   });
 
+  const [roleOther, setRoleOther] = useState("");
+
+  const resolvedRole =
+    form.current_job_role === "Other"
+      ? roleOther.trim() || "Other"
+      : form.current_job_role;
+
   async function handleRegister(
     e: React.FormEvent
   ) {
@@ -39,10 +52,7 @@ export default function RegisterPage() {
 
       setLoading(true);
 
-      const redirectUrl =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/login`
-          : "http://localhost:3000/login";
+      track("signup_started");
 
       const {
         data,
@@ -57,7 +67,7 @@ export default function RegisterPage() {
           options: {
 
             emailRedirectTo:
-              redirectUrl,
+              getAuthCallbackUrl(),
 
             data: {
 
@@ -98,22 +108,28 @@ export default function RegisterPage() {
               form.email,
 
             current_job_role:
-              form.current_job_role,
+              resolvedRole,
 
             learning_goal:
               form.learning_goal,
 
           });
 
+        await trackAuthFunnelEvent(userId, "user_signup");
+        await trackAuthFunnelEvent(userId, "email_sent");
       }
+
+      sessionStorage.setItem("pending_verify_email", form.email);
 
       setLoading(false);
 
       toast.success(
-        "Account created successfully"
+        "Account created. Verify your email to continue."
       );
 
-      router.push("/login");
+      router.push(
+        `/verify-email?email=${encodeURIComponent(form.email)}`
+      );
 
     } catch (err) {
 
@@ -243,7 +259,22 @@ export default function RegisterPage() {
                 Data Scientist
               </option>
 
+              <option>
+                Other
+              </option>
+
             </select>
+
+            {form.current_job_role === "Other" && (
+              <input
+                type="text"
+                placeholder="Please specify your role"
+                required
+                value={roleOther}
+                onChange={(e) => setRoleOther(e.target.value)}
+                className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+              />
+            )}
 
             <select
               required

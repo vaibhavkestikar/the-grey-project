@@ -196,3 +196,14 @@ table {
 ::-webkit-scrollbar-thumb:hover {
   background: #8b5cf6;
 }
+
+/* Mobile lesson bottom bar */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+@media (max-width: 768px) {
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 0));
+  }
+}
