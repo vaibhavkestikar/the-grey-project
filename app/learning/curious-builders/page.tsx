@@ -23,7 +23,6 @@ export default function CuriousBuildersPathPage() {
           <PathLessonList
             lessons={CURIOUS_BUILDERS_LESSONS}
             baseHref="/learning/curious-builders"
-            showFreeBadge
           />
         </div>
       </div>

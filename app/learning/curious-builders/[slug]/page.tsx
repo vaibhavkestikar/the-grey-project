@@ -20,6 +20,7 @@ export default function PathLessonPage() {
   const [authReady, setAuthReady] = useState(false);
   const [allowed, setAllowed] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [reviewMode, setReviewMode] = useState(false);
 
   useEffect(() => {
     void (async () => {
@@ -77,9 +78,9 @@ export default function PathLessonPage() {
           ← Learning path
         </Link>
 
-        {completed ? (
+        {completed && !reviewMode ? (
           <div className="premium-card mt-8 p-8 text-center md:p-12">
-            <p className="text-4xl">🎉</p>
+            <p className="text-4xl">✓</p>
             <h1 className="mt-4 text-3xl font-black">Lesson complete</h1>
             <p className="mt-3 text-slate-600">{lesson.title}. Nice work.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -98,6 +99,13 @@ export default function PathLessonPage() {
                   View profile
                 </Link>
               )}
+              <button
+                type="button"
+                onClick={() => setReviewMode(true)}
+                className="rounded-2xl border border-slate-200 px-8 py-4 font-semibold text-slate-800"
+              >
+                Review lesson
+              </button>
               <Link
                 href="/learning"
                 className="rounded-2xl border px-8 py-4 font-semibold text-slate-800"
@@ -112,7 +120,11 @@ export default function PathLessonPage() {
               lesson={lesson}
               mode="path"
               showSignupCta={false}
-              onComplete={() => setCompleted(true)}
+              reviewMode={reviewMode}
+              onComplete={() => {
+                setReviewMode(false);
+                setCompleted(true);
+              }}
             />
           </div>
         )}

@@ -26,8 +26,8 @@ export default function SiteNavbar() {
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
-          <Link href="/try" className="text-sm font-medium text-slate-600 hover:text-violet-600">
-            Try Free
+          <Link href="/try/prediction" className="text-sm font-medium text-slate-600 hover:text-violet-600">
+            Start Learning
           </Link>
           <Link href="/learning" className="text-sm font-medium text-slate-600 hover:text-violet-600">
             Learning paths
@@ -52,10 +52,10 @@ export default function SiteNavbar() {
                 Login
               </Link>
               <Link
-                href="/try"
+                href="/try/prediction"
                 className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-200 hover:bg-violet-700"
               >
-                Try Free Lesson
+                Start Learning
               </Link>
             </>
           )}
@@ -97,8 +97,8 @@ export default function SiteNavbar() {
               Hi, {firstName}
             </p>
           )}
-          <Link href="/try" className="block rounded-xl px-4 py-3 font-medium" onClick={() => setOpen(false)}>
-            Try Free Lesson
+          <Link href="/try/prediction" className="block rounded-xl px-4 py-3 font-medium" onClick={() => setOpen(false)}>
+            Start Learning
           </Link>
           <Link href="/learning" className="block rounded-xl px-4 py-3 font-medium" onClick={() => setOpen(false)}>
             Learning paths

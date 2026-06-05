@@ -24,9 +24,6 @@ export default function LivePathCard({ collapsible = true }: Props) {
           <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide backdrop-blur">
             Live now
           </span>
-          <span className="rounded-full bg-emerald-400/90 px-3 py-1 text-xs font-bold text-emerald-950">
-            {CURIOUS_BUILDERS_PATH.freeCount} free lessons
-          </span>
         </div>
         <h3 className="mt-5 text-3xl font-black md:text-4xl">
           {CURIOUS_BUILDERS_PATH.title}
@@ -43,22 +40,16 @@ export default function LivePathCard({ collapsible = true }: Props) {
             ~{CURIOUS_BUILDERS_PATH.totalMinutes} min
           </span>
           <span className="rounded-xl bg-white/10 px-4 py-2 text-sm backdrop-blur">
-            Beginner → Intermediate
+            Beginner to Intermediate
           </span>
         </div>
 
-        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-7">
           <Link
-            href="/learning/curious-builders/prediction"
-            className="rounded-2xl bg-white px-6 py-3 text-center font-semibold text-violet-700 shadow-lg"
+            href="/try/prediction"
+            className="inline-flex rounded-2xl bg-white px-6 py-3 font-semibold text-violet-700 shadow-lg"
           >
-            Start learning →
-          </Link>
-          <Link
-            href="/try"
-            className="rounded-2xl border border-white/30 px-6 py-3 text-center font-semibold text-white"
-          >
-            Try free first
+            Start Learning →
           </Link>
         </div>
       </div>
@@ -81,7 +72,6 @@ export default function LivePathCard({ collapsible = true }: Props) {
             <PathLessonList
               lessons={CURIOUS_BUILDERS_LESSONS}
               baseHref="/learning/curious-builders"
-              showFreeBadge
             />
           </div>
         )}

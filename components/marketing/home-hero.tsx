@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-import NeuronSandbox from "@/components/playgrounds/neuron-sandbox";
+import LlmPipelineDemo from "@/components/playgrounds/llm-pipeline-demo";
 
 export default function HomeHero() {
   return (
@@ -28,10 +28,10 @@ export default function HomeHero() {
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/try"
+              href="/try/prediction"
               className="rounded-2xl bg-violet-600 px-8 py-4 text-center text-lg font-semibold text-white shadow-xl shadow-violet-200 transition hover:bg-violet-700"
             >
-              Try Free Lesson
+              Start Learning
             </Link>
             <Link
               href="/learning"
@@ -48,7 +48,10 @@ export default function HomeHero() {
           transition={{ duration: 0.7, delay: 0.15 }}
           className="min-w-0"
         >
-          <NeuronSandbox compact />
+          <h2 className="mb-4 text-center text-lg font-black leading-snug text-slate-950 sm:text-xl lg:text-left">
+            How Large Language Models turn a question into an answer
+          </h2>
+          <LlmPipelineDemo />
         </motion.div>
       </div>
     </section>

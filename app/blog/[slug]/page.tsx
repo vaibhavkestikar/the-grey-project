@@ -3,6 +3,7 @@ import path from "path";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { compileMDX } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 
 import SiteNavbar from "@/components/marketing/site-navbar";
 import BlogLearningCta from "@/components/growth/blog-learning-cta";
@@ -80,6 +81,9 @@ export default async function BlogPostPage({
     components: mdxComponents,
     options: {
       parseFrontmatter: true,
+      mdxOptions: {
+        remarkPlugins: [remarkGfm],
+      },
     },
   });
 

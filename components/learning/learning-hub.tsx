@@ -20,10 +20,10 @@ export default function LearningHub() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/try"
+              href="/try/prediction"
               className="rounded-2xl bg-violet-600 px-8 py-4 text-center font-semibold text-white shadow-lg"
             >
-              Try free lessons
+              Start Learning
             </Link>
             <Link
               href="/learning/curious-builders"

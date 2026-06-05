@@ -17,6 +17,7 @@ export default function TryLessonPage() {
   const slug = params.slug as string;
   const lesson = getLessonBySlug(slug);
   const [completed, setCompleted] = useState(false);
+  const [reviewMode, setReviewMode] = useState(false);
 
   const isFree =
     lesson &&
@@ -27,7 +28,7 @@ export default function TryLessonPage() {
       <main className="flex min-h-screen flex-col items-center justify-center gap-4 px-4">
         <p className="text-lg font-semibold text-slate-800">Lesson not found</p>
         <Link href="/try" className="text-violet-600">
-          View free lessons
+          Back to lessons
         </Link>
       </main>
     );
@@ -43,22 +44,19 @@ export default function TryLessonPage() {
 
       <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
         <Link href="/try" className="text-sm font-medium text-slate-500 hover:text-violet-600">
-          ← Free lessons
+          ← Curious Builders
         </Link>
 
-        {completed ? (
+        {completed && !reviewMode ? (
           <div className="premium-card mt-8 p-8 text-center md:p-12">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl">
               ✓
             </div>
             <h1 className="mt-6 text-3xl font-black text-slate-950">
-              Lesson complete!
+              Lesson complete
             </h1>
             <p className="mt-4 text-lg text-slate-600">
-              You finished <strong>{lesson.title}</strong>.{" "}
-              {nextFree
-                ? "Continue the free preview or sign up to unlock all lessons."
-                : "Sign up to unlock the full Curious Builders path."}
+              You finished <strong>{lesson.title}</strong>.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
               {nextFree ? (
@@ -66,15 +64,23 @@ export default function TryLessonPage() {
                   href={`/try/${nextFree.slug}`}
                   className="rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
                 >
-                  Next free lesson →
+                  Next lesson →
                 </Link>
-              ) : null}
-              <Link
-                href="/register"
-                className="rounded-2xl border border-violet-200 bg-white px-8 py-4 font-semibold text-violet-700"
+              ) : (
+                <Link
+                  href="/register"
+                  className="rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
+                >
+                  Continue learning →
+                </Link>
+              )}
+              <button
+                type="button"
+                onClick={() => setReviewMode(true)}
+                className="rounded-2xl border border-slate-200 px-8 py-4 font-semibold text-slate-800"
               >
-                Sign up free
-              </Link>
+                Review lesson
+              </button>
             </div>
           </div>
         ) : (
@@ -82,7 +88,11 @@ export default function TryLessonPage() {
             <LessonEngine
               lesson={lesson}
               mode="try"
-              onComplete={() => setCompleted(true)}
+              reviewMode={reviewMode}
+              onComplete={() => {
+                setReviewMode(false);
+                setCompleted(true);
+              }}
             />
           </div>
         )}

@@ -1,16 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
 import PlaygroundRenderer from "@/components/playgrounds/playground-renderer";
 import { track } from "@/services/analytics/track";
-import { createClient } from "@/lib/supabase/client";
+import {
+  fetchLessonProgress,
+  saveLessonProgress,
+} from "@/lib/learning/progress";
 import {
   getNextLessonSlug,
-  PATH_ID,
 } from "@/data/curious-builders-path";
 import type { LessonBlock, StructuredLesson } from "@/types/lesson";
 
@@ -19,6 +21,9 @@ type Props = {
   mode?: "try" | "path";
   onComplete?: () => void;
   showSignupCta?: boolean;
+  /** When true, show lesson content even if already completed (review mode). */
+  reviewMode?: boolean;
+  onReviewStart?: () => void;
 };
 
 export default function LessonEngine({
@@ -26,51 +31,47 @@ export default function LessonEngine({
   mode = "try",
   onComplete,
   showSignupCta = true,
+  reviewMode = false,
+  onReviewStart,
 }: Props) {
   const [step, setStep] = useState(0);
   const [checkpointAnswer, setCheckpointAnswer] = useState<number | null>(null);
   const [checkpointDone, setCheckpointDone] = useState(false);
+  const [progressLoaded, setProgressLoaded] = useState(false);
+  const [alreadyCompleted, setAlreadyCompleted] = useState(false);
+  const completionReported = useRef(false);
 
   const block = lesson.blocks[step];
   const isLast = step >= lesson.blocks.length - 1;
-  const progressPct = Math.round(
-    ((step + (checkpointDone ? 1 : 0.5)) / lesson.blocks.length) * 100
+  const progressPct = Math.round(((step + 1) / lesson.blocks.length) * 100);
+
+  useEffect(() => {
+    void (async () => {
+      const saved = await fetchLessonProgress(lesson.slug);
+      if (saved?.completed && !reviewMode) {
+        setAlreadyCompleted(true);
+        if (!completionReported.current) {
+          completionReported.current = true;
+          onComplete?.();
+        }
+      } else if (saved?.last_position && !saved.completed && !reviewMode) {
+        setStep(Math.min(saved.last_position, lesson.blocks.length - 1));
+      }
+      setProgressLoaded(true);
+    })();
+  }, [lesson.slug, lesson.blocks.length, onComplete, reviewMode]);
+
+  const persistProgress = useCallback(
+    async (markComplete?: boolean) => {
+      await saveLessonProgress({
+        lessonSlug: lesson.slug,
+        step,
+        totalSteps: lesson.blocks.length,
+        markComplete,
+      });
+    },
+    [lesson.slug, lesson.blocks.length, step]
   );
-
-  const saveProgress = useCallback(async () => {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const row = {
-      user_id: user.id,
-      course_slug: PATH_ID,
-      module_slug: PATH_ID,
-      lesson_slug: lesson.slug,
-      progress_percent: progressPct,
-      completed: progressPct >= 90,
-      updated_at: new Date().toISOString(),
-    };
-
-    const { data: existing } = await supabase
-      .from("lesson_progress")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("lesson_slug", lesson.slug)
-      .maybeSingle();
-
-    if (!existing) {
-      await supabase.from("lesson_progress").insert(row);
-    } else {
-      await supabase
-        .from("lesson_progress")
-        .update(row)
-        .eq("user_id", user.id)
-        .eq("lesson_slug", lesson.slug);
-    }
-  }, [lesson.slug, progressPct]);
 
   useEffect(() => {
     track(mode === "try" ? "sample_started" : "lesson_started", {
@@ -79,26 +80,27 @@ export default function LessonEngine({
   }, [lesson.id, mode]);
 
   useEffect(() => {
-    if (mode === "path") void saveProgress();
-  }, [step, progressPct, mode, saveProgress]);
+    if (!progressLoaded || alreadyCompleted) return;
+    void persistProgress(false);
+  }, [step, progressLoaded, alreadyCompleted, persistProgress]);
 
   const nextSlug = getNextLessonSlug(lesson.slug);
   const nextHref =
     mode === "try"
-      ? nextSlug && lesson.free
+      ? nextSlug
         ? `/try/${nextSlug}`
         : "/register"
       : nextSlug
         ? `/learning/curious-builders/${nextSlug}`
         : "/learning/curious-builders";
 
-  function next() {
+  async function next() {
     if (block?.type === "checkpoint" && !checkpointDone) return;
     if (isLast) {
       track(mode === "try" ? "sample_completed" : "lesson_completed", {
         lessonId: lesson.id,
       });
-      void saveProgress();
+      await persistProgress(true);
       onComplete?.();
       return;
     }
@@ -115,13 +117,39 @@ export default function LessonEngine({
     }
   }
 
+  if (!progressLoaded) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <p className="text-slate-500">Loading lesson...</p>
+      </div>
+    );
+  }
+
+  if (alreadyCompleted && !reviewMode) {
+    return null;
+  }
+
   return (
     <div className="mx-auto w-full max-w-3xl">
+      {reviewMode && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm">
+          <span className="font-semibold text-emerald-800">
+            Reviewing a completed lesson
+          </span>
+          <button
+            type="button"
+            onClick={() => onComplete?.()}
+            className="font-semibold text-emerald-700 underline"
+          >
+            Back to completion
+          </button>
+        </div>
+      )}
+
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-violet-600">
-            {lesson.durationMinutes} min
-            {mode === "try" ? " · Free lesson" : " · Curious Builders"}
+            {lesson.durationMinutes} min · Curious Builders
           </p>
           <h1 className="mt-1 text-2xl font-black text-slate-950 md:text-3xl">
             {lesson.title}
@@ -202,7 +230,9 @@ export default function LessonEngine({
 
           {block.type === "reflect" && showSignupCta && mode === "try" && (
             <div className="mt-8 rounded-2xl border border-violet-200 bg-violet-50 p-6">
-              <p className="font-semibold text-violet-900">Save progress & unlock the full path</p>
+              <p className="font-semibold text-violet-900">
+                Save progress and unlock the full path
+              </p>
               <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/register"
@@ -215,7 +245,7 @@ export default function LessonEngine({
                     href={`/try/${nextSlug}`}
                     className="rounded-xl border border-violet-200 bg-white px-6 py-3 text-center font-semibold text-violet-700"
                   >
-                    Next free lesson →
+                    Next lesson →
                   </Link>
                 )}
               </div>
@@ -261,3 +291,5 @@ function BlockLabel({ type }: { type: LessonBlock["type"] }) {
     </span>
   );
 }
+
+export { type Props as LessonEngineProps };
