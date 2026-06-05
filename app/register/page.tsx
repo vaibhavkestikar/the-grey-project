@@ -90,6 +90,19 @@ export default function RegisterPage() {
 
       }
 
+      // Supabase returns a user with no identities when the email already exists
+      // (no error, no verification email) to prevent email enumeration.
+      if (data.user && (data.user.identities?.length ?? 0) === 0) {
+        toast.error(
+          "An account with this email already exists. Sign in instead, or reset your password if you forgot it."
+        );
+
+        setLoading(false);
+
+        return;
+
+      }
+
       const userId =
         data.user?.id;
 

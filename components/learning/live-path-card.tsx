@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 
 import PathLessonList from "@/components/learning/path-lesson-list";
+import LearningPathPill from "@/components/learning/learning-path-pill";
 import {
   CURIOUS_BUILDERS_LESSONS,
   CURIOUS_BUILDERS_PATH,
@@ -22,10 +23,11 @@ export default function LivePathCard({ collapsible = true }: Props) {
       <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 p-7 text-white md:p-9">
         <div className="flex items-center justify-between gap-2">
           <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide backdrop-blur">
-            Live now
+            Live now. Go play
           </span>
         </div>
-        <h3 className="mt-5 text-3xl font-black md:text-4xl">
+        <LearningPathPill variant="light" className="mt-5" />
+        <h3 className="mt-3 text-3xl font-black md:text-4xl">
           {CURIOUS_BUILDERS_PATH.title}
         </h3>
         <p className="mt-2 text-violet-100">{CURIOUS_BUILDERS_PATH.subtitle}</p>

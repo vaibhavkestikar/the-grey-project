@@ -16,6 +16,28 @@ export type PlaygroundId =
   | "embedding-explorer"
   | "hallucination-lab";
 
+export type LessonVisual =
+  | {
+      kind: "comparison";
+      leftLabel: string;
+      leftPoints: string[];
+      rightLabel: string;
+      rightPoints: string[];
+    }
+  | {
+      kind: "stats";
+      items: Array<{ value: string; label: string }>;
+    }
+  | {
+      kind: "flow";
+      steps: Array<{ label: string; detail?: string }>;
+    }
+  | {
+      kind: "callout";
+      text: string;
+      color?: "violet" | "blue" | "amber" | "emerald" | "red";
+    };
+
 export type LessonBlock = {
   type: LessonBlockType;
   title?: string;
@@ -29,6 +51,14 @@ export type LessonBlock = {
   options?: string[];
   correctIndex?: number;
   insight?: string;
+  /** Emoji icon shown in the block header */
+  icon?: string;
+  /** Key takeaways shown as callout cards below body text */
+  highlights?: string[];
+  /** Learned checklist for reflect blocks */
+  learned?: string[];
+  /** Inline visual component */
+  visual?: LessonVisual;
 };
 
 export type StructuredLesson = {

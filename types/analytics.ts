@@ -11,7 +11,8 @@ export type AnalyticsEvent =
   | "lesson_completed"
   | "checkpoint_passed"
   | "playground_used"
-  | "waitlist_joined";
+  | "waitlist_joined"
+  | "feedback_submitted";
 
 export type AnalyticsPayload = {
   event: AnalyticsEvent;

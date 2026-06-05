@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Understand AI Like You Built It. Interactive lessons for curious builders.",
+    "Understand AI Like You Built It. Interactive lessons, live sandboxes, zero buzzword bingo.",
 
   openGraph: {
     title: "The Grey Project",

@@ -25,7 +25,7 @@ export const CURIOUS_BUILDERS_PATH = {
   title: "Curious Builders",
   subtitle: "Learn AI. Never Forget.",
   description:
-    "Interactive, first principles lessons for people who use ChatGPT and want real intuition. No hype, no fear.",
+    "Interactive, first principles lessons for people who use AI tools daily and want to know what is actually happening, not just that it works.",
   get totalMinutes() {
     return CURIOUS_BUILDERS_LESSONS.reduce(
       (sum, l) => sum + l.durationMinutes,
@@ -57,6 +57,11 @@ export function getNextLessonSlug(slug: string): string | null {
   const idx = CURIOUS_BUILDERS_LESSONS.findIndex((l) => l.slug === slug);
   if (idx < 0 || idx >= CURIOUS_BUILDERS_LESSONS.length - 1) return null;
   return CURIOUS_BUILDERS_LESSONS[idx + 1].slug;
+}
+
+export function isLastLessonInPath(slug: string): boolean {
+  const idx = CURIOUS_BUILDERS_LESSONS.findIndex((l) => l.slug === slug);
+  return idx === CURIOUS_BUILDERS_LESSONS.length - 1;
 }
 
 /** Legacy MDX lesson slugs → V2 slugs */

@@ -15,8 +15,12 @@ export default function LearningHub() {
             Your learning paths
           </h1>
           <p className="mt-4 max-w-2xl text-xl text-slate-600">
-            Interactive arcs you actually remember: hook → visual → play →
-            checkpoint → build → reflect.
+            Hook → play → checkpoint → reflect. The learning arc your brain
+            actually remembers, not the one that evaporates after the tab closes.
+          </p>
+          <p className="mt-2 max-w-2xl text-base text-slate-500">
+            Pick a path. Break things in sandboxes. Leave with intuition that
+            survives your next standup.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
@@ -29,7 +33,7 @@ export default function LearningHub() {
               href="/learning/curious-builders"
               className="rounded-2xl border border-slate-200 bg-white px-8 py-4 text-center font-semibold text-slate-800"
             >
-              Open live learning path
+              Open live path
             </Link>
           </div>
         </div>

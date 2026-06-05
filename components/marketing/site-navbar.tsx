@@ -35,6 +35,9 @@ export default function SiteNavbar() {
           <Link href="/blog" className="text-sm font-medium text-slate-600 hover:text-violet-600">
             Blog
           </Link>
+          <Link href="/feedback" className="text-sm font-medium text-slate-600 hover:text-violet-600">
+            Feedback
+          </Link>
           {user && (
             <Link href="/account" className="text-sm font-medium text-slate-600 hover:text-violet-600">
               Profile
@@ -105,6 +108,9 @@ export default function SiteNavbar() {
           </Link>
           <Link href="/blog" className="block rounded-xl px-4 py-3 font-medium" onClick={() => setOpen(false)}>
             Blog
+          </Link>
+          <Link href="/feedback" className="block rounded-xl px-4 py-3 font-medium" onClick={() => setOpen(false)}>
+            Feedback
           </Link>
           {user && (
             <Link href="/account" className="block rounded-xl px-4 py-3 font-medium" onClick={() => setOpen(false)}>

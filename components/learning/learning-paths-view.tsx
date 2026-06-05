@@ -1,5 +1,6 @@
 import LivePathCard from "@/components/learning/live-path-card";
 import ComingSoonPathCard from "@/components/growth/coming-soon-path-card";
+import FreshersSpotlight from "@/components/growth/freshers-spotlight";
 import { AUDIENCE_PATHS } from "@/types/paths";
 
 type Props = {
@@ -11,9 +12,11 @@ type Props = {
 export default function LearningPathsView({
   collapsibleLive = true,
   heading = "Learning Paths",
-  subheading = "One live learning path today. More unlock as we ship them. Join a waitlist to get notified.",
+  subheading = "One path live. One launching soon with limited free seats. The rest are cooking. Join a waitlist and we'll yell when they're ready.",
 }: Props) {
-  const comingSoon = AUDIENCE_PATHS.filter((p) => p.status !== "live");
+  const comingSoon = AUDIENCE_PATHS.filter(
+    (p) => p.status !== "live" && !p.featured
+  );
 
   return (
     <section className="px-4 py-16 md:px-6 md:py-20">
@@ -27,19 +30,30 @@ export default function LearningPathsView({
           <LivePathCard collapsible={collapsibleLive} />
         </div>
 
-        <h3 className="mt-14 text-xl font-black text-slate-900">
-          Coming soon
-        </h3>
-        <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {comingSoon.map((path) => (
-            <ComingSoonPathCard
-              key={path.id}
-              title={path.title}
-              description={path.description}
-              waitlistKey={path.waitlistKey}
-            />
-          ))}
+        <div className="mt-14">
+          <FreshersSpotlight />
         </div>
+
+        {comingSoon.length > 0 && (
+          <>
+            <h3 className="mt-14 text-xl font-black text-slate-900">
+              More paths on the way
+            </h3>
+            <p className="mt-2 text-slate-600">
+              Built for specific roles. Same interactive energy. Zero buzzword bingo.
+            </p>
+            <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {comingSoon.map((path) => (
+                <ComingSoonPathCard
+                  key={path.id}
+                  title={path.title}
+                  description={path.description}
+                  waitlistKey={path.waitlistKey}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

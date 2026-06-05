@@ -15,7 +15,13 @@ export const lessonHallucinations: StructuredLesson = {
     {
       type: "hook",
       title: "The most expensive misunderstanding in AI",
+      icon: "⚠️",
       body: "People assume a confident model is a correct model. It is not. A language model is trained to produce text that sounds right, not text that is verified. When it has no real answer, it does the only thing it knows how to do. It predicts the most plausible sounding words and presents them with full confidence. We call that a hallucination.",
+      visual: {
+        kind: "callout",
+        text: "A language model can be 95% confident and 100% wrong. Stated confidence and verified truth are not the same thing.",
+        color: "amber",
+      },
     },
     {
       type: "play",
@@ -40,17 +46,30 @@ export const lessonHallucinations: StructuredLesson = {
     {
       type: "build",
       title: "Why this happens, not just that it happens",
+      icon: "🎓",
       body: "During training the model is rewarded for fluent, plausible continuations. It is almost never rewarded for saying I do not know. So when the pattern is missing, guessing scores better than admitting a gap. The behaviour is not a bug bolted on. It is a direct result of how the thing was trained.",
+      highlights: [
+        "The model was trained to produce fluent, plausible text, not verified text.",
+        "It was almost never rewarded for saying 'I do not know'.",
+        "Hallucination is not a bug. It is a direct result of how the model was trained.",
+      ],
     },
     {
       type: "build",
-      title: "The fix number one: grounding",
+      title: "Fix one: grounding",
+      icon: "⚓",
       body: "Give the model real sources at answer time and tell it to use only those. This is called retrieval. Instead of dredging the answer from fuzzy memory, it reads the documents you provide and quotes them. Most serious AI products are really a search system feeding a language model, precisely to stop it from inventing facts.",
+      highlights: [
+        "Retrieve real source documents and tell the model to use only those.",
+        "Most serious AI products are a search system feeding a language model.",
+        "Grounding anchors answers in real text instead of fuzzy memory.",
+      ],
     },
     {
       type: "checkpoint",
       title: "Pick the grounded design",
-      question: "You build a support bot that must not invent policies. Best approach?",
+      question:
+        "You build a support bot that must not invent policies. Best approach?",
       options: [
         "Let the model answer from memory alone",
         "Retrieve the real policy docs and have it answer only from them",
@@ -63,8 +82,14 @@ export const lessonHallucinations: StructuredLesson = {
     },
     {
       type: "build",
-      title: "The fix number two: let it say I do not know",
+      title: "Fix two: let it say I do not know",
+      icon: "🚦",
       body: "A grounded system still needs permission to refuse. If the sources do not contain the answer, the safest output is an honest gap, not a confident guess. Good products reward that refusal in their instructions and their testing, which is the opposite of how the base model was trained.",
+      highlights: [
+        "A grounded system still needs explicit permission to refuse.",
+        "If sources do not contain the answer, honest refusal is safer than a confident guess.",
+        "Good products reward refusal in their instructions, opposite to base model training.",
+      ],
     },
     {
       type: "checkpoint",
@@ -83,7 +108,13 @@ export const lessonHallucinations: StructuredLesson = {
     {
       type: "reflect",
       title: "You now see the seams",
-      body: "Hallucination is fluent prediction with no anchor to truth, and grounding plus honest refusal are the cures. You can now judge an AI feature by one question. Where does its answer actually come from. Last stop, the full workflow that turns a model into a product that survives the real world.",
+      body: "Hallucination is fluent prediction with no anchor to truth, and grounding plus honest refusal are the cures. You can now judge any AI feature by one question: where does its answer actually come from? Last stop, the full workflow that turns a model into a product that survives the real world.",
+      learned: [
+        "Hallucination = fluent prediction with no anchor to truth.",
+        "Confident does not mean correct. Always verify important claims.",
+        "Grounding: retrieve real sources and limit answers to what they contain.",
+        "Let it say 'I do not know'. Reward honest refusal in your instructions.",
+      ],
     },
   ],
 };

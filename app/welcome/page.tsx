@@ -45,10 +45,11 @@ export default function WelcomePage() {
       <main className="flex min-h-[calc(100dvh-68px)] items-center justify-center px-4 py-10">
         <div className="w-full max-w-2xl rounded-[2rem] border border-slate-200 bg-white p-10 text-center shadow-2xl md:p-14">
           <h1 className="text-4xl font-black md:text-5xl">
-            Welcome To The Grey Project{name ? `, ${name}` : ""}
+            Welcome to The Grey Project{name ? `, ${name}` : ""}
           </h1>
           <p className="mt-6 text-xl text-slate-600">
-            Let&apos;s understand AI together.
+            Your brain is about to get an upgrade. Let&apos;s understand AI together,
+            for real this time.
           </p>
           <div className="mt-10 flex flex-col gap-4">
             <Link

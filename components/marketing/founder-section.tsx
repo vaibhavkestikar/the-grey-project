@@ -6,24 +6,29 @@ export default function FounderSection() {
     <section className="border-t border-slate-200 px-4 py-16 md:px-6 md:py-24">
       <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
         <div className="relative mx-auto max-w-sm">
-          <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-violet-300 to-blue-300 blur-2xl opacity-40" />
+          <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-violet-300 to-blue-300 opacity-40 blur-2xl" />
           <Image
             src="/founder.png"
             alt="Vaibhav Kestikar"
             width={400}
             height={480}
-            className="relative rounded-[2rem] border border-white shadow-2xl object-cover"
+            className="relative rounded-[2rem] border border-white object-cover shadow-2xl"
           />
         </div>
         <div>
           <p className="text-sm font-bold uppercase tracking-widest text-violet-600">
-            Founder
+            The human behind the grey
           </p>
           <h2 className="mt-4 text-3xl font-black text-slate-950 md:text-5xl">
             Vaibhav Kestikar
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-slate-600">
-            Senior Data Scientist. Built The Grey Project to teach AI the way I wish it had been taught, with depth, visuals, and zero hype.
+            Senior Data Scientist. I got tired of explaining AI to smart people
+            who&apos;d been lied to by LinkedIn posts.             So I built The Grey Project: depth, visuals, and zero hype. The way I wish someone had taught me.
+          </p>
+          <p className="mt-4 text-base text-slate-500">
+            If you&apos;ve ever nodded along in a meeting while secretly Googling
+            &ldquo;what is a transformer model&rdquo;? This is for you.
           </p>
           <a
             href="https://www.linkedin.com/in/vaibhavkestikar/"

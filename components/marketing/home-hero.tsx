@@ -16,7 +16,7 @@ export default function HomeHero() {
           transition={{ duration: 0.6 }}
         >
           <span className="inline-flex rounded-full bg-violet-100 px-4 py-1.5 text-sm font-semibold text-violet-700">
-            Learn AI. Never Forget.
+            AI education that respects your brain
           </span>
           <h1 className="mt-6 text-4xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-5xl md:text-6xl lg:text-7xl">
             Understand AI
@@ -24,14 +24,20 @@ export default function HomeHero() {
             <span className="gradient-text">Like You Built It.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
-            Interactive lessons. Visual sandboxes. Real intuition, no hype and no fear.
+            Interactive lessons that show how language models, recommenders, and
+            fraud detectors actually work. Visual sandboxes. Checkpoints that make
+            the ideas stick.
+          </p>
+          <p className="mt-3 max-w-xl text-base leading-relaxed text-slate-500">
+            Built for curious people who want real intuition, not another slide
+            deck or panic headline. Learn once. Remember it.
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/try/prediction"
               className="rounded-2xl bg-violet-600 px-8 py-4 text-center text-lg font-semibold text-white shadow-xl shadow-violet-200 transition hover:bg-violet-700"
             >
-              Start Learning
+              Start Learning. It&apos;s Free
             </Link>
             <Link
               href="/learning"
@@ -51,6 +57,9 @@ export default function HomeHero() {
           <h2 className="mb-4 text-center text-lg font-black leading-snug text-slate-950 sm:text-xl lg:text-left">
             How Large Language Models turn a question into an answer
           </h2>
+          <p className="mb-4 text-center text-sm text-slate-500 lg:text-left">
+            Press a question. Watch the magic become math.
+          </p>
           <LlmPipelineDemo />
         </motion.div>
       </div>

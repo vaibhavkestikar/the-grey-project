@@ -15,7 +15,19 @@ export const lessonMlWorkflow: StructuredLesson = {
     {
       type: "hook",
       title: "Notebooks tell a comforting lie",
+      icon: "🔄",
       body: "Tutorials end the moment a model hits high accuracy on a clean spreadsheet. Real products begin there. They need framing, data, training, evaluation, deployment, and monitoring. Skip any of these and the project does not fail loudly. It dies quietly in production while everyone wonders what went wrong.",
+      visual: {
+        kind: "flow",
+        steps: [
+          { label: "Frame" },
+          { label: "Data" },
+          { label: "Train" },
+          { label: "Evaluate" },
+          { label: "Deploy" },
+          { label: "Monitor" },
+        ],
+      },
     },
     {
       type: "play",
@@ -40,12 +52,24 @@ export const lessonMlWorkflow: StructuredLesson = {
     {
       type: "build",
       title: "Framing is where projects are won or lost",
+      icon: "🎯",
       body: "Before any code, you turn a fuzzy business wish into a precise prediction task. What exactly is the input, and what is the label you are trying to predict? A reduce churn goal is useless to a model. Predict whether this customer cancels in the next thirty days is something it can actually learn. Bad framing wastes months that no clever model can recover.",
+      highlights: [
+        "Turn 'reduce churn' into 'predict whether this customer cancels in 30 days'.",
+        "A precise prediction task is something a model can actually learn.",
+        "Bad framing wastes months that no amount of clever modelling can recover.",
+      ],
     },
     {
       type: "build",
       title: "Data discipline beats model hype",
+      icon: "🗂️",
       body: "The fastest way to fool yourself is data leakage, where a clue about the answer secretly slips into the inputs. Your offline scores look amazing, then the live system collapses because that clue is not there in the real world. Clean, representative, leak free data beats a fancier model almost every single time.",
+      highlights: [
+        "Data leakage: a clue about the answer secretly slips into the inputs.",
+        "Your offline scores look amazing, then the live system collapses.",
+        "Clean, representative, leak free data beats a fancier model almost every time.",
+      ],
     },
     {
       type: "play",
@@ -71,7 +95,8 @@ export const lessonMlWorkflow: StructuredLesson = {
     {
       type: "checkpoint",
       title: "Same loop for language models",
-      question: "For a product built on a language model, the equivalent of monitoring is",
+      question:
+        "For a product built on a language model, the equivalent of monitoring is",
       options: [
         "never checking the outputs after launch",
         "running ongoing evaluations and human review on real prompts",
@@ -85,7 +110,13 @@ export const lessonMlWorkflow: StructuredLesson = {
     {
       type: "reflect",
       title: "You think like a builder now",
-      body: "You see AI as living systems, not slides. Framing, data, training, evaluation, deployment, and monitoring, with prediction at the centre of all of it. That is the whole point of Curious Builders. Come back to revisit any lesson, and keep this question close. Where does the answer come from, and how would I know if it broke.",
+      body: "You see AI as living systems, not slides. Framing, data, training, evaluation, deployment, and monitoring, with prediction at the centre of all of it. That is the whole point of Curious Builders. Come back to revisit any lesson, and keep this question close: where does the answer come from, and how would I know if it broke?",
+      learned: [
+        "AI products are living systems: frame, collect data, train, evaluate, deploy, monitor.",
+        "Data quality beats model size. Always clean before you scale.",
+        "Offline scores are a rehearsal. Live metrics are the only true verdict.",
+        "The loop never ends: monitor, evaluate, and retrain as the world changes.",
+      ],
     },
   ],
 };

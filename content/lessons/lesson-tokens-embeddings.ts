@@ -15,7 +15,18 @@ export const lessonTokensEmbeddings: StructuredLesson = {
     {
       type: "hook",
       title: "The secret first step",
+      icon: "🔢",
       body: "Before a model can predict anything, it has to convert your text into numbers, because maths is all it can do. This happens in two moves. First it chops your text into tokens. Then it turns each token into a list of numbers that captures meaning. Understand these two moves and a lot of mysterious model behaviour suddenly makes sense.",
+      visual: {
+        kind: "flow",
+        steps: [
+          { label: "Your text", detail: "Raw words" },
+          { label: "Tokens", detail: "Chunks" },
+          { label: "Token IDs", detail: "Numbers" },
+          { label: "Embeddings", detail: "Meaning vectors" },
+          { label: "Prediction", detail: "Next token" },
+        ],
+      },
     },
     {
       type: "play",
@@ -40,12 +51,29 @@ export const lessonTokensEmbeddings: StructuredLesson = {
     {
       type: "build",
       title: "Why tokens matter to you",
+      icon: "💰",
       body: "Tokens are the unit of everything that costs money or time with a model. Context limits are counted in tokens, billing is per token, and speed depends on how many tokens must be produced. This is also why a model can struggle to spell or count letters. It never saw letters in the first place, only these chunks.",
+      highlights: [
+        "Context limits, billing, and speed are all measured in tokens.",
+        "A model cannot count letters because it never sees individual characters.",
+        "On average, one token is roughly four characters of English text.",
+      ],
     },
     {
       type: "build",
       title: "From tokens to meaning",
-      body: "A token id like 5012 means nothing on its own. So the model gives every token a long list of numbers called an embedding. Think of it as coordinates on a giant map of meaning. Words used in similar ways end up near each other on that map, even though no one ever told the model what they mean.",
+      icon: "🗺️",
+      body: "A token ID like 5012 means nothing on its own. So the model gives every token a long list of numbers called an embedding. Think of it as coordinates on a giant map of meaning. Words used in similar ways end up near each other on that map, even though no one ever told the model what they mean.",
+      highlights: [
+        "Every token maps to a long list of numbers called an embedding.",
+        "Think of it as coordinates on a giant map of meaning.",
+        "Words used in similar ways end up near each other, automatically.",
+      ],
+      visual: {
+        kind: "callout",
+        text: "No one told the model what words mean. It discovered meaning from usage.",
+        color: "violet",
+      },
     },
     {
       type: "play",
@@ -70,7 +98,13 @@ export const lessonTokensEmbeddings: StructuredLesson = {
     {
       type: "build",
       title: "The famous word maths",
+      icon: "➕",
       body: "Because meaning is now geometry, you can do arithmetic with it. The classic result is king minus man plus woman lands very close to queen. The model captured the idea of royalty and the idea of gender as directions in space. This is the quiet magic that powers search, recommendations, and the way chatbots grasp what you mean.",
+      highlights: [
+        "king − man + woman ≈ queen: the model learned royalty and gender as directions.",
+        "Meaning is geometry. You can add and subtract concepts.",
+        "This powers semantic search, recommendations, and language understanding.",
+      ],
     },
     {
       type: "checkpoint",
@@ -90,6 +124,12 @@ export const lessonTokensEmbeddings: StructuredLesson = {
       type: "reflect",
       title: "You can see what the model sees",
       body: "Text becomes tokens, tokens become points on a map of meaning, and prediction happens in that space. Next we look at the unit doing the predicting itself, the neuron, and how stacking them creates deep learning.",
+      learned: [
+        "Text → tokens → embeddings → prediction happens in meaning space.",
+        "Tokens are the billing unit: context limits and costs are counted in tokens.",
+        "Embeddings let models match by meaning, not just exact words.",
+        "Word arithmetic is possible because meaning is geometry.",
+      ],
     },
   ],
 };

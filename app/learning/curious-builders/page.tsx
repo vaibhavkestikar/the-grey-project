@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import SiteNavbar from "@/components/marketing/site-navbar";
 import PathLessonList from "@/components/learning/path-lesson-list";
+import LearningPathPill from "@/components/learning/learning-path-pill";
 import {
   CURIOUS_BUILDERS_LESSONS,
   CURIOUS_BUILDERS_PATH,
@@ -15,7 +16,8 @@ export default function CuriousBuildersPathPage() {
         <Link href="/learning" className="text-sm font-medium text-slate-500 hover:text-violet-600">
           ← All learning paths
         </Link>
-        <h1 className="mt-6 text-4xl font-black text-slate-950">
+        <LearningPathPill className="mt-6" />
+        <h1 className="mt-3 text-4xl font-black text-slate-950">
           {CURIOUS_BUILDERS_PATH.title}
         </h1>
         <p className="mt-4 text-lg text-slate-600">{CURIOUS_BUILDERS_PATH.subtitle}</p>

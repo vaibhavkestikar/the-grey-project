@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
+import PathFeedbackForm from "@/components/feedback/path-feedback-form";
 import SiteNavbar from "@/components/marketing/site-navbar";
 import LessonEngine from "@/components/learning/lesson-engine";
 import {
   CURIOUS_BUILDERS_LESSONS,
+  CURIOUS_BUILDERS_PATH,
   getLessonBySlug,
+  isLastLessonInPath,
 } from "@/data/curious-builders-path";
 import { createClient } from "@/lib/supabase/client";
 
@@ -21,6 +24,10 @@ export default function PathLessonPage() {
   const [allowed, setAllowed] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [reviewMode, setReviewMode] = useState(false);
+  const [showPathFeedback, setShowPathFeedback] = useState(false);
+  const [pathFeedbackDone, setPathFeedbackDone] = useState(false);
+
+  const isLastLesson = lesson ? isLastLessonInPath(slug) : false;
 
   useEffect(() => {
     void (async () => {
@@ -46,6 +53,23 @@ export default function PathLessonPage() {
       setAuthReady(true);
     })();
   }, [lesson, router, slug]);
+
+  useEffect(() => {
+    if (!completed || !isLastLesson) return;
+
+    void (async () => {
+      const res = await fetch(
+        `/api/feedback/path?path_id=${encodeURIComponent(CURIOUS_BUILDERS_PATH.id)}`
+      );
+      const data = await res.json().catch(() => ({ submitted: false }));
+      if (data.submitted) {
+        setPathFeedbackDone(true);
+        setShowPathFeedback(false);
+      } else {
+        setShowPathFeedback(true);
+      }
+    })();
+  }, [completed, isLastLesson]);
 
   if (!lesson) {
     return (
@@ -78,11 +102,31 @@ export default function PathLessonPage() {
           ← Learning path
         </Link>
 
-        {completed && !reviewMode ? (
+        {completed && !reviewMode && showPathFeedback && !pathFeedbackDone ? (
+          <div className="mt-8">
+            <PathFeedbackForm
+              pathId={CURIOUS_BUILDERS_PATH.id}
+              pathTitle={CURIOUS_BUILDERS_PATH.title}
+              onSubmitted={() => {
+                setPathFeedbackDone(true);
+                setShowPathFeedback(false);
+              }}
+              onSkip={() => {
+                setShowPathFeedback(false);
+              }}
+            />
+          </div>
+        ) : completed && !reviewMode ? (
           <div className="premium-card mt-8 p-8 text-center md:p-12">
-            <p className="text-4xl">✓</p>
-            <h1 className="mt-4 text-3xl font-black">Lesson complete</h1>
-            <p className="mt-3 text-slate-600">{lesson.title}. Nice work.</p>
+            <p className="text-4xl">{isLastLesson ? "🏁" : "✓"}</p>
+            <h1 className="mt-4 text-3xl font-black">
+              {isLastLesson ? "Learning path complete" : "Lesson complete"}
+            </h1>
+            <p className="mt-3 text-slate-600">
+              {isLastLesson
+                ? `You finished ${CURIOUS_BUILDERS_PATH.title}. That is the whole path. Genuinely impressive.`
+                : `${lesson.title}. Nice work.`}
+            </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
               {lessonIndex < CURIOUS_BUILDERS_LESSONS.length - 1 ? (
                 <Link

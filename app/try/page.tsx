@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import SiteNavbar from "@/components/marketing/site-navbar";
 import PathLessonList from "@/components/learning/path-lesson-list";
+import LearningPathPill from "@/components/learning/learning-path-pill";
 import {
   CURIOUS_BUILDERS_LESSONS,
   CURIOUS_BUILDERS_PATH,
@@ -22,12 +23,13 @@ export default function TryPage() {
           ← Back home
         </Link>
 
-        <h1 className="mt-6 text-4xl font-black text-slate-950 md:text-5xl">
+        <LearningPathPill className="mt-6" />
+        <h1 className="mt-3 text-4xl font-black text-slate-950 md:text-5xl">
           {CURIOUS_BUILDERS_PATH.title}
         </h1>
         <p className="mt-4 text-lg text-slate-600">
-          Start with interactive lessons. About {totalMinutes} minutes to build
-          real intuition before you create an account.
+          Two free lessons. About {totalMinutes} minutes. Real intuition before
+          you even create an account. (Yes, really free. We checked.)
         </p>
 
         <div className="mt-10">
@@ -39,7 +41,10 @@ export default function TryPage() {
 
         <div className="premium-card mt-12 p-8 text-center">
           <p className="font-semibold text-slate-900">
-            Ready for the full path and saved progress?
+            Liked what you saw? Save progress and unlock all 7 lessons.
+          </p>
+          <p className="mt-2 text-sm text-slate-500">
+            Still free. Still no credit card. Still no &ldquo;limited time offer&rdquo; nonsense.
           </p>
           <Link
             href="/register"

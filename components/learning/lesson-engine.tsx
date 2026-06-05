@@ -11,20 +11,454 @@ import {
   fetchLessonProgress,
   saveLessonProgress,
 } from "@/lib/learning/progress";
-import {
-  getNextLessonSlug,
-} from "@/data/curious-builders-path";
-import type { LessonBlock, StructuredLesson } from "@/types/lesson";
+import { getNextLessonSlug } from "@/data/curious-builders-path";
+import type { LessonBlock, LessonVisual, StructuredLesson } from "@/types/lesson";
 
 type Props = {
   lesson: StructuredLesson;
   mode?: "try" | "path";
   onComplete?: () => void;
   showSignupCta?: boolean;
-  /** When true, show lesson content even if already completed (review mode). */
   reviewMode?: boolean;
   onReviewStart?: () => void;
 };
+
+/* ─── Visual sub-component ─────────────────────────────────────────────── */
+
+function LessonVisualBlock({ visual }: { visual: LessonVisual }) {
+  if (visual.kind === "comparison") {
+    return (
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <p className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-500">
+            {visual.leftLabel}
+          </p>
+          <ul className="space-y-2">
+            {visual.leftPoints.map((p) => (
+              <li key={p} className="flex items-start gap-2 text-sm text-slate-700">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                {p}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="rounded-2xl border border-violet-200 bg-violet-50 p-5">
+          <p className="mb-3 text-xs font-bold uppercase tracking-widest text-violet-500">
+            {visual.rightLabel}
+          </p>
+          <ul className="space-y-2">
+            {visual.rightPoints.map((p) => (
+              <li key={p} className="flex items-start gap-2 text-sm text-violet-800">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400" />
+                {p}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
+  if (visual.kind === "stats") {
+    const cols =
+      visual.items.length === 2
+        ? "grid-cols-2"
+        : visual.items.length === 4
+          ? "grid-cols-2 sm:grid-cols-4"
+          : "grid-cols-3";
+    return (
+      <div className={`mt-6 grid gap-3 ${cols}`}>
+        {visual.items.map((item) => (
+          <div
+            key={item.label}
+            className="rounded-2xl border border-violet-200 bg-violet-50 p-4 text-center"
+          >
+            <p className="text-2xl font-black text-violet-700">{item.value}</p>
+            <p className="mt-1 text-xs font-semibold text-slate-500">{item.label}</p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (visual.kind === "flow") {
+    return (
+      <div className="mt-6 overflow-x-auto pb-1">
+        <div className="flex min-w-max items-center gap-2">
+          {visual.steps.map((step, i) => (
+            <div key={step.label} className="flex items-center gap-2">
+              <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-center">
+                <p className="text-sm font-bold text-blue-800">{step.label}</p>
+                {step.detail && (
+                  <p className="mt-0.5 text-xs text-blue-500">{step.detail}</p>
+                )}
+              </div>
+              {i < visual.steps.length - 1 && (
+                <span className="shrink-0 font-bold text-blue-300">→</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (visual.kind === "callout") {
+    const colorClasses: Record<string, string> = {
+      violet: "border-violet-200 bg-violet-50 text-violet-900",
+      blue: "border-blue-200 bg-blue-50 text-blue-900",
+      amber: "border-amber-200 bg-amber-50 text-amber-900",
+      emerald: "border-emerald-200 bg-emerald-50 text-emerald-900",
+      red: "border-red-200 bg-red-50 text-red-900",
+    };
+    const c = colorClasses[visual.color ?? "violet"];
+    return (
+      <div className={`mt-6 rounded-2xl border p-5 ${c}`}>
+        <p className="text-base font-semibold leading-relaxed">{visual.text}</p>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+/* ─── Per-type block renderers ─────────────────────────────────────────── */
+
+function HookBlock({ block }: { block: LessonBlock }) {
+  return (
+    <div>
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-700 via-violet-600 to-blue-600 p-7 text-white shadow-lg shadow-violet-200 md:p-10">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/10" />
+        <div className="pointer-events-none absolute -bottom-12 -left-8 h-40 w-40 rounded-full bg-white/5" />
+        <div className="relative">
+          {block.icon && (
+            <span className="mb-4 block text-5xl leading-none">{block.icon}</span>
+          )}
+          <span className="inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider">
+            Foundation
+          </span>
+          {block.title && (
+            <h2 className="mt-3 text-2xl font-black leading-tight text-white md:text-3xl">
+              {block.title}
+            </h2>
+          )}
+          {block.body && (
+            <p className="mt-4 text-lg leading-relaxed text-violet-100">
+              {block.body}
+            </p>
+          )}
+        </div>
+      </div>
+      {block.visual && <LessonVisualBlock visual={block.visual} />}
+    </div>
+  );
+}
+
+function BuildBlock({ block }: { block: LessonBlock }) {
+  return (
+    <div>
+      {block.icon ? (
+        <div className="flex items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-100 text-2xl">
+            {block.icon}
+          </div>
+          <div className="min-w-0 flex-1">
+            <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-500">
+              Concept
+            </span>
+            {block.title && (
+              <h2 className="mt-2 text-2xl font-black text-slate-950">
+                {block.title}
+              </h2>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-500">
+            Concept
+          </span>
+          {block.title && (
+            <h2 className="mt-2 text-2xl font-black text-slate-950">
+              {block.title}
+            </h2>
+          )}
+        </div>
+      )}
+
+      {block.body && (
+        <p className="mt-4 text-lg leading-relaxed text-slate-600">{block.body}</p>
+      )}
+
+      {block.highlights && block.highlights.length > 0 && (
+        <div className="mt-6 space-y-3">
+          {block.highlights.map((h) => (
+            <div
+              key={h}
+              className="flex items-start gap-3 rounded-2xl border border-violet-100 bg-violet-50 p-4"
+            >
+              <span className="mt-0.5 shrink-0 font-black text-violet-400">→</span>
+              <p className="font-medium text-violet-900">{h}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {block.visual && <LessonVisualBlock visual={block.visual} />}
+    </div>
+  );
+}
+
+function PlayBlock({ block }: { block: LessonBlock }) {
+  return (
+    <div>
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-700">
+        <span aria-hidden="true">✦</span> Interactive
+      </span>
+      {block.title && (
+        <h2 className="mt-3 text-2xl font-black text-slate-950">{block.title}</h2>
+      )}
+      {block.body && (
+        <p className="mt-3 text-lg leading-relaxed text-slate-600">{block.body}</p>
+      )}
+      {block.playgroundId && (
+        <div className="mt-7 rounded-3xl border border-slate-200 bg-slate-50 p-4 md:p-6">
+          <PlaygroundRenderer
+            id={block.playgroundId}
+            variant={block.playgroundVariant}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CheckpointBlock({
+  block,
+  checkpointAnswer,
+  checkpointDone,
+  onSelect,
+}: {
+  block: LessonBlock;
+  checkpointAnswer: number | null;
+  checkpointDone: boolean;
+  onSelect: (i: number) => void;
+}) {
+  return (
+    <div>
+      <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-700">
+        ✓ Quick Check
+      </span>
+      {block.title && (
+        <h2 className="mt-3 text-2xl font-black text-slate-950">{block.title}</h2>
+      )}
+      {block.question && (
+        <div className="mt-6 rounded-2xl bg-slate-950 p-5">
+          <p className="text-lg font-bold text-white">{block.question}</p>
+        </div>
+      )}
+      {block.options && (
+        <div className="mt-4 space-y-3">
+          {block.options.map((opt, i) => {
+            const selected = checkpointAnswer === i;
+            const correct = i === block.correctIndex;
+            let ringClasses =
+              "border-slate-200 bg-white hover:border-violet-300 hover:bg-violet-50/50";
+            if (selected && correct) ringClasses = "border-emerald-500 bg-emerald-50";
+            if (selected && !correct) ringClasses = "border-red-300 bg-red-50";
+
+            const letterBg = selected && correct
+              ? "bg-emerald-200 text-emerald-800"
+              : selected && !correct
+                ? "bg-red-200 text-red-800"
+                : "bg-slate-100 text-slate-600";
+
+            return (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => onSelect(i)}
+                disabled={checkpointDone}
+                className={`flex w-full items-center gap-3 rounded-2xl border px-5 py-4 text-left text-base font-medium transition ${ringClasses}`}
+              >
+                <span
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${letterBg}`}
+                >
+                  {String.fromCharCode(65 + i)}
+                </span>
+                {opt}
+              </button>
+            );
+          })}
+        </div>
+      )}
+      {checkpointDone && block.insight && (
+        <div className="mt-5 flex gap-3 rounded-2xl border border-violet-100 bg-violet-50 p-5">
+          <span className="shrink-0 text-xl" aria-hidden="true">💡</span>
+          <p className="font-medium text-violet-900">{block.insight}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ReflectBlock({
+  block,
+  showSignupCta,
+  mode,
+  nextSlug,
+}: {
+  block: LessonBlock;
+  showSignupCta: boolean;
+  mode: string;
+  nextSlug: string | null;
+}) {
+  return (
+    <div>
+      <div className="rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-7 md:p-10">
+        <div className="mb-4 text-5xl leading-none" aria-hidden="true">🎯</div>
+        <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700">
+          Lesson Complete
+        </span>
+        {block.title && (
+          <h2 className="mt-3 text-2xl font-black text-slate-950">{block.title}</h2>
+        )}
+        {block.body && (
+          <p className="mt-4 text-lg leading-relaxed text-slate-700">{block.body}</p>
+        )}
+        {block.learned && block.learned.length > 0 && (
+          <div className="mt-6">
+            <p className="mb-3 text-xs font-bold uppercase tracking-widest text-emerald-600">
+              What you now know
+            </p>
+            <div className="space-y-2">
+              {block.learned.map((item) => (
+                <div
+                  key={item}
+                  className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-white p-3"
+                >
+                  <span className="mt-0.5 shrink-0 font-black text-emerald-500">✓</span>
+                  <p className="font-medium text-slate-800">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {showSignupCta && mode === "try" && (
+        <div className="mt-6 rounded-2xl border border-violet-200 bg-violet-50 p-6">
+          <p className="font-semibold text-violet-900">
+            Save progress and unlock the full path
+          </p>
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/register"
+              className="rounded-xl bg-violet-600 px-6 py-3 text-center font-semibold text-white"
+            >
+              Create free account
+            </Link>
+            {nextSlug && (
+              <Link
+                href={`/try/${nextSlug}`}
+                className="rounded-xl border border-violet-200 bg-white px-6 py-3 text-center font-semibold text-violet-700"
+              >
+                Next lesson →
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function VisualBlock({ block }: { block: LessonBlock }) {
+  return (
+    <div>
+      <span className="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+        Visual
+      </span>
+      {block.title && (
+        <h2 className="mt-3 text-2xl font-black text-slate-950">{block.title}</h2>
+      )}
+      {block.body && (
+        <p className="mt-4 text-lg leading-relaxed text-slate-600">{block.body}</p>
+      )}
+      {block.visual && (
+        <div className="mt-6">
+          <LessonVisualBlock visual={block.visual} />
+        </div>
+      )}
+      {block.highlights && block.highlights.length > 0 && (
+        <div className="mt-6 space-y-3">
+          {block.highlights.map((h) => (
+            <div
+              key={h}
+              className="flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4"
+            >
+              <span className="mt-0.5 shrink-0 font-black text-blue-400">→</span>
+              <p className="font-medium text-blue-900">{h}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── Block dispatcher ─────────────────────────────────────────────────── */
+
+function BlockContent({
+  block,
+  checkpointAnswer,
+  checkpointDone,
+  onCheckpointSelect,
+  showSignupCta,
+  mode,
+  nextSlug,
+}: {
+  block: LessonBlock;
+  checkpointAnswer: number | null;
+  checkpointDone: boolean;
+  onCheckpointSelect: (i: number) => void;
+  showSignupCta: boolean;
+  mode: string;
+  nextSlug: string | null;
+}) {
+  switch (block.type) {
+    case "hook":
+      return <HookBlock block={block} />;
+    case "build":
+      return <BuildBlock block={block} />;
+    case "play":
+      return <PlayBlock block={block} />;
+    case "checkpoint":
+      return (
+        <CheckpointBlock
+          block={block}
+          checkpointAnswer={checkpointAnswer}
+          checkpointDone={checkpointDone}
+          onSelect={onCheckpointSelect}
+        />
+      );
+    case "reflect":
+      return (
+        <ReflectBlock
+          block={block}
+          showSignupCta={showSignupCta}
+          mode={mode}
+          nextSlug={nextSlug}
+        />
+      );
+    case "visual":
+      return <VisualBlock block={block} />;
+    default:
+      return null;
+  }
+}
+
+/* ─── Main engine ──────────────────────────────────────────────────────── */
 
 export default function LessonEngine({
   lesson,
@@ -129,6 +563,12 @@ export default function LessonEngine({
     return null;
   }
 
+  const needsCard =
+    block.type === "build" ||
+    block.type === "play" ||
+    block.type === "checkpoint" ||
+    block.type === "visual";
+
   return (
     <div className="mx-auto w-full max-w-3xl">
       {reviewMode && (
@@ -175,81 +615,29 @@ export default function LessonEngine({
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -24 }}
           transition={{ duration: 0.35 }}
-          className="premium-card p-6 md:p-10"
         >
-          <BlockLabel type={block.type} />
-          {block.title && (
-            <h2 className="mt-4 text-2xl font-black text-slate-950">{block.title}</h2>
-          )}
-          {block.body && (
-            <p className="mt-4 text-lg leading-relaxed text-slate-600">{block.body}</p>
-          )}
-
-          {block.playgroundId && (
-            <div className="mt-8">
-              <PlaygroundRenderer
-                id={block.playgroundId}
-                variant={block.playgroundVariant}
+          {needsCard ? (
+            <div className="premium-card p-6 md:p-10">
+              <BlockContent
+                block={block}
+                checkpointAnswer={checkpointAnswer}
+                checkpointDone={checkpointDone}
+                onCheckpointSelect={handleCheckpointSelect}
+                showSignupCta={showSignupCta}
+                mode={mode}
+                nextSlug={nextSlug}
               />
             </div>
-          )}
-
-          {block.type === "checkpoint" && block.options && (
-            <div className="mt-8 space-y-3">
-              {block.question && (
-                <p className="rounded-2xl bg-slate-950 p-5 text-lg font-bold text-white">
-                  {block.question}
-                </p>
-              )}
-              {block.options.map((opt, i) => {
-                const selected = checkpointAnswer === i;
-                const correct = i === block.correctIndex;
-                let ring = "border-slate-200 hover:border-violet-300";
-                if (selected && correct) ring = "border-emerald-500 bg-emerald-50";
-                if (selected && !correct) ring = "border-red-300 bg-red-50";
-
-                return (
-                  <button
-                    key={opt}
-                    type="button"
-                    onClick={() => handleCheckpointSelect(i)}
-                    disabled={checkpointDone}
-                    className={`w-full rounded-2xl border px-5 py-4 text-left text-base font-medium transition ${ring}`}
-                  >
-                    {opt}
-                  </button>
-                );
-              })}
-              {checkpointDone && block.insight && (
-                <p className="mt-4 rounded-2xl bg-violet-50 p-4 text-violet-900">
-                  {block.insight}
-                </p>
-              )}
-            </div>
-          )}
-
-          {block.type === "reflect" && showSignupCta && mode === "try" && (
-            <div className="mt-8 rounded-2xl border border-violet-200 bg-violet-50 p-6">
-              <p className="font-semibold text-violet-900">
-                Save progress and unlock the full path
-              </p>
-              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/register"
-                  className="rounded-xl bg-violet-600 px-6 py-3 text-center font-semibold text-white"
-                >
-                  Create free account
-                </Link>
-                {nextSlug && (
-                  <Link
-                    href={`/try/${nextSlug}`}
-                    className="rounded-xl border border-violet-200 bg-white px-6 py-3 text-center font-semibold text-violet-700"
-                  >
-                    Next lesson →
-                  </Link>
-                )}
-              </div>
-            </div>
+          ) : (
+            <BlockContent
+              block={block}
+              checkpointAnswer={checkpointAnswer}
+              checkpointDone={checkpointDone}
+              onCheckpointSelect={handleCheckpointSelect}
+              showSignupCta={showSignupCta}
+              mode={mode}
+              nextSlug={nextSlug}
+            />
           )}
         </motion.div>
       </AnimatePresence>
@@ -261,7 +649,7 @@ export default function LessonEngine({
           disabled={block?.type === "checkpoint" && !checkpointDone}
           className="w-full rounded-2xl bg-slate-950 py-4 text-lg font-semibold text-white disabled:opacity-40"
         >
-          {isLast ? "Complete lesson" : "Continue"}
+          {isLast ? "Complete lesson" : "Continue →"}
         </button>
         {isLast && (
           <Link
@@ -276,20 +664,4 @@ export default function LessonEngine({
   );
 }
 
-function BlockLabel({ type }: { type: LessonBlock["type"] }) {
-  const labels: Record<LessonBlock["type"], string> = {
-    hook: "Hook",
-    visual: "Visual",
-    play: "Play",
-    checkpoint: "Checkpoint",
-    build: "Build",
-    reflect: "Reflect",
-  };
-  return (
-    <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-600">
-      {labels[type]}
-    </span>
-  );
-}
-
-export { type Props as LessonEngineProps };
+export type { Props as LessonEngineProps };
