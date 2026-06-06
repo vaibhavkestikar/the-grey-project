@@ -154,6 +154,27 @@ export const lessonPrompting: StructuredLesson = {
         "Stating the format and showing one example is how you get reliable, machine readable output you can build on.",
     },
     {
+      type: "apply",
+      title: "Prompting as a team skill",
+      body: "Good prompts are reusable, testable, and improvable. The people who ship reliable AI features treat them like code: versioned, tested, and reviewed. This is where you start.",
+      roles: [
+        {
+          role: "Product Manager",
+          action: "Write a system prompt for your product's AI feature using Role + Context + Format. Share it with your team as the starting spec. A written prompt is a testable spec — it forces decisions about what the model should and should not do.",
+        },
+        {
+          role: "Founder",
+          action: "Identify your team's most repeated AI task (writing, summarising, categorising). Create one canonical prompt template with role, context, and format locked in. One shared template beats ten slightly different ones.",
+        },
+        {
+          role: "Builder",
+          action: "Create a prompt test set: five representative inputs covering normal cases and edge cases. Run them every time you change the prompt. If you cannot tell whether a change improved things, you are flying blind.",
+        },
+      ],
+      microAction:
+        "Take a prompt you use regularly in Claude, ChatGPT, or Cursor. Add a role ('You are a...'), specify the output format ('Respond in bullet points'), and include one example. Compare the result to your old version. The difference is the four levers working.",
+    },
+    {
       type: "reflect",
       title: "You can now steer any model",
       body: "Role, context, example, format, and step by step reasoning. These five habits work on every model you will ever touch. Next we open the box and look at the neuron, the unit that makes all of this possible.",

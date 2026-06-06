@@ -108,14 +108,37 @@ export const lessonMlWorkflow: StructuredLesson = {
         "Evaluations plus a human in the loop are what production grade language model engineering actually looks like. The loop never really ends.",
     },
     {
+      type: "apply",
+      title: "Your AI feature checklist",
+      body: "The six-stage loop is not just for ML engineers. It is the right frame for any AI feature you are building or evaluating, including features built on top of existing models like Claude or GPT.",
+      roles: [
+        {
+          role: "Product Manager",
+          action: "Use the six stages as a PRD template for every AI feature: What are we predicting (Frame)? What data do we have (Data)? How do we evaluate quality (Evaluate)? How do we know it is working in production (Monitor)? If a stage has no answer, the spec is incomplete.",
+        },
+        {
+          role: "Founder",
+          action: "Before investing in custom model training, verify that prompt engineering plus retrieval cannot solve the problem first. Most early-stage AI products do not need training. They need better framing, better data, and tighter evaluation.",
+        },
+        {
+          role: "Builder",
+          action: "Set up a minimal evaluation harness now, not after launch. Ten representative test cases, a rubric for what 'good' looks like, and a habit of running them before every prompt change. This is the difference between iterating and guessing.",
+        },
+      ],
+      microAction:
+        "Map your current or next AI feature to the six stages. Write one sentence per stage. The stage with the vaguest answer is your highest risk. Focus there first — not on choosing a model.",
+    },
+    {
       type: "reflect",
       title: "You think like a builder now",
-      body: "You see AI as living systems, not slides. Framing, data, training, evaluation, deployment, and monitoring, with prediction at the centre of all of it. That is the whole point of Curious Builders. Come back to revisit any lesson, and keep this question close: where does the answer come from, and how would I know if it broke?",
+      body: "You see AI as living systems, not slides. Frame, evaluate, monitor, iterate. That is the operating system you now carry. Keep this question close in every AI conversation you have: where does the answer come from, and how would I know if it broke?",
       learned: [
         "AI products are living systems: frame, collect data, train, evaluate, deploy, monitor.",
         "Data quality beats model size. Always clean before you scale.",
         "Offline scores are a rehearsal. Live metrics are the only true verdict.",
         "The loop never ends: monitor, evaluate, and retrain as the world changes.",
+        "For LLM features: better framing and evaluation almost always beats a bigger model.",
+        "The stage with the vaguest answer is your highest risk.",
       ],
     },
   ],

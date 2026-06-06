@@ -126,6 +126,27 @@ export const lessonNeurons: StructuredLesson = {
         "It runs the learned network forward to predict the next token, samples one, and repeats. Learning happened earlier. Chat is just prediction at scale.",
     },
     {
+      type: "apply",
+      title: "What this means when choosing models",
+      body: "You do not need to understand backpropagation to make better decisions about AI. But knowing what depth actually buys you changes how you evaluate model claims and pick tools.",
+      roles: [
+        {
+          role: "Product Manager",
+          action: "When an engineer says 'we need a bigger model', ask: is our task actually complex enough to need more layers, or do we have a data or prompting problem? Bigger models cost more and run slower — make sure the complexity is justified.",
+        },
+        {
+          role: "Founder",
+          action: "Small, focused models often outperform large general ones on specific tasks. Before paying for the biggest model, test a smaller one fine-tuned on your domain. The depth hierarchy means a model trained on your data may beat a general giant.",
+        },
+        {
+          role: "Builder",
+          action: "When a model underperforms on a task, run a simple experiment: keep the model the same but improve your prompt and input quality first. Most underperformance is a data or framing problem, not a model size problem.",
+        },
+      ],
+      microAction:
+        "Ask Claude to explain a hard decision step by step, out loud. Watch it build the answer in layers — simple observations first, then combinations, then conclusions. That layered reasoning is the hierarchy of representations you just learned, happening in real time.",
+    },
+    {
       type: "reflect",
       title: "You have seen the machine",
       body: "Prediction units, weights, bias, the nonlinear squash, depth, and a feedback nudge to learn. That is deep learning without the mystique. Next we face the most important limitation of all, the reason these confident systems sometimes make things up.",

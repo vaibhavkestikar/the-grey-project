@@ -15,12 +15,12 @@ export default function LearningHub() {
             Your learning paths
           </h1>
           <p className="mt-4 max-w-2xl text-xl text-slate-600">
-            Hook → play → checkpoint → reflect. The learning arc your brain
-            actually remembers, not the one that evaporates after the tab closes.
+            Built for founders, PMs, analysts, creators, and builders who already use AI
+            tools daily and want to understand what is actually happening.
           </p>
           <p className="mt-2 max-w-2xl text-base text-slate-500">
-            Pick a path. Break things in sandboxes. Leave with intuition that
-            survives your next standup.
+            No hype. Just practical intuition you can use for prompts, product decisions,
+            risk checks, and shipping reliable AI experiences.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link

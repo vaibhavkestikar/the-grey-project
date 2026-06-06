@@ -28,9 +28,24 @@ export default function TryPage() {
           {CURIOUS_BUILDERS_PATH.title}
         </h1>
         <p className="mt-4 text-lg text-slate-600">
-          Two free lessons. About {totalMinutes} minutes. Real intuition before
-          you even create an account. (Yes, really free. We checked.)
+          Two free lessons. About {totalMinutes} minutes. Built for people already
+          using AI tools daily who want to make better decisions, not become ML engineers.
         </p>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-violet-600">Who</p>
+            <p className="mt-2 text-sm text-slate-700">Founders, PMs, analysts, creators, and builders.</p>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-violet-600">Why</p>
+            <p className="mt-2 text-sm text-slate-700">Turn daily AI usage into clear product intuition.</p>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-violet-600">Outcomes</p>
+            <p className="mt-2 text-sm text-slate-700">Stronger prompts, better trade offs, fewer production surprises.</p>
+          </div>
+        </div>
 
         <div className="mt-10">
           <PathLessonList

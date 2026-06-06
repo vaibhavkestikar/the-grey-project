@@ -121,6 +121,27 @@ export const lessonTokensEmbeddings: StructuredLesson = {
         "Embeddings let a system match by meaning, so a search for affordable laptop can surface a cheap notebook even with no shared words.",
     },
     {
+      type: "apply",
+      title: "Tokens and meaning in your product decisions",
+      body: "Token economics affect cost, speed, and quality of every AI feature you ship. Embeddings unlock a class of features — semantic search, recommendations, similarity — that keyword matching cannot touch.",
+      roles: [
+        {
+          role: "Product Manager",
+          action: "For any AI feature in your roadmap, estimate the token cost per user interaction. Token counts drive API costs directly. A 5,000-token system prompt sent to millions of users is a budget decision hiding in your engineering spec.",
+        },
+        {
+          role: "Founder",
+          action: "If your product has search, ask: is it keyword or semantic? Keyword search misses results because words differ. Semantic search finds what users mean. The gap is often where retention hides.",
+        },
+        {
+          role: "Builder",
+          action: "Paste your current system prompt into a tokenizer (platform.openai.com/tokenizer). Count the tokens. Trim anything that does not contribute to the output — every token you remove is latency and cost you give back to users.",
+        },
+      ],
+      microAction:
+        "Go to platform.openai.com/tokenizer (free, no account needed). Paste your longest system prompt or a sample user message from your product. See the token count. Now look at your context window limit — how much room is left for the actual conversation?",
+    },
+    {
       type: "reflect",
       title: "You can see what the model sees",
       body: "Text becomes tokens, tokens become points on a map of meaning, and prediction happens in that space. Next we look at the unit doing the predicting itself, the neuron, and how stacking them creates deep learning.",

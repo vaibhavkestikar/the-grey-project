@@ -128,6 +128,27 @@ export const lessonPrediction: StructuredLesson = {
         "Chatting is inference. The learning already happened during training. The model is simply applying what it knows.",
     },
     {
+      type: "apply",
+      title: "Prediction in your daily work",
+      body: "Every AI tool you already use is doing this. Knowing it changes how you evaluate, prompt, and trust them.",
+      roles: [
+        {
+          role: "Product Manager",
+          action: "Before adding an AI feature to your roadmap, write the prediction task in one sentence: 'The model will predict X from Y.' If you cannot write it, the spec is not ready.",
+        },
+        {
+          role: "Founder",
+          action: "When evaluating an AI vendor, ask: what was the model trained to predict, and does that match what your users actually need? Mismatched training tasks are the most common reason AI features disappoint.",
+        },
+        {
+          role: "Builder",
+          action: "Next time a model gives you a bad answer, ask: what pattern was it probably following? Understanding prediction helps you fix the root cause instead of just retrying the prompt.",
+        },
+      ],
+      microAction:
+        "Open Claude or any AI tool. Type: 'Complete this sentence: Our users mainly want to...' — notice it predicts the most likely continuation based on patterns, not facts. That gap between prediction and truth is what this entire path is about.",
+    },
+    {
       type: "reflect",
       title: "Your mental model is locked",
       body: "You can now explain AI in one line. It learns patterns from examples and predicts what is likely next. Next you will learn the exact moment when you should stop writing rules yourself and let data write them for you.",

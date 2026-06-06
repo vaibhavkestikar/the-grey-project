@@ -407,6 +407,71 @@ function VisualBlock({ block }: { block: LessonBlock }) {
   );
 }
 
+/* ─── Apply block ──────────────────────────────────────────────────────── */
+
+const ROLE_ICONS: Record<string, string> = {
+  "Product Manager": "📋",
+  "Founder": "🚀",
+  "Builder": "🛠️",
+  "Analyst": "📊",
+};
+
+function ApplyBlock({ block }: { block: LessonBlock }) {
+  return (
+    <div>
+      <div className="relative overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-7 md:p-10">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-emerald-200/30" />
+        <div className="relative">
+          <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700">
+            ⚡ Apply it to your work
+          </span>
+          {block.title && (
+            <h2 className="mt-3 text-2xl font-black text-slate-950">{block.title}</h2>
+          )}
+          {block.body && (
+            <p className="mt-3 text-lg leading-relaxed text-slate-600">{block.body}</p>
+          )}
+        </div>
+      </div>
+
+      {block.roles && block.roles.length > 0 && (
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {block.roles.map(({ role, action }) => (
+            <div
+              key={role}
+              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-lg" aria-hidden="true">
+                  {ROLE_ICONS[role] ?? "👤"}
+                </span>
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                  {role}
+                </p>
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-slate-700">{action}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {block.microAction && (
+        <div className="mt-4 flex items-start gap-3 rounded-2xl border border-violet-200 bg-violet-50 p-5">
+          <span className="shrink-0 text-xl" aria-hidden="true">🎯</span>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-violet-600">
+              Try this now
+            </p>
+            <p className="mt-1 font-medium leading-relaxed text-violet-900">
+              {block.microAction}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ─── Block dispatcher ─────────────────────────────────────────────────── */
 
 function BlockContent({
@@ -453,6 +518,8 @@ function BlockContent({
       );
     case "visual":
       return <VisualBlock block={block} />;
+    case "apply":
+      return <ApplyBlock block={block} />;
     default:
       return null;
   }
@@ -567,7 +634,8 @@ export default function LessonEngine({
     block.type === "build" ||
     block.type === "play" ||
     block.type === "checkpoint" ||
-    block.type === "visual";
+    block.type === "visual" ||
+    block.type === "apply";
 
   return (
     <div className="mx-auto w-full max-w-3xl">

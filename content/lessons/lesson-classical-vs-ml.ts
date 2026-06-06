@@ -106,6 +106,23 @@ export const lessonClassicalVsMl: StructuredLesson = {
         "Learning: handles messiness at scale, but needs many labelled examples.",
         "Great engineers match the tool to the problem, often combining both.",
       ],
+      visual: {
+        kind: "comparison",
+        leftLabel: "Reach for rules when",
+        leftPoints: [
+          "Logic is fixed (tax rate, currency conversion)",
+          "You need full auditability and zero surprises",
+          "You have fewer than a few hundred examples",
+          "The rules rarely change",
+        ],
+        rightLabel: "Reach for ML when",
+        rightPoints: [
+          "Inputs are messy and varied (text, images, user behaviour)",
+          "Edge cases are endless and keep evolving",
+          "You have thousands of labelled examples",
+          "The pattern shifts over time",
+        ],
+      },
     },
     {
       type: "checkpoint",
@@ -121,6 +138,27 @@ export const lessonClassicalVsMl: StructuredLesson = {
       correctIndex: 1,
       insight:
         "Banned word lists are brittle and easy to dodge. Learning from examples scales to the messy, ever changing way people actually write.",
+    },
+    {
+      type: "apply",
+      title: "Make the call in your own product",
+      body: "This decision comes up every time you spec a feature that touches user input, content moderation, classification, or recommendations. Now you have a framework for it.",
+      roles: [
+        {
+          role: "Product Manager",
+          action: "Review your backlog. For every feature that filters, categorises, or ranks content, ask: is this rule-based or learned? Flag the ones where rules are doing ML's job badly — those are your quick wins.",
+        },
+        {
+          role: "Founder",
+          action: "When your first filter breaks (and it will), avoid the instinct to write more rules. That is the rules trap. Instead, start collecting labelled examples immediately so you can switch to learning when the data is ready.",
+        },
+        {
+          role: "Builder",
+          action: "Next time a stakeholder asks you to 'just add a rule for that', use the comparison table: is the pattern fixed or fuzzy? If fuzzy, push for examples and a model. Saving that conversation now saves weeks later.",
+        },
+      ],
+      microAction:
+        "Pick one feature you are building or using that involves filtering or ranking. Ask Claude: 'Should I use rules or ML for [describe it]? What are the trade-offs?' Use the comparison from this lesson to evaluate its answer.",
     },
     {
       type: "reflect",

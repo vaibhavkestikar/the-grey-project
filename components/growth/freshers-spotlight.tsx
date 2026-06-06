@@ -13,7 +13,7 @@ import {
   getPathById,
 } from "@/types/paths";
 
-const FEATURE_ICONS = ["📖", "🎭", "🎯", "💻", "🎁"];
+const FEATURE_ICONS = ["📖", "🎭", "🎯", "💻", "🏅", "🎁"];
 
 export default function FreshersSpotlight() {
   const path = getPathById("freshers");

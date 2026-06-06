@@ -12,7 +12,7 @@ type Props = {
 export default function LearningPathsView({
   collapsibleLive = true,
   heading = "Learning Paths",
-  subheading = "One path live. One launching soon with limited free seats. The rest are cooking. Join a waitlist and we'll yell when they're ready.",
+  subheading = "Curious Builders is live for teams already using AI daily who want clearer decisions, stronger prompts, and more reliable AI features. Freshers launches soon with limited free seats.",
 }: Props) {
   const comingSoon = AUDIENCE_PATHS.filter(
     (p) => p.status !== "live" && !p.featured

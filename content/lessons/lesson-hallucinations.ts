@@ -90,6 +90,23 @@ export const lessonHallucinations: StructuredLesson = {
         "If sources do not contain the answer, honest refusal is safer than a confident guess.",
         "Good products reward refusal in their instructions, opposite to base model training.",
       ],
+      visual: {
+        kind: "comparison",
+        leftLabel: "Raw generation is fine when",
+        leftPoints: [
+          "Errors are low stakes (brainstorming, drafting, ideation)",
+          "Users will review and verify the output themselves",
+          "Creative quality matters more than factual precision",
+          "There is no authoritative source to retrieve from",
+        ],
+        rightLabel: "Grounding is essential when",
+        rightPoints: [
+          "Answers cite policies, legal terms, or prices",
+          "Users will act on the output without checking",
+          "Errors erode trust or create liability",
+          "You have a defined corpus of authoritative documents",
+        ],
+      },
     },
     {
       type: "checkpoint",
@@ -104,6 +121,27 @@ export const lessonHallucinations: StructuredLesson = {
       correctIndex: 1,
       insight:
         "Confidence is not evidence. Verify the facts that matter. This single habit separates people who use AI well from people it misleads.",
+    },
+    {
+      type: "apply",
+      title: "Audit and design for honesty",
+      body: "The question 'where does this answer come from?' is the most important one you can ask about any AI feature. Ask it before you ship. Ask it again after.",
+      roles: [
+        {
+          role: "Product Manager",
+          action: "Audit every AI feature in your product with one question: is it answering from retrieved sources or from model memory? For anything involving facts, policies, prices, or legal content, if the answer is memory, that is a hallucination risk on your roadmap.",
+        },
+        {
+          role: "Founder",
+          action: "Before shipping any AI feature, define the honest gap policy in writing: what should the model say when it does not know? 'I do not have enough information to answer that' is a feature, not a failure. Write it into your system prompt.",
+        },
+        {
+          role: "Builder",
+          action: "Test your AI feature with a question whose answer is NOT in your data or context. Does it hallucinate confidently or refuse honestly? If it hallucates, add explicit refusal instructions to your system prompt and test again.",
+        },
+      ],
+      microAction:
+        "Open Claude or your AI tool of choice. Ask it a very specific question about your own company, product, or a recent internal decision. Watch what happens. Is it grounded in what you told it, or is it making plausible-sounding things up? That gap is what you are designing around.",
     },
     {
       type: "reflect",

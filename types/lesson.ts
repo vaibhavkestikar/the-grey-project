@@ -4,7 +4,8 @@ export type LessonBlockType =
   | "play"
   | "checkpoint"
   | "build"
-  | "reflect";
+  | "reflect"
+  | "apply";
 
 export type PlaygroundId =
   | "neuron-sandbox"
@@ -59,6 +60,16 @@ export type LessonBlock = {
   learned?: string[];
   /** Inline visual component */
   visual?: LessonVisual;
+  /**
+   * Apply block: role-specific application examples.
+   * Each item represents how someone in that role would use this concept today.
+   */
+  roles?: Array<{ role: string; action: string }>;
+  /**
+   * Apply block: one concrete micro-action learners can do right now
+   * in Claude, Cursor, or their own product.
+   */
+  microAction?: string;
 };
 
 export type StructuredLesson = {

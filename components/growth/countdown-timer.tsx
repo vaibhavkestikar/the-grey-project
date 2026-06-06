@@ -30,17 +30,25 @@ type Props = {
 };
 
 export default function CountdownTimer({ targetDate, className = "" }: Props) {
-  const target = new Date(targetDate);
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() =>
-    calcTimeLeft(target)
-  );
+  const [hydrated, setHydrated] = useState(false);
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    expired: false,
+  });
 
   useEffect(() => {
-    const id = setInterval(() => setTimeLeft(calcTimeLeft(target)), 1000);
+    setHydrated(true);
+    const target = new Date(targetDate);
+    const tick = () => setTimeLeft(calcTimeLeft(target));
+    tick();
+    const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, [targetDate]);
 
-  if (timeLeft.expired) {
+  if (hydrated && timeLeft.expired) {
     return (
       <p className={`text-center text-sm font-bold uppercase tracking-widest text-amber-300 ${className}`}>
         Launching very soon. Grab your spot now

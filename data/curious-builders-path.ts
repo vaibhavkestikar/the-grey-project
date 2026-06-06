@@ -23,9 +23,10 @@ export const CURIOUS_BUILDERS_LESSONS: StructuredLesson[] = [
 export const CURIOUS_BUILDERS_PATH = {
   id: PATH_ID,
   title: "Curious Builders",
-  subtitle: "Learn AI. Never Forget.",
+  subtitle:
+    "For founders, PMs, analysts, creators, and builders who use AI daily and want clear intuition, not hype.",
   description:
-    "Interactive, first principles lessons for people who use AI tools daily and want to know what is actually happening, not just that it works.",
+    "Learn how AI actually works so you can make better product calls, write stronger prompts, spot risk early, and ship more reliable AI features without becoming an ML engineer.",
   get totalMinutes() {
     return CURIOUS_BUILDERS_LESSONS.reduce(
       (sum, l) => sum + l.durationMinutes,

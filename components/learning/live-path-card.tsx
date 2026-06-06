@@ -34,6 +34,30 @@ export default function LivePathCard({ collapsible = true }: Props) {
         <p className="mt-4 max-w-xl text-sm text-violet-100/90">
           {CURIOUS_BUILDERS_PATH.description}
         </p>
+        <div className="mt-5 grid gap-3 text-sm text-violet-50 sm:grid-cols-3">
+          <div className="rounded-xl bg-white/10 p-3 backdrop-blur">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-violet-100/80">
+              Who
+            </p>
+            <p className="mt-1">Founders, PMs, analysts, creators, and builders using AI daily.</p>
+          </div>
+          <div className="rounded-xl bg-white/10 p-3 backdrop-blur">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-violet-100/80">
+              Why
+            </p>
+            <p className="mt-1">
+              Bridge the gap between AI hype and product decisions you can defend.
+            </p>
+          </div>
+          <div className="rounded-xl bg-white/10 p-3 backdrop-blur">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-violet-100/80">
+              Outcomes
+            </p>
+            <p className="mt-1">
+              Better prompts, clearer trade offs, and safer AI features in production.
+            </p>
+          </div>
+        </div>
         <div className="mt-6 flex flex-wrap gap-3">
           <span className="rounded-xl bg-white/10 px-4 py-2 text-sm backdrop-blur">
             {CURIOUS_BUILDERS_PATH.lessonCount} lessons

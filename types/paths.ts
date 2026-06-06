@@ -20,7 +20,7 @@ export const AUDIENCE_PATHS: AudiencePath[] = [
     id: "curious-builders",
     title: "Curious Builders",
     description:
-      "You use AI tools daily. You want to know what is actually happening instead of nodding confidently.",
+      "For founders, PMs, analysts, creators, and builders who use AI tools daily and want to make better product decisions with clear AI intuition.",
     status: "live",
     href: "/try/prediction",
   },
@@ -40,6 +40,7 @@ export const AUDIENCE_PATHS: AudiencePath[] = [
       "Role play scenarios. Be the intern, the PM, or the confused stakeholder.",
       "Scenario based lessons built around real \"oh no\" moments at work",
       "Live code sandboxes. Write, break, fix, repeat. No setup required.",
+      "Completion certificate you can add to your profile and portfolio",
       "100% free. We said it twice because people don't believe us the first time.",
     ],
   },

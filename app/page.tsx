@@ -11,7 +11,7 @@ export default function HomePage() {
       <HomeHero />
       <LearningPathsView
         collapsibleLive={false}
-        subheading="One path live today. Freshers launches soon with limited free seats. The rest are in the oven. Join a waitlist and we'll yell when they're ready."
+        subheading="Curious Builders is live for founders, PMs, analysts, creators, and builders using AI daily who want practical intuition and better product decisions. Freshers launches soon with limited free seats."
       />
       <SampleLessonCta />
       <FounderSection />
