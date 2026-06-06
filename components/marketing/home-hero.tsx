@@ -4,10 +4,12 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 import LlmPipelineDemo from "@/components/playgrounds/llm-pipeline-demo";
+import VantaNetBackground from "@/components/marketing/vanta-net-background";
 
 export default function HomeHero() {
   return (
     <section className="relative overflow-hidden px-4 pb-16 pt-10 md:px-6 md:pb-24 md:pt-16">
+      <VantaNetBackground />
       <div className="hero-glow left-1/2 top-0 -translate-x-1/2" />
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <motion.div
