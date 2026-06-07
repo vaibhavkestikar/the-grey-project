@@ -2,6 +2,7 @@
 
 import NeuronSandbox from "@/components/playgrounds/neuron-sandbox";
 import PredictNext from "@/components/playgrounds/predict-next";
+import PythonSandbox from "@/components/playgrounds/python-sandbox";
 import RulesVsMlSorter from "@/components/playgrounds/rules-vs-ml-sorter";
 import PromptLab from "@/components/playgrounds/prompt-lab";
 import PipelineStepper from "@/components/playgrounds/pipeline-stepper";
@@ -33,6 +34,8 @@ export default function PlaygroundRenderer({ id, variant }: Props) {
       return <EmbeddingExplorer />;
     case "hallucination-lab":
       return <HallucinationLab />;
+    case "python-sandbox":
+      return <PythonSandbox variant={variant} />;
     default:
       return null;
   }

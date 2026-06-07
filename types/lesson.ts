@@ -15,7 +15,8 @@ export type PlaygroundId =
   | "pipeline-stepper"
   | "tokenizer"
   | "embedding-explorer"
-  | "hallucination-lab";
+  | "hallucination-lab"
+  | "python-sandbox";
 
 export type LessonVisual =
   | {
