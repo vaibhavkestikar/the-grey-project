@@ -20,28 +20,90 @@ export default function HomeHero() {
           transition={{ duration: 0.6 }}
         >
           <span className="inline-flex rounded-full bg-violet-100 px-4 py-1.5 text-sm font-semibold text-violet-700">
-            AI education that respects your brain
+            Your brain called. It wants the real story.
           </span>
           <h1 className="mt-6 text-4xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-5xl md:text-6xl lg:text-7xl">
             Understand AI
             <br />
             <span className="gradient-text">Like You Built It.</span>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
-            Interactive lessons that show how language models, recommenders, and
-            fraud detectors actually work. Visual sandboxes. Checkpoints that make
-            the ideas stick.
-          </p>
-          <p className="mt-3 max-w-xl text-base leading-relaxed text-slate-500">
-            Built for curious people who want real intuition, not another slide
-            deck or panic headline. Learn once. Remember it.
-          </p>
+
+          <div className="mt-8 space-y-4">
+            <div className="rounded-2xl border border-violet-200/80 bg-gradient-to-br from-violet-50 via-white to-slate-50 p-5 shadow-sm md:p-6">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-violet-600">
+                Not another AI learning site
+              </p>
+              <p className="mt-3 text-base leading-relaxed text-slate-800 md:text-lg">
+                Interactive lessons on how{" "}
+                <strong className="font-semibold text-slate-950">
+                  language models
+                </strong>
+                ,{" "}
+                <strong className="font-semibold text-slate-950">
+                  recommenders
+                </strong>
+                , and{" "}
+                <strong className="font-semibold text-slate-950">
+                  fraud detectors
+                </strong>{" "}
+                actually work. Built for depth, not dopamine scroll content.
+              </p>
+              <ul className="mt-4 space-y-2.5 border-t border-violet-100 pt-4 text-sm text-slate-700 md:text-base">
+                <li className="flex gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                  <span>
+                    <strong className="font-semibold text-slate-900">
+                      Visual sandboxes
+                    </strong>{" "}
+                    you poke, not slide decks you pretend to read
+                  </span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                  <span>
+                    <strong className="font-semibold text-slate-900">
+                      Checkpoints
+                    </strong>{" "}
+                    that stick like good gossip
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-950 p-5 text-white md:p-6">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-violet-300">
+                Built in production, taught in plain English
+              </p>
+              <p className="mt-3 text-base leading-relaxed text-slate-200 md:text-lg">
+                I am{" "}
+                <strong className="font-semibold text-white">
+                  Vaibhav Kestikar
+                </strong>
+                , Senior Data Scientist. I ship AI systems for a living and built
+                The Grey Project because most &ldquo;AI courses&rdquo; feel written by
+                people who have never debugged a model at 2 a.m.
+              </p>
+            </div>
+
+            <p className="max-w-xl text-base leading-relaxed text-slate-600 md:text-lg">
+              For curious people and developers who are done{" "}
+              <strong className="font-semibold text-slate-800">
+                nodding in meetings
+              </strong>{" "}
+              and{" "}
+              <strong className="font-semibold text-slate-800">
+                Googling on mute
+              </strong>
+              . Learn once. Actually remember it.
+            </p>
+          </div>
+
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/try/prediction"
               className="rounded-2xl bg-violet-600 px-8 py-4 text-center text-lg font-semibold text-white shadow-xl shadow-violet-200 transition hover:bg-violet-700"
             >
-              Start Learning. It&apos;s Free
+              Start free
             </Link>
             {!loading && !user && (
               <Link
@@ -70,7 +132,7 @@ export default function HomeHero() {
             How Large Language Models turn a question into an answer
           </h2>
           <p className="mb-4 text-center text-sm text-slate-500 lg:text-left">
-            Press a question. Watch the magic become math.
+            Press a question. Watch the magic become math. (No wand required.)
           </p>
           <LlmPipelineDemo />
         </motion.div>

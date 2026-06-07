@@ -11,7 +11,7 @@ import {
   fetchLessonProgress,
   saveLessonProgress,
 } from "@/lib/learning/progress";
-import { getNextLessonSlug } from "@/data/curious-builders-path";
+import { getNextLessonSlug, getLessonBySlug } from "@/data/curious-builders-path";
 import type { LessonBlock, LessonVisual, StructuredLesson } from "@/types/lesson";
 
 type Props = {
@@ -307,11 +307,13 @@ function ReflectBlock({
   showSignupCta,
   mode,
   nextSlug,
+  hasFreeNextLesson,
 }: {
   block: LessonBlock;
   showSignupCta: boolean;
   mode: string;
   nextSlug: string | null;
+  hasFreeNextLesson: boolean;
 }) {
   return (
     <div>
@@ -358,14 +360,14 @@ function ReflectBlock({
             >
               Create free account
             </Link>
-            {nextSlug && (
+            {nextSlug && hasFreeNextLesson ? (
               <Link
                 href={`/try/${nextSlug}`}
                 className="rounded-xl border border-violet-200 bg-white px-6 py-3 text-center font-semibold text-violet-700"
               >
                 Next lesson →
               </Link>
-            )}
+            ) : null}
           </div>
         </div>
       )}
@@ -482,6 +484,7 @@ function BlockContent({
   showSignupCta,
   mode,
   nextSlug,
+  hasFreeNextLesson,
 }: {
   block: LessonBlock;
   checkpointAnswer: number | null;
@@ -490,6 +493,7 @@ function BlockContent({
   showSignupCta: boolean;
   mode: string;
   nextSlug: string | null;
+  hasFreeNextLesson: boolean;
 }) {
   switch (block.type) {
     case "hook":
@@ -514,6 +518,7 @@ function BlockContent({
           showSignupCta={showSignupCta}
           mode={mode}
           nextSlug={nextSlug}
+          hasFreeNextLesson={hasFreeNextLesson}
         />
       );
     case "visual":
@@ -586,9 +591,11 @@ export default function LessonEngine({
   }, [step, progressLoaded, alreadyCompleted, persistProgress]);
 
   const nextSlug = getNextLessonSlug(lesson.slug);
+  const nextLesson = nextSlug ? getLessonBySlug(nextSlug) : null;
+  const hasFreeNextLesson = Boolean(nextLesson?.free);
   const nextHref =
     mode === "try"
-      ? nextSlug
+      ? nextSlug && hasFreeNextLesson
         ? `/try/${nextSlug}`
         : "/register"
       : nextSlug
@@ -694,6 +701,7 @@ export default function LessonEngine({
                 showSignupCta={showSignupCta}
                 mode={mode}
                 nextSlug={nextSlug}
+                hasFreeNextLesson={hasFreeNextLesson}
               />
             </div>
           ) : (
@@ -705,6 +713,7 @@ export default function LessonEngine({
               showSignupCta={showSignupCta}
               mode={mode}
               nextSlug={nextSlug}
+              hasFreeNextLesson={hasFreeNextLesson}
             />
           )}
         </motion.div>
@@ -724,7 +733,7 @@ export default function LessonEngine({
             href={nextHref}
             className="mt-3 block text-center text-sm font-semibold text-violet-600"
           >
-            {nextSlug ? "Continue to next lesson →" : "Back to learning path"}
+            {nextSlug ? (hasFreeNextLesson ? "Continue to next lesson →" : "Create account to continue →") : "Back to learning path"}
           </Link>
         )}
       </div>

@@ -6,17 +6,22 @@ import { toast } from "sonner";
 
 import CountdownTimer from "@/components/growth/countdown-timer";
 import LearningPathPill from "@/components/learning/learning-path-pill";
+import PathHookRibbon from "@/components/learning/path-hook-ribbon";
+import PathValueAccordion from "@/components/learning/path-value-accordion";
+import PathMetaPills from "@/components/learning/path-meta-pills";
+import PathValueGrid from "@/components/learning/path-value-grid";
 import { track } from "@/services/analytics/track";
 import {
-  FRESHERS_LAUNCH_DATE,
-  FRESHERS_LIMITED_SPOTS,
+  FIRST_BUILD_LAUNCH_DATE,
+  FIRST_BUILD_LIMITED_SPOTS,
+  FREE_LESSON_COUNT,
   getPathById,
 } from "@/types/paths";
 
-const FEATURE_ICONS = ["📖", "🎭", "🎯", "💻", "🏅", "🎁"];
+const FEATURE_ICONS = ["💡", "🧭", "🔧", "🚀", "⚡", "🏅"];
 
-export default function FreshersSpotlight() {
-  const path = getPathById("freshers");
+export default function FirstBuildSpotlight() {
+  const path = getPathById("first-build");
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,7 +42,7 @@ export default function FreshersSpotlight() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: email.trim(),
-        module_name: path!.waitlistKey ?? "freshers",
+        module_name: path!.waitlistKey ?? "first-build",
       }),
     });
     const data = await res.json().catch(() => ({}));
@@ -46,7 +51,7 @@ export default function FreshersSpotlight() {
     if (res.status === 409 || data.already_joined) {
       setAlreadyJoined(true);
       setOpen(false);
-      toast.info("This email is already on the Freshers waitlist.");
+      toast.info("This email is already on the First Build waitlist.");
       return;
     }
 
@@ -54,7 +59,7 @@ export default function FreshersSpotlight() {
       toast.error(data.error ?? "Something broke. Try again. Seats won't wait.");
       return;
     }
-    track("waitlist_joined", { path: "freshers" });
+    track("waitlist_joined", { path: "first-build" });
     toast.success("You're in! We'll ping you before launch.");
     setJoined(true);
     setEmail("");
@@ -62,16 +67,17 @@ export default function FreshersSpotlight() {
 
   return (
     <article className="relative overflow-hidden rounded-[2rem] border-2 border-amber-300/60 bg-gradient-to-br from-amber-500 via-orange-500 to-rose-600 shadow-2xl shadow-orange-200">
+      <PathHookRibbon label="Launching soon" className="top-6 rotate-3" />
       <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10" />
       <div className="pointer-events-none absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-white/5" />
 
       <div className="relative p-6 md:p-10">
         <div className="flex flex-wrap items-center gap-3">
           <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-white backdrop-blur">
-            🔥 Next to launch
+            Next to launch
           </span>
           <span className="rounded-full bg-red-600 px-3 py-1 text-xs font-bold uppercase tracking-widest text-white animate-pulse">
-            Only {FRESHERS_LIMITED_SPOTS} free seats
+            Only {FIRST_BUILD_LIMITED_SPOTS} early seats
           </span>
         </div>
 
@@ -88,11 +94,36 @@ export default function FreshersSpotlight() {
           {path.description}
         </p>
 
+        <PathValueAccordion
+          who={path.who}
+          why={path.why}
+          outcomes={path.outcomes}
+          variant="warm"
+          className="mt-6 md:hidden"
+        />
+        <PathValueGrid
+          who={path.who}
+          why={path.why}
+          outcomes={path.outcomes}
+          variant="warm"
+          className="mt-6 hidden md:grid"
+        />
+
+        <PathMetaPills
+          variant="warm"
+          className="mt-5"
+          labels={[
+            `First ${FREE_LESSON_COUNT} lessons free`,
+            "Completion certificate",
+            "Hands on sandboxes",
+          ]}
+        />
+
         <div className="mt-8">
           <p className="mb-3 text-xs font-bold uppercase tracking-widest text-amber-200">
             Launch countdown
           </p>
-          <CountdownTimer targetDate={FRESHERS_LAUNCH_DATE} />
+          <CountdownTimer targetDate={FIRST_BUILD_LAUNCH_DATE} />
         </div>
 
         {path.features && (
@@ -115,13 +146,14 @@ export default function FreshersSpotlight() {
 
         <div className="mt-8 rounded-2xl border border-white/30 bg-black/20 p-5 backdrop-blur md:p-6">
           <p className="text-center text-sm font-bold uppercase tracking-widest text-amber-200">
-            ⚠️ Do not miss out
+            Do not miss out
           </p>
           <p className="mt-2 text-center text-base text-white md:text-lg">
             We can only support{" "}
-            <strong className="text-amber-200">{FRESHERS_LIMITED_SPOTS} accounts</strong>{" "}
-            in the first cohort. It&apos;s free, it&apos;s hands on, and the waitlist
-            fills faster than a free pizza at a hackathon.
+            <strong className="text-amber-200">{FIRST_BUILD_LIMITED_SPOTS} accounts</strong>{" "}
+            in the first cohort. First {FREE_LESSON_COUNT} lessons free, completion
+            certificate included, and the waitlist fills faster than free pizza at a
+            hackathon.
           </p>
 
           {joined ? (
@@ -138,7 +170,7 @@ export default function FreshersSpotlight() {
               animate={{ scale: 1, opacity: 1 }}
               className="mt-6 rounded-2xl bg-amber-400/30 py-4 text-center text-lg font-bold text-white"
             >
-              ✓ This email is already on the waitlist for Freshers.
+              ✓ This email is already on the waitlist for First Build.
             </motion.p>
           ) : open ? (
             <form onSubmit={submit} className="mt-6 space-y-3">

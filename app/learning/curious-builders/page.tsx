@@ -69,16 +69,18 @@ export default function CuriousBuildersPathPage() {
         <details className="mt-10 rounded-2xl border border-slate-200 bg-white p-5 group">
           <summary className="cursor-pointer list-none rounded-xl px-2 py-2 text-left font-bold text-slate-900 marker:content-none">
             <span className="group-open:hidden">
-              Show chapters ({CURIOUS_BUILDERS_PATH.lessonCount})
+              Show path ({CURIOUS_BUILDERS_PATH.lessonCount} lessons + certificate)
             </span>
             <span className="hidden group-open:inline">
-              Hide chapters ({CURIOUS_BUILDERS_PATH.lessonCount})
+              Hide path ({CURIOUS_BUILDERS_PATH.lessonCount} lessons + certificate)
             </span>
           </summary>
           <div className="mt-4">
             <PathLessonList
               lessons={CURIOUS_BUILDERS_LESSONS}
               baseHref="/learning/curious-builders"
+              pathId={CURIOUS_BUILDERS_PATH.id}
+              showCertificate
             />
           </div>
         </details>

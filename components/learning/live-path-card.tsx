@@ -6,10 +6,14 @@ import { ChevronDown } from "lucide-react";
 
 import PathLessonList from "@/components/learning/path-lesson-list";
 import LearningPathPill from "@/components/learning/learning-path-pill";
+import PathHookRibbon from "@/components/learning/path-hook-ribbon";
+import PathMetaPills from "@/components/learning/path-meta-pills";
+import PathValueGrid from "@/components/learning/path-value-grid";
 import {
   CURIOUS_BUILDERS_LESSONS,
   CURIOUS_BUILDERS_PATH,
 } from "@/data/curious-builders-path";
+import { getPathById } from "@/types/paths";
 
 type Props = {
   collapsible?: boolean;
@@ -17,63 +21,51 @@ type Props = {
 
 export default function LivePathCard({ collapsible = true }: Props) {
   const [open, setOpen] = useState(!collapsible);
+  const pathMeta = getPathById("curious-builders");
 
   return (
-    <article className="overflow-hidden rounded-[2rem] border border-violet-200 bg-white shadow-xl">
+    <article className="relative overflow-hidden rounded-[2rem] border border-violet-200 bg-white shadow-xl">
+      <PathHookRibbon label="Completely Free" />
       <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 p-7 text-white md:p-9">
-        <div className="flex items-center justify-between gap-2">
-          <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide backdrop-blur">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-emerald-400/90 px-3 py-1 text-xs font-bold uppercase tracking-wide text-emerald-950">
             Live now. Go play
           </span>
+          <LearningPathPill variant="light" />
         </div>
-        <LearningPathPill variant="light" className="mt-5" />
-        <h3 className="mt-3 text-3xl font-black md:text-4xl">
+        <h3 className="mt-5 text-3xl font-black md:text-4xl">
           {CURIOUS_BUILDERS_PATH.title}
         </h3>
         <p className="mt-2 text-violet-100">{CURIOUS_BUILDERS_PATH.subtitle}</p>
         <p className="mt-4 max-w-xl text-sm text-violet-100/90">
           {CURIOUS_BUILDERS_PATH.description}
         </p>
-        <div className="mt-5 grid gap-3 text-sm text-violet-50 sm:grid-cols-3">
-          <div className="rounded-xl bg-white/10 p-3 backdrop-blur">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-violet-100/80">
-              Who
-            </p>
-            <p className="mt-1">Founders, PMs, analysts, creators, and builders using AI daily.</p>
-          </div>
-          <div className="rounded-xl bg-white/10 p-3 backdrop-blur">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-violet-100/80">
-              Why
-            </p>
-            <p className="mt-1">
-              Bridge the gap between AI hype and product decisions you can defend.
-            </p>
-          </div>
-          <div className="rounded-xl bg-white/10 p-3 backdrop-blur">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-violet-100/80">
-              Outcomes
-            </p>
-            <p className="mt-1">
-              Better prompts, clearer trade offs, and safer AI features in production.
-            </p>
-          </div>
-        </div>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <span className="rounded-xl bg-white/10 px-4 py-2 text-sm backdrop-blur">
-            {CURIOUS_BUILDERS_PATH.lessonCount} lessons
-          </span>
-          <span className="rounded-xl bg-white/10 px-4 py-2 text-sm backdrop-blur">
-            ~{CURIOUS_BUILDERS_PATH.totalMinutes} min
-          </span>
-          <span className="rounded-xl bg-white/10 px-4 py-2 text-sm backdrop-blur">
-            Beginner to Intermediate
-          </span>
-        </div>
+
+        {pathMeta && (
+          <PathValueGrid
+            who={pathMeta.who}
+            why={pathMeta.why}
+            outcomes={pathMeta.outcomes}
+            variant="light"
+            className="mt-5"
+          />
+        )}
+
+        <PathMetaPills
+          variant="light"
+          className="mt-5"
+          labels={[
+            "Completion certificate",
+            `${CURIOUS_BUILDERS_PATH.lessonCount} lessons`,
+            `~${CURIOUS_BUILDERS_PATH.totalMinutes} min`,
+            "Beginner to Intermediate",
+          ]}
+        />
 
         <div className="mt-7">
           <Link
             href="/try/prediction"
-            className="inline-flex rounded-2xl bg-white px-6 py-3 font-semibold text-violet-700 shadow-lg"
+            className="inline-flex rounded-2xl bg-white px-6 py-3 font-semibold text-violet-700 shadow-lg transition hover:scale-[1.02]"
           >
             Start Learning →
           </Link>
@@ -87,7 +79,7 @@ export default function LivePathCard({ collapsible = true }: Props) {
             onClick={() => setOpen((o) => !o)}
             className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-left font-bold text-slate-900"
           >
-            <span>{open ? "Hide" : "Show"} chapters ({CURIOUS_BUILDERS_PATH.lessonCount})</span>
+            <span>{open ? "Hide" : "Show"} path ({CURIOUS_BUILDERS_PATH.lessonCount} lessons + certificate)</span>
             <ChevronDown
               className={`h-5 w-5 transition ${open ? "rotate-180" : ""}`}
             />
@@ -98,6 +90,8 @@ export default function LivePathCard({ collapsible = true }: Props) {
             <PathLessonList
               lessons={CURIOUS_BUILDERS_LESSONS}
               baseHref="/learning/curious-builders"
+              pathId={CURIOUS_BUILDERS_PATH.id}
+              showCertificate
             />
           </div>
         )}

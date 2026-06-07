@@ -1,5 +1,10 @@
 import { createClient } from "@/lib/supabase/client";
 import { PATH_ID } from "@/data/curious-builders-path";
+import {
+  getCertificatePath,
+  hasCertificateIssued,
+  isPathFullyComplete,
+} from "@/lib/learning/certificate";
 
 export type LessonProgress = {
   lesson_slug: string;
@@ -7,6 +12,63 @@ export type LessonProgress = {
   progress_percent: number;
   last_position: number;
 };
+
+export type PathProgressSnapshot = {
+  progressMap: Map<string, LessonProgress>;
+  pathComplete: boolean;
+  certificateIssued: boolean;
+  completedLessons: number;
+  totalLessons: number;
+};
+
+export async function fetchPathProgressSnapshot(
+  pathId: string
+): Promise<PathProgressSnapshot> {
+  const config = getCertificatePath(pathId);
+  const totalLessons = config?.lessonSlugs.length ?? 0;
+  const empty: PathProgressSnapshot = {
+    progressMap: new Map(),
+    pathComplete: false,
+    certificateIssued: false,
+    completedLessons: 0,
+    totalLessons,
+  };
+
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return empty;
+
+  const { data } = await supabase
+    .from("lesson_progress")
+    .select(
+      "lesson_slug, completed, progress_percent, last_position, certificate_issued"
+    )
+    .eq("user_id", user.id)
+    .eq("course_slug", pathId);
+
+  const rows = data ?? [];
+  const progressMap = new Map<string, LessonProgress>();
+  for (const row of rows) {
+    progressMap.set(row.lesson_slug, row);
+  }
+
+  const completedLessons = config
+    ? config.lessonSlugs.filter(
+        (slug) => progressMap.get(slug)?.completed === true
+      ).length
+    : 0;
+
+  return {
+    progressMap,
+    pathComplete: isPathFullyComplete(pathId, rows),
+    certificateIssued: hasCertificateIssued(pathId, rows),
+    completedLessons,
+    totalLessons,
+  };
+}
 
 export async function fetchLessonProgressMap(): Promise<
   Map<string, LessonProgress>

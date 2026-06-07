@@ -13,6 +13,7 @@ import {
   getLessonBySlug,
   isLastLessonInPath,
 } from "@/data/curious-builders-path";
+import { PATH_CERTIFICATE_SLUG } from "@/lib/learning/certificate";
 import { createClient } from "@/lib/supabase/client";
 
 export default function PathLessonPage() {
@@ -58,11 +59,11 @@ export default function PathLessonPage() {
     if (!completed || !isLastLesson) return;
 
     void (async () => {
-      const res = await fetch(
+      const feedbackRes = await fetch(
         `/api/feedback/path?path_id=${encodeURIComponent(CURIOUS_BUILDERS_PATH.id)}`
       );
-      const data = await res.json().catch(() => ({ submitted: false }));
-      if (data.submitted) {
+      const feedbackData = await feedbackRes.json().catch(() => ({ submitted: false }));
+      if (feedbackData.submitted) {
         setPathFeedbackDone(true);
         setShowPathFeedback(false);
       } else {
@@ -117,45 +118,55 @@ export default function PathLessonPage() {
             />
           </div>
         ) : completed && !reviewMode ? (
-          <div className="premium-card mt-8 p-8 text-center md:p-12">
-            <p className="text-4xl">{isLastLesson ? "🏁" : "✓"}</p>
-            <h1 className="mt-4 text-3xl font-black">
-              {isLastLesson ? "Learning path complete" : "Lesson complete"}
-            </h1>
-            <p className="mt-3 text-slate-600">
-              {isLastLesson
-                ? `You finished ${CURIOUS_BUILDERS_PATH.title}. That is the whole path. Genuinely impressive.`
-                : `${lesson.title}. Nice work.`}
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-              {lessonIndex < CURIOUS_BUILDERS_LESSONS.length - 1 ? (
-                <Link
-                  href={`/learning/curious-builders/${CURIOUS_BUILDERS_LESSONS[lessonIndex + 1].slug}`}
-                  className="rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
+          <div className="mt-8 space-y-8">
+            <div className="premium-card p-8 text-center md:p-12">
+              <p className="text-4xl">{isLastLesson ? "🏁" : "✓"}</p>
+              <h1 className="mt-4 text-3xl font-black">
+                {isLastLesson ? "Learning path complete" : "Lesson complete"}
+              </h1>
+              <p className="mt-3 text-slate-600">
+                {isLastLesson
+                  ? `You finished ${CURIOUS_BUILDERS_PATH.title}. That is the whole path. Genuinely impressive.`
+                  : `${lesson.title}. Nice work.`}
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                {lessonIndex < CURIOUS_BUILDERS_LESSONS.length - 1 ? (
+                  <Link
+                    href={`/learning/curious-builders/${CURIOUS_BUILDERS_LESSONS[lessonIndex + 1].slug}`}
+                    className="rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
+                  >
+                    Next lesson →
+                  </Link>
+                ) : (
+                  <Link
+                    href="/account"
+                    className="rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
+                  >
+                    View profile
+                  </Link>
+                )}
+                {isLastLesson && (
+                  <Link
+                    href={`/learning/curious-builders/${PATH_CERTIFICATE_SLUG}`}
+                    className="rounded-2xl border border-violet-200 bg-violet-50 px-8 py-4 font-semibold text-violet-800"
+                  >
+                    Get certificate →
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setReviewMode(true)}
+                  className="rounded-2xl border border-slate-200 px-8 py-4 font-semibold text-slate-800"
                 >
-                  Next lesson →
-                </Link>
-              ) : (
+                  Review lesson
+                </button>
                 <Link
-                  href="/account"
-                  className="rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
+                  href="/learning"
+                  className="rounded-2xl border px-8 py-4 font-semibold text-slate-800"
                 >
-                  View profile
+                  Learning home
                 </Link>
-              )}
-              <button
-                type="button"
-                onClick={() => setReviewMode(true)}
-                className="rounded-2xl border border-slate-200 px-8 py-4 font-semibold text-slate-800"
-              >
-                Review lesson
-              </button>
-              <Link
-                href="/learning"
-                className="rounded-2xl border px-8 py-4 font-semibold text-slate-800"
-              >
-                Learning home
-              </Link>
+              </div>
             </div>
           </div>
         ) : (

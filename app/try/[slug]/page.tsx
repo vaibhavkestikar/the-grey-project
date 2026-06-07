@@ -7,7 +7,6 @@ import { useParams } from "next/navigation";
 import SiteNavbar from "@/components/marketing/site-navbar";
 import LessonEngine from "@/components/learning/lesson-engine";
 import {
-  FREE_LESSON_SLUGS,
   getFreeLessons,
   getLessonBySlug,
 } from "@/data/curious-builders-path";
@@ -19,9 +18,7 @@ export default function TryLessonPage() {
   const [completed, setCompleted] = useState(false);
   const [reviewMode, setReviewMode] = useState(false);
 
-  const isFree =
-    lesson &&
-    FREE_LESSON_SLUGS.includes(slug as (typeof FREE_LESSON_SLUGS)[number]);
+  const isFree = lesson?.free === true;
 
   if (!isFree || !lesson) {
     return (

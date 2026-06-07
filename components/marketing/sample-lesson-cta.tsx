@@ -11,14 +11,14 @@ export default function SampleLessonCta() {
           Build real AI intuition in minutes
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-lg text-violet-100">
-          Hook, visual, play, checkpoint, reflect. Five steps. One lesson. Zero
-          &ldquo;I&apos;ll watch the rest later&rdquo; energy.
+          Hook, visual, play, checkpoint, reflect. Five steps. One lesson. Curious
+          Builders is completely free. Finish the path for your certificate.
         </p>
         <Link
           href="/try/prediction"
           className="mt-8 inline-flex rounded-2xl bg-white px-10 py-4 text-lg font-bold text-violet-700 shadow-xl transition hover:scale-[1.02]"
         >
-          Try it now. Free, no account needed
+          Start free
         </Link>
       </div>
     </section>
