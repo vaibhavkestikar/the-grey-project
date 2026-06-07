@@ -1,15 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import SiteNavbar from "@/components/marketing/site-navbar";
+import { useAuth } from "@/components/providers/auth-provider";
 import { getAuthCallbackUrlWithType } from "@/lib/auth/redirect-url";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SettingsPage() {
+  const router = useRouter();
   const supabase = createClient();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(true);
 
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
@@ -21,21 +26,28 @@ export default function SettingsPage() {
   const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
+    if (authLoading) return;
+
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
+
+    setEmail(user.email || "");
+
     void (async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
+      setProfileLoading(true);
 
-      setEmail(user.email || "");
-
-      const { data: profile } = await supabase
+      const { data: profile, error } = await supabase
         .from("user_profiles")
         .select("*")
         .eq("id", user.id)
         .maybeSingle();
 
-      if (profile) {
+      if (error) {
+        console.error(error);
+        toast.error("Could not load your profile.");
+      } else if (profile) {
         setFullName(profile.full_name || "");
         setJobRole(profile.current_job_role || "");
         setLearningGoal(profile.learning_goal || "");
@@ -43,28 +55,30 @@ export default function SettingsPage() {
         setExperience(profile.years_of_experience || "");
         setLinkedin(profile.linkedin_url || "");
       }
+
+      setProfileLoading(false);
     })();
-  }, [supabase]);
+  }, [authLoading, user, router, supabase]);
 
   async function updateProfile() {
+    if (!user) return;
+
     try {
       setLoading(true);
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
 
-      const { error } = await supabase
-        .from("user_profiles")
-        .update({
+      const { error } = await supabase.from("user_profiles").upsert(
+        {
+          id: user.id,
+          email: user.email,
           full_name: fullName,
           current_job_role: jobRole,
           learning_goal: learningGoal,
-          country: country,
+          country,
           years_of_experience: experience,
           linkedin_url: linkedin,
-        })
-        .eq("id", user.id);
+        },
+        { onConflict: "id" }
+      );
 
       if (error) {
         toast.error(error.message);
@@ -80,6 +94,8 @@ export default function SettingsPage() {
   }
 
   async function updateEmail() {
+    if (!user) return;
+
     try {
       setLoading(true);
       const { error } = await supabase.auth.updateUser(
@@ -99,6 +115,8 @@ export default function SettingsPage() {
   }
 
   async function updatePassword() {
+    if (!user) return;
+
     try {
       setLoading(true);
       const { error } = await supabase.auth.updateUser({ password: newPassword });
@@ -117,6 +135,14 @@ export default function SettingsPage() {
 
   const input =
     "w-full rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500";
+
+  if (authLoading || profileLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
+        <p className="text-slate-600">Loading your profile...</p>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#f8fafc]">

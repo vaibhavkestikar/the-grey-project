@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import SiteNavbar from "@/components/marketing/site-navbar";
+import { useAuth } from "@/components/providers/auth-provider";
 import { createClient } from "@/lib/supabase/client";
 import { firstNameFrom } from "@/lib/utils/name";
 
@@ -21,22 +22,23 @@ type Profile = {
 export default function AccountPage() {
   const router = useRouter();
   const supabase = createClient();
+  const { user, loading: authLoading } = useAuth();
   const [ready, setReady] = useState(false);
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState<Profile>({});
   const [stats, setStats] = useState({ started: 0, completed: 0, avg: 0 });
 
   useEffect(() => {
-    void (async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        router.replace("/login");
-        return;
-      }
-      setEmail(user.email ?? "");
+    if (authLoading) return;
 
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
+
+    setEmail(user.email ?? "");
+
+    void (async () => {
       const { data: prof } = await supabase
         .from("user_profiles")
         .select("*")
@@ -60,7 +62,7 @@ export default function AccountPage() {
 
       setReady(true);
     })();
-  }, [router, supabase]);
+  }, [authLoading, user, router, supabase]);
 
   if (!ready) {
     return (
