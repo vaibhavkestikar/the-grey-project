@@ -45,18 +45,18 @@ export default function SiteNavbar() {
           )}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="flex items-center gap-2 lg:gap-3">
           {!loading && !user && (
             <>
               <Link
                 href="/login"
-                className="rounded-xl px-4 py-2 text-sm font-medium text-slate-700 hover:text-violet-600"
+                className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-violet-300 hover:text-violet-600 sm:px-4 lg:border-0 lg:px-4 lg:font-medium"
               >
-                Login
+                Sign in
               </Link>
               <Link
                 href="/try/prediction"
-                className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-200 hover:bg-violet-700"
+                className="hidden rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-200 hover:bg-violet-700 lg:inline-flex"
               >
                 Start Learning
               </Link>
@@ -64,33 +64,33 @@ export default function SiteNavbar() {
           )}
           {!loading && user && (
             <>
-              <span className="text-sm font-semibold text-slate-700">
+              <span className="hidden text-sm font-semibold text-slate-700 lg:inline">
                 Hi, {firstName}
               </span>
               <Link
                 href="/learning"
-                className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-violet-700"
+                className="hidden rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-violet-700 lg:inline-flex"
               >
                 Continue
               </Link>
               <Link
                 href="/logout"
-                className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:border-red-300 hover:text-red-600"
+                className="hidden rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:border-red-300 hover:text-red-600 lg:inline-flex"
               >
                 Logout
               </Link>
             </>
           )}
-        </div>
 
-        <button
-          type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 lg:hidden"
-          onClick={() => setOpen(!open)}
-          aria-label="Menu"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+          <button
+            type="button"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 lg:hidden"
+            onClick={() => setOpen(!open)}
+            aria-label="Menu"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -118,13 +118,22 @@ export default function SiteNavbar() {
             </Link>
           )}
           {!user ? (
-            <Link
-              href="/register"
-              className="mt-2 block rounded-xl bg-violet-600 px-4 py-3 text-center font-semibold text-white"
-              onClick={() => setOpen(false)}
-            >
-              Get Started
-            </Link>
+            <>
+              <Link
+                href="/login"
+                className="mt-2 block rounded-xl border border-slate-200 px-4 py-3 text-center font-semibold text-slate-800"
+                onClick={() => setOpen(false)}
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/register"
+                className="mt-2 block rounded-xl bg-violet-600 px-4 py-3 text-center font-semibold text-white"
+                onClick={() => setOpen(false)}
+              >
+                Create account
+              </Link>
+            </>
           ) : (
             <Link
               href="/logout"

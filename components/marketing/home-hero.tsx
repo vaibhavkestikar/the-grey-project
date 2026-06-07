@@ -34,7 +34,7 @@ export default function HomeHero() {
             Built for curious people who want real intuition, not another slide
             deck or panic headline. Learn once. Remember it.
           </p>
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/try/prediction"
               className="rounded-2xl bg-violet-600 px-8 py-4 text-center text-lg font-semibold text-white shadow-xl shadow-violet-200 transition hover:bg-violet-700"
@@ -42,8 +42,14 @@ export default function HomeHero() {
               Start Learning. It&apos;s Free
             </Link>
             <Link
-              href="/learning"
+              href="/login"
               className="rounded-2xl border border-slate-200 bg-white px-8 py-4 text-center text-lg font-semibold text-slate-800 transition hover:border-violet-300"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/learning"
+              className="rounded-2xl border border-slate-200 bg-white/80 px-8 py-4 text-center text-lg font-semibold text-slate-700 transition hover:border-violet-300 sm:w-auto"
             >
               Explore Paths
             </Link>

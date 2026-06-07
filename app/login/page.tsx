@@ -42,6 +42,7 @@ export default function LoginPage() {
       return;
     }
 
+    router.refresh();
     router.push("/learning");
   }
 
@@ -82,7 +83,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full rounded-2xl bg-violet-600 py-4 font-semibold text-white disabled:opacity-50"
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 

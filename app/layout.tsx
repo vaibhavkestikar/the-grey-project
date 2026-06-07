@@ -10,6 +10,7 @@ import { Toaster } from "sonner";
 import {
   AuthProvider,
 } from "@/components/providers/auth-provider";
+import AuthSessionHandler from "@/components/auth/auth-session-handler";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -64,6 +65,7 @@ export default function RootLayout({
       >
 
         <AuthProvider>
+          <AuthSessionHandler />
 
           {children}
 

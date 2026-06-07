@@ -2,9 +2,21 @@
 
 ## Redirect URLs
 
+Add these under Authentication → URL Configuration → Redirect URLs:
+
 ```
 https://thegreyproject.com/auth/callback
+https://thegreyproject.com/auth/callback/recovery
+https://thegreyproject.com/auth/callback?type=email_change
 http://localhost:3000/auth/callback
+http://localhost:3000/auth/callback/recovery
+http://localhost:3000/auth/callback?type=email_change
+```
+
+Set **Site URL** to your production domain:
+
+```
+https://thegreyproject.com
 ```
 
 ## Confirm email
@@ -26,7 +38,17 @@ Run in order:
 
 ## Env
 
+Local development:
+
 ```
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 SUPABASE_SERVICE_ROLE_KEY=...
 ```
+
+Production (Vercel):
+
+```
+NEXT_PUBLIC_SITE_URL=https://thegreyproject.com
+```
+
+Important: auth email links use the browser origin on the client, so signup and reset from production will point to production. If old emails still open localhost, those were generated during local testing. Resend verification or request a new reset link from production.
