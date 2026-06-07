@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 
+import { useAuth } from "@/components/providers/auth-provider";
 import LlmPipelineDemo from "@/components/playgrounds/llm-pipeline-demo";
 import VantaNetBackground from "@/components/marketing/vanta-net-background";
 
 export default function HomeHero() {
+  const { user, loading } = useAuth();
   return (
     <section className="relative overflow-hidden px-4 pb-16 pt-10 md:px-6 md:pb-24 md:pt-16">
       <VantaNetBackground />
@@ -41,12 +43,14 @@ export default function HomeHero() {
             >
               Start Learning. It&apos;s Free
             </Link>
-            <Link
-              href="/login"
-              className="rounded-2xl border border-slate-200 bg-white px-8 py-4 text-center text-lg font-semibold text-slate-800 transition hover:border-violet-300"
-            >
-              Sign in
-            </Link>
+            {!loading && !user && (
+              <Link
+                href="/login"
+                className="rounded-2xl border border-slate-200 bg-white px-8 py-4 text-center text-lg font-semibold text-slate-800 transition hover:border-violet-300"
+              >
+                Sign in
+              </Link>
+            )}
             <Link
               href="/learning"
               className="rounded-2xl border border-slate-200 bg-white/80 px-8 py-4 text-center text-lg font-semibold text-slate-700 transition hover:border-violet-300 sm:w-auto"

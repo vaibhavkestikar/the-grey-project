@@ -4,6 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import type { EmailOtpType } from "@supabase/supabase-js";
 
 import type { AuthFunnelEvent } from "@/lib/auth/funnel";
+import { isRecoveryRedirectPath, AUTH_RECOVERY_COOKIE } from "@/lib/auth/recovery";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 async function trackFunnel(userId: string, event: AuthFunnelEvent) {
@@ -89,6 +90,15 @@ export async function completeAuthCallback({
     if (trackSignupComplete) {
       await trackFunnel(user.id, "signup_completed");
     }
+  }
+
+  if (isRecoveryRedirectPath(redirectPath)) {
+    response.cookies.set(AUTH_RECOVERY_COOKIE, "1", {
+      maxAge: 60 * 10,
+      path: "/",
+      sameSite: "lax",
+      httpOnly: false,
+    });
   }
 
   return response;

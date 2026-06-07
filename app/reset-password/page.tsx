@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 import AuthHeader from "@/components/auth/auth-header";
-
+import { AUTH_RECOVERY_COOKIE } from "@/lib/auth/recovery";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ResetPasswordPage() {
@@ -24,7 +24,8 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] =
     useState(false);
 
-  async function updatePassword() {
+  async function updatePassword(e: React.FormEvent) {
+    e.preventDefault();
 
     try {
 
@@ -50,6 +51,8 @@ export default function ResetPasswordPage() {
       toast.success(
         "Password updated successfully"
       );
+
+      document.cookie = `${AUTH_RECOVERY_COOKIE}=; path=/; max-age=0`;
 
       router.push("/login?password_updated=1");
 
@@ -92,10 +95,11 @@ export default function ResetPasswordPage() {
 
           </div>
 
-          <div className="space-y-5">
+          <form onSubmit={updatePassword} className="space-y-5">
 
             <input
               type="password"
+              required
               placeholder="New password"
               value={password}
               onChange={(e) =>
@@ -105,7 +109,7 @@ export default function ResetPasswordPage() {
             />
 
             <button
-              onClick={updatePassword}
+              type="submit"
               disabled={loading}
               className="w-full rounded-2xl bg-violet-600 px-5 py-4 font-semibold text-white transition hover:bg-violet-700 disabled:opacity-50"
             >
@@ -114,7 +118,7 @@ export default function ResetPasswordPage() {
                 : "Update Password"}
             </button>
 
-          </div>
+          </form>
 
         </div>
 

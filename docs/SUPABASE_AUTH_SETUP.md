@@ -7,10 +7,18 @@ Add these under Authentication → URL Configuration → Redirect URLs:
 ```
 https://thegreyproject.com/auth/callback
 https://thegreyproject.com/auth/callback/recovery
+https://thegreyproject.com/auth/callback?type=recovery
 https://thegreyproject.com/auth/callback?type=email_change
 http://localhost:3000/auth/callback
 http://localhost:3000/auth/callback/recovery
 http://localhost:3000/auth/callback?type=email_change
+```
+
+If your site is also reachable via `www`, add those variants too:
+
+```
+https://www.thegreyproject.com/auth/callback
+https://www.thegreyproject.com/auth/callback/recovery
 ```
 
 Set **Site URL** to your production domain:

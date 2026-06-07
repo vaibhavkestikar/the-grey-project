@@ -2,19 +2,24 @@ function stripTrailingSlash(url: string): string {
   return url.replace(/\/$/, "");
 }
 
+function isLocalhost(url: string): boolean {
+  return /^https?:\/\/localhost(\b|:)/i.test(url);
+}
+
 /** Resolve the public site origin for auth email links. */
 export function getSiteUrl(): string {
-  // Client: always use the current origin so links match where the user signed up.
-  if (typeof window !== "undefined") {
-    return window.location.origin;
-  }
-
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL
     ? stripTrailingSlash(process.env.NEXT_PUBLIC_SITE_URL)
     : undefined;
 
-  if (fromEnv && !/^https?:\/\/localhost(\b|:)/i.test(fromEnv)) {
+  // In production, always use the canonical URL so it matches Supabase allow list
+  // (avoids www vs non-www mismatches that cause fallback to Site URL home).
+  if (fromEnv && !isLocalhost(fromEnv)) {
     return fromEnv;
+  }
+
+  if (typeof window !== "undefined") {
+    return window.location.origin;
   }
 
   if (process.env.VERCEL_URL) {
