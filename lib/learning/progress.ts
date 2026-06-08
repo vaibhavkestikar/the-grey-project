@@ -202,7 +202,9 @@ export async function saveLessonProgress(
       ? 100
       : Math.max(existing?.progress_percent ?? 0, progressPercent),
     completed,
-    last_position: completed ? totalSteps - 1 : step,
+    last_position: completed
+      ? totalSteps - 1
+      : Math.max(existing?.last_position ?? 0, step),
     updated_at: new Date().toISOString(),
   };
 
@@ -213,6 +215,7 @@ export async function saveLessonProgress(
       .from("lesson_progress")
       .update(row)
       .eq("user_id", userId)
+      .eq("course_slug", pathId)
       .eq("lesson_slug", lessonSlug);
   }
 }

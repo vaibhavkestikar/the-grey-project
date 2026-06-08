@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
@@ -324,7 +325,7 @@ function ReflectBlock({
   block: LessonBlock;
   showSignupCta: boolean;
   mode: string;
-  onCreateAccount?: () => void;
+  onCreateAccount?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }) {
   return (
     <div>
@@ -515,7 +516,7 @@ function BlockContent({
   onDeepDiveOpen: () => void;
   showSignupCta: boolean;
   mode: string;
-  onCreateAccount?: () => void;
+  onCreateAccount?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }) {
   let inner: React.ReactNode;
 
@@ -584,6 +585,7 @@ export default function LessonEngine({
   onReviewStart,
 }: Props) {
   const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const isAuthenticated = !authLoading && Boolean(user);
   const effectiveMode = isAuthenticated && mode === "try" ? "path" : mode;
   const effectiveShowSignupCta = showSignupCta && !isAuthenticated;
@@ -715,6 +717,32 @@ export default function LessonEngine({
       totalSteps: lesson.blocks.length,
     });
   }, [lesson.pathId, lesson.slug, lesson.blocks.length]);
+
+  const handleCreateAccountNavigate = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      handleCreateAccount();
+      router.push("/register?next=/welcome");
+    },
+    [handleCreateAccount, router]
+  );
+
+  useEffect(() => {
+    if (!progressLoaded || reviewMode || !hideAnonymousTryFooter) return;
+
+    finalizeGuestFreeLesson({
+      pathId: lesson.pathId,
+      lessonSlug: lesson.slug,
+      totalSteps: lesson.blocks.length,
+    });
+  }, [
+    progressLoaded,
+    reviewMode,
+    hideAnonymousTryFooter,
+    lesson.pathId,
+    lesson.slug,
+    lesson.blocks.length,
+  ]);
 
   const nextSlug = getNextLessonSlug(lesson.slug);
   const nextLesson = nextSlug ? getLessonBySlug(nextSlug) : null;
@@ -995,7 +1023,7 @@ export default function LessonEngine({
                 }
                 showSignupCta={effectiveShowSignupCta}
                 mode={mode}
-                onCreateAccount={handleCreateAccount}
+                onCreateAccount={handleCreateAccountNavigate}
               />
             </div>
           ) : (
@@ -1013,7 +1041,7 @@ export default function LessonEngine({
               }
               showSignupCta={effectiveShowSignupCta}
               mode={mode}
-              onCreateAccount={handleCreateAccount}
+              onCreateAccount={handleCreateAccountNavigate}
             />
           )}
         </motion.div>

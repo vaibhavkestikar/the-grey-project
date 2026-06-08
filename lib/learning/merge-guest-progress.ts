@@ -2,6 +2,7 @@ import { awardGreyPoints } from "@/lib/grey/client";
 import {
   clearGuestProgress,
   getAllGuestLessonRecords,
+  isGuestSampleFinished,
   type GuestLessonRecord,
 } from "@/lib/learning/guest-progress";
 import { isFreeLesson } from "@/lib/learning/free-lessons";
@@ -18,10 +19,12 @@ async function mergeGuestLessonRecord(
     .from("lesson_progress")
     .select("id, completed, progress_percent, last_position")
     .eq("user_id", userId)
+    .eq("course_slug", guest.pathId)
     .eq("lesson_slug", guest.lessonSlug)
     .maybeSingle();
 
-  const completed = existing?.completed || guest.completed;
+  const guestComplete = isGuestSampleFinished(guest);
+  const completed = existing?.completed === true || guestComplete;
   const progressPercent = completed
     ? 100
     : Math.max(existing?.progress_percent ?? 0, guest.progress_percent);
@@ -52,6 +55,7 @@ async function mergeGuestLessonRecord(
       .from("lesson_progress")
       .update(row)
       .eq("user_id", userId)
+      .eq("course_slug", guest.pathId)
       .eq("lesson_slug", guest.lessonSlug);
     if (error) return false;
   }
@@ -86,14 +90,6 @@ export async function mergeGuestProgressOnSignIn(): Promise<boolean> {
       if (typeof window !== "undefined") {
         sessionStorage.setItem(mergedSessionKey(user.id), "1");
       }
-      return true;
-    }
-
-    if (
-      typeof window !== "undefined" &&
-      sessionStorage.getItem(mergedSessionKey(user.id)) === "1"
-    ) {
-      clearGuestProgress();
       return true;
     }
 

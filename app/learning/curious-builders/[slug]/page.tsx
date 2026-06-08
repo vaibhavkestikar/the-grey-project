@@ -17,6 +17,7 @@ import {
 } from "@/data/curious-builders-path";
 import { PATH_CERTIFICATE_SLUG } from "@/lib/learning/certificate";
 import { fetchLessonProgress } from "@/lib/learning/progress";
+import { mergeGuestProgressOnSignIn } from "@/lib/learning/merge-guest-progress";
 
 export default function PathLessonPage() {
   const params = useParams();
@@ -28,6 +29,7 @@ export default function PathLessonPage() {
   const [allowed, setAllowed] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [reviewMode, setReviewMode] = useState(false);
+  const [progressChecked, setProgressChecked] = useState(false);
   const [showPathFeedback, setShowPathFeedback] = useState(false);
   const [pathFeedbackDone, setPathFeedbackDone] = useState(false);
   const [completionBadges, setCompletionBadges] = useState<
@@ -53,6 +55,7 @@ export default function PathLessonPage() {
     setReviewMode(false);
     setAuthReady(false);
     setAllowed(false);
+    setProgressChecked(false);
   }, [slug]);
 
   useEffect(() => {
@@ -70,17 +73,24 @@ export default function PathLessonPage() {
   useEffect(() => {
     if (!lesson || authLoading) return;
 
-    void fetchLessonProgress(
-      lesson.slug,
-      CURIOUS_BUILDERS_PATH.id,
-      user?.id ?? null
-    ).then((saved) => {
+    void (async () => {
+      if (user) {
+        await mergeGuestProgressOnSignIn();
+      }
+
+      const saved = await fetchLessonProgress(
+        lesson.slug,
+        CURIOUS_BUILDERS_PATH.id,
+        user?.id ?? null
+      );
+
       if (saved?.completed) {
         setCompleted(true);
         setReviewMode(false);
       }
-    });
-  }, [lesson, authLoading, user?.id]);
+      setProgressChecked(true);
+    })();
+  }, [lesson, authLoading, user?.id, slug]);
 
   useEffect(() => {
     if (!completed || !isLastLesson) return;
@@ -155,7 +165,7 @@ export default function PathLessonPage() {
     );
   }
 
-  if (!authReady) {
+  if (!authReady || !progressChecked) {
     return (
       <main className="flex min-h-screen items-center justify-center">
         <p className="text-slate-600">Loading lesson...</p>

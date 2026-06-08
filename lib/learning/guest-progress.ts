@@ -1,5 +1,6 @@
 import { buildGreyEventKey } from "@/lib/grey/event-key";
 import type { GreyAwardEvent } from "@/lib/grey/config";
+import { getLessonBySlug } from "@/data/curious-builders-path";
 import { isFreeLesson } from "@/lib/learning/free-lessons";
 import type { LessonProgress } from "@/lib/learning/progress";
 
@@ -185,6 +186,32 @@ export function recordGuestGreyEvent(event: GuestGreyEvent): void {
 }
 
 /** Mark a free guest lesson complete before signup navigation. */
+/** Guest finished the free sample (final step reached or explicitly finalized). */
+export function isGuestSampleFinished(guest: GuestLessonRecord): boolean {
+  if (guest.completed) return true;
+
+  const lesson = getLessonBySlug(guest.lessonSlug);
+  if (!lesson) return false;
+
+  return guest.last_position >= lesson.blocks.length - 1;
+}
+
+/** Ensure finished free samples are marked complete before signup navigation. */
+export function syncGuestFreeLessonsForSignup(): void {
+  for (const guest of getAllGuestLessonRecords()) {
+    if (!isFreeLesson(guest.pathId, guest.lessonSlug)) continue;
+
+    const lesson = getLessonBySlug(guest.lessonSlug);
+    if (!lesson || !isGuestSampleFinished(guest)) continue;
+
+    finalizeGuestFreeLesson({
+      pathId: guest.pathId,
+      lessonSlug: guest.lessonSlug,
+      totalSteps: lesson.blocks.length,
+    });
+  }
+}
+
 export function finalizeGuestFreeLesson(opts: {
   pathId: string;
   lessonSlug: string;
