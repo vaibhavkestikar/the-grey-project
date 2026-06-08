@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
+import DeepDiveAccordion from "@/components/learning/deep-dive-accordion";
 import PlaygroundRenderer from "@/components/playgrounds/playground-renderer";
 import { track } from "@/services/analytics/track";
 import {
@@ -495,15 +496,20 @@ function BlockContent({
   nextSlug: string | null;
   hasFreeNextLesson: boolean;
 }) {
+  let inner: React.ReactNode;
+
   switch (block.type) {
     case "hook":
-      return <HookBlock block={block} />;
+      inner = <HookBlock block={block} />;
+      break;
     case "build":
-      return <BuildBlock block={block} />;
+      inner = <BuildBlock block={block} />;
+      break;
     case "play":
-      return <PlayBlock block={block} />;
+      inner = <PlayBlock block={block} />;
+      break;
     case "checkpoint":
-      return (
+      inner = (
         <CheckpointBlock
           block={block}
           checkpointAnswer={checkpointAnswer}
@@ -511,8 +517,9 @@ function BlockContent({
           onSelect={onCheckpointSelect}
         />
       );
+      break;
     case "reflect":
-      return (
+      inner = (
         <ReflectBlock
           block={block}
           showSignupCta={showSignupCta}
@@ -521,13 +528,25 @@ function BlockContent({
           hasFreeNextLesson={hasFreeNextLesson}
         />
       );
+      break;
     case "visual":
-      return <VisualBlock block={block} />;
+      inner = <VisualBlock block={block} />;
+      break;
     case "apply":
-      return <ApplyBlock block={block} />;
+      inner = <ApplyBlock block={block} />;
+      break;
     default:
-      return null;
+      inner = null;
   }
+
+  return (
+    <>
+      {inner}
+      {block.deepDive && (
+        <DeepDiveAccordion cta={block.deepDive.cta} content={block.deepDive.content} />
+      )}
+    </>
+  );
 }
 
 /* ─── Main engine ──────────────────────────────────────────────────────── */
@@ -546,6 +565,7 @@ export default function LessonEngine({
   const [progressLoaded, setProgressLoaded] = useState(false);
   const [alreadyCompleted, setAlreadyCompleted] = useState(false);
   const completionReported = useRef(false);
+  const maxStepReached = useRef(0);
 
   const block = lesson.blocks[step];
   const isLast = step >= lesson.blocks.length - 1;
@@ -585,9 +605,13 @@ export default function LessonEngine({
     });
   }, [lesson.id, mode]);
 
+  // Only save progress when moving forward — going back should not rewind saved position
   useEffect(() => {
     if (!progressLoaded || alreadyCompleted) return;
-    void persistProgress(false);
+    if (step >= maxStepReached.current) {
+      maxStepReached.current = step;
+      void persistProgress(false);
+    }
   }, [step, progressLoaded, alreadyCompleted, persistProgress]);
 
   const nextSlug = getNextLessonSlug(lesson.slug);
@@ -601,6 +625,13 @@ export default function LessonEngine({
       : nextSlug
         ? `/learning/curious-builders/${nextSlug}`
         : "/learning/curious-builders";
+
+  function prev() {
+    if (step === 0) return;
+    setCheckpointAnswer(null);
+    setCheckpointDone(false);
+    setStep((s) => s - 1);
+  }
 
   async function next() {
     if (block?.type === "checkpoint" && !checkpointDone) return;
@@ -720,14 +751,25 @@ export default function LessonEngine({
       </AnimatePresence>
 
       <div className="safe-bottom sticky bottom-0 z-20 -mx-4 border-t border-slate-200/80 bg-white/95 px-4 py-4 backdrop-blur-md md:static md:mx-0 md:mt-8 md:border-0 md:bg-transparent md:p-0">
-        <button
-          type="button"
-          onClick={next}
-          disabled={block?.type === "checkpoint" && !checkpointDone}
-          className="w-full rounded-2xl bg-slate-950 py-4 text-lg font-semibold text-white disabled:opacity-40"
-        >
-          {isLast ? "Complete lesson" : "Continue →"}
-        </button>
+        <div className="flex gap-3">
+          {step > 0 && (
+            <button
+              type="button"
+              onClick={prev}
+              className="rounded-2xl border border-slate-200 px-5 py-4 text-base font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+            >
+              ← Back
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={next}
+            disabled={block?.type === "checkpoint" && !checkpointDone}
+            className="flex-1 rounded-2xl bg-slate-950 py-4 text-lg font-semibold text-white disabled:opacity-40"
+          >
+            {isLast ? "Complete lesson" : "Continue →"}
+          </button>
+        </div>
         {isLast && (
           <Link
             href={nextHref}

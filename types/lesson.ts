@@ -71,6 +71,16 @@ export type LessonBlock = {
    * in Claude, Cursor, or their own product.
    */
   microAction?: string;
+  /**
+   * Optional Nerd section: expandable deeper explanation shown below the step.
+   * Does not replace or repeat the main step content.
+   */
+  deepDive?: {
+    /** Witty CTA on the collapsed trigger (shown under the Nerd section label) */
+    cta: string;
+    /** Deeper concept, production implications, edge cases, or analogies */
+    content: string;
+  };
 };
 
 export type StructuredLesson = {
