@@ -1,4 +1,3 @@
-import { AUTH_RECOVERY_COOKIE, isRecoveryRedirectExempt } from "@/lib/auth/recovery";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -11,17 +10,6 @@ export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const hasAuthCode = request.nextUrl.searchParams.has("code");
   const hasTokenHash = request.nextUrl.searchParams.has("token_hash");
-  const isRecoveryFlow =
-    request.cookies.get(AUTH_RECOVERY_COOKIE)?.value === "1";
-
-  if (
-    isRecoveryFlow &&
-    pathname !== "/reset-password" &&
-    !pathname.startsWith("/auth/callback") &&
-    !isRecoveryRedirectExempt(pathname)
-  ) {
-    return NextResponse.redirect(new URL("/reset-password", request.url));
-  }
 
   // Supabase sometimes lands auth params on the site root. Forward to callback pages.
   if (

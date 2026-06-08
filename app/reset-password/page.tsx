@@ -21,7 +21,8 @@ export default function ResetPasswordPage() {
     void (async () => {
       const session = await waitForAuthSession(supabase);
       if (!session) {
-        router.replace("/forgot-password?error=password_reset_callback");
+        clearRecoveryFlow();
+        router.replace("/forgot-password");
         return;
       }
 

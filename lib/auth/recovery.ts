@@ -6,7 +6,7 @@ export function isRecoveryRedirectPath(path: string): boolean {
   return path === "/reset-password" || path.startsWith("/reset-password?");
 }
 
-/** Paths where a stale recovery cookie should not trap the user. */
+/** Auth pages where recovery trapping should never apply. */
 export const RECOVERY_REDIRECT_EXEMPT_PATHS = [
   "/login",
   "/register",
@@ -18,6 +18,19 @@ export function isRecoveryRedirectExempt(pathname: string): boolean {
   return RECOVERY_REDIRECT_EXEMPT_PATHS.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`)
   );
+}
+
+/** Public routes where users can browse freely and exit a password reset flow. */
+export function shouldAbandonRecoveryOnNavigate(pathname: string): boolean {
+  if (isRecoveryRedirectExempt(pathname)) return true;
+  if (pathname === "/") return true;
+  if (pathname.startsWith("/learning")) return true;
+  if (pathname.startsWith("/about")) return true;
+  if (pathname.startsWith("/blog")) return true;
+  if (pathname.startsWith("/try")) return true;
+  if (pathname.startsWith("/feedback")) return true;
+  if (pathname.startsWith("/roadmap")) return true;
+  return false;
 }
 
 export function markRecoveryFlow() {
@@ -35,4 +48,11 @@ export function hasRecoveryCookie(): boolean {
   return document.cookie
     .split("; ")
     .some((c) => c.startsWith(`${AUTH_RECOVERY_COOKIE}=1`));
+}
+
+export async function abandonRecoveryFlow(
+  signOut: () => Promise<{ error: Error | null }>
+) {
+  clearRecoveryFlow();
+  await signOut();
 }

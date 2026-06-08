@@ -22,8 +22,9 @@ export default function LoginForm() {
   const [callbackError, setCallbackError] = useState(false);
 
   useEffect(() => {
+    clearRecoveryFlow();
+
     if (searchParams.get("password_updated") === "1") {
-      clearRecoveryFlow();
       void supabase.auth.signOut();
       toast.success("Password updated. Sign in with your new password.");
     }
