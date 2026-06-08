@@ -22,6 +22,17 @@ export default function HomeHero() {
           <span className="inline-flex rounded-full bg-violet-100 px-4 py-1.5 text-sm font-semibold text-violet-700">
             Your brain called. It wants the real story.
           </span>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <span className="rounded-full border border-violet-200 bg-white/90 px-3 py-1 text-xs font-bold text-violet-700 shadow-sm">
+              Earn Grey Points
+            </span>
+            <span className="rounded-full border border-blue-200 bg-white/90 px-3 py-1 text-xs font-bold text-blue-700 shadow-sm">
+              Unlock practical assets
+            </span>
+            <span className="rounded-full border border-amber-200 bg-white/90 px-3 py-1 text-xs font-bold text-amber-700 shadow-sm">
+              Skill badges, not fluff
+            </span>
+          </div>
           <h1 className="mt-6 text-4xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-5xl md:text-6xl lg:text-7xl">
             Understand AI
             <br />
@@ -65,6 +76,15 @@ export default function HomeHero() {
                       Checkpoints
                     </strong>{" "}
                     that stick like good gossip
+                  </span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                  <span>
+                    <strong className="font-semibold text-slate-900">
+                      Grey Points
+                    </strong>{" "}
+                    and badges that prove progress without turning learning into a toy
                   </span>
                 </li>
               </ul>

@@ -8,6 +8,7 @@ import PathLessonList from "@/components/learning/path-lesson-list";
 import LearningPathPill from "@/components/learning/learning-path-pill";
 import PathHookRibbon from "@/components/learning/path-hook-ribbon";
 import PathMetaPills from "@/components/learning/path-meta-pills";
+import PathNumberRibbon from "@/components/learning/path-number-ribbon";
 import PathValueGrid from "@/components/learning/path-value-grid";
 import {
   CURIOUS_BUILDERS_LESSONS,
@@ -25,8 +26,9 @@ export default function LivePathCard({ collapsible = true }: Props) {
 
   return (
     <article className="relative overflow-hidden rounded-[2rem] border border-violet-200 bg-white shadow-xl">
+      <PathNumberRibbon number={1} />
       <PathHookRibbon label="Completely Free" />
-      <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 p-7 text-white md:p-9">
+      <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 p-7 pt-16 text-white md:p-9 md:pt-16">
         <div className="flex flex-wrap items-center gap-2">
           <span className="rounded-full bg-emerald-400/90 px-3 py-1 text-xs font-bold uppercase tracking-wide text-emerald-950">
             Live now. Go play

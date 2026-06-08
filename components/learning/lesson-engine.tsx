@@ -4,10 +4,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 import DeepDiveAccordion from "@/components/learning/deep-dive-accordion";
 import PlaygroundRenderer from "@/components/playgrounds/playground-renderer";
 import { track } from "@/services/analytics/track";
+import { awardGreyPoints } from "@/lib/grey/client";
+import { GREY_POINT_VALUES } from "@/lib/grey/config";
+import {
+  isGreyPointsSoundEnabled,
+  playGreyPointsSound,
+  setGreyPointsSoundEnabled,
+  subscribeToGreyPointsSound,
+} from "@/lib/grey/sound";
 import {
   fetchLessonProgress,
   saveLessonProgress,
@@ -503,6 +512,7 @@ function BlockContent({
   checkpointAnswer,
   checkpointDone,
   onCheckpointSelect,
+  onDeepDiveOpen,
   showSignupCta,
   mode,
   nextSlug,
@@ -512,6 +522,7 @@ function BlockContent({
   checkpointAnswer: number | null;
   checkpointDone: boolean;
   onCheckpointSelect: (i: number) => void;
+  onDeepDiveOpen: () => void;
   showSignupCta: boolean;
   mode: string;
   nextSlug: string | null;
@@ -564,7 +575,11 @@ function BlockContent({
     <>
       {inner}
       {block.deepDive && (
-        <DeepDiveAccordion cta={block.deepDive.cta} content={block.deepDive.content} />
+        <DeepDiveAccordion
+          cta={block.deepDive.cta}
+          content={block.deepDive.content}
+          onOpen={onDeepDiveOpen}
+        />
       )}
     </>
   );
@@ -585,8 +600,11 @@ export default function LessonEngine({
   const [checkpointDone, setCheckpointDone] = useState(false);
   const [progressLoaded, setProgressLoaded] = useState(false);
   const [alreadyCompleted, setAlreadyCompleted] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
   const completionReported = useRef(false);
   const maxStepReached = useRef(0);
+  const checkpointAttempts = useRef<Record<number, number>>({});
+  const localFeedbackShown = useRef<Set<string>>(new Set());
 
   const block = lesson.blocks[step];
   const isLast = step >= lesson.blocks.length - 1;
@@ -626,14 +644,19 @@ export default function LessonEngine({
     });
   }, [lesson.id, mode]);
 
+  useEffect(() => {
+    setSoundOn(isGreyPointsSoundEnabled());
+    return subscribeToGreyPointsSound(setSoundOn);
+  }, []);
+
   // Only save progress when moving forward — going back should not rewind saved position
   useEffect(() => {
-    if (!progressLoaded || alreadyCompleted) return;
+    if (!progressLoaded || alreadyCompleted || reviewMode) return;
     if (step >= maxStepReached.current) {
       maxStepReached.current = step;
       void persistProgress(false);
     }
-  }, [step, progressLoaded, alreadyCompleted, persistProgress]);
+  }, [step, progressLoaded, alreadyCompleted, persistProgress, reviewMode]);
 
   const nextSlug = getNextLessonSlug(lesson.slug);
   const nextLesson = nextSlug ? getLessonBySlug(nextSlug) : null;
@@ -654,26 +677,154 @@ export default function LessonEngine({
     setStep((s) => s - 1);
   }
 
+  function toggleSound() {
+    const next = !isGreyPointsSoundEnabled();
+    setGreyPointsSoundEnabled(next);
+    setSoundOn(next);
+    toast.success(next ? "Grey Points sound on." : "Grey Points sound off.");
+  }
+
+  function showLocalPointsFeedback(points: number, feedbackKey: string) {
+    if (points <= 0 || localFeedbackShown.current.has(feedbackKey)) return;
+
+    localFeedbackShown.current.add(feedbackKey);
+    playGreyPointsSound();
+
+    toast.custom(
+      () => (
+        <div className="relative overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-blue-600 p-4 text-white shadow-2xl shadow-violet-500/30">
+          <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/20" />
+          <div className="pointer-events-none absolute -bottom-10 left-8 h-24 w-24 rounded-full bg-yellow-300/20" />
+          <div className="relative flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 text-3xl font-black">
+              +{points}
+            </div>
+            <div>
+              <p className="text-sm font-black uppercase tracking-widest text-violet-100">
+                Grey Points scored
+              </p>
+              <p className="mt-1 text-lg font-black">
+                Clean move. Evidence logged.
+              </p>
+              <p className="mt-1 text-xs text-violet-100">
+                Open profile for totals, badges, and store unlocks.
+              </p>
+            </div>
+          </div>
+        </div>
+      ),
+      { duration: 2600 }
+    );
+  }
+
+  function showGreyFeedback(result: Awaited<ReturnType<typeof awardGreyPoints>> | null) {
+    if (!result) return;
+
+    for (const badge of result.badgesAwarded ?? []) {
+      toast.custom(
+        () => (
+          <div className="rounded-3xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-violet-50 p-4 shadow-xl">
+            <div className="flex items-center gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-amber-300 bg-gradient-to-br from-amber-200 to-violet-200 text-2xl font-black text-slate-950 shadow-inner">
+                GP
+              </div>
+              <div>
+                <p className="text-xs font-black uppercase tracking-widest text-amber-700">
+                  Badge earned
+                </p>
+                <p className="mt-1 text-lg font-black text-slate-950">{badge.name}</p>
+                <p className="mt-1 max-w-xs text-sm leading-relaxed text-slate-600">
+                  {badge.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        ),
+        { duration: 4200 }
+      );
+    }
+  }
+
+  async function awardEvent(opts: {
+    eventType: "step_completed" | "checkpoint_correct" | "deep_dive_opened" | "lesson_completed";
+    stepIndex?: number;
+    firstTry?: boolean;
+    metadata?: Record<string, unknown>;
+  }) {
+    if (reviewMode) return null;
+
+    const points =
+      opts.eventType === "step_completed"
+        ? GREY_POINT_VALUES.stepCompleted
+        : opts.eventType === "deep_dive_opened"
+          ? GREY_POINT_VALUES.deepDiveOpened
+          : opts.eventType === "lesson_completed"
+            ? GREY_POINT_VALUES.lessonCompleted
+            : GREY_POINT_VALUES.checkpointCorrect +
+              (opts.firstTry ? GREY_POINT_VALUES.checkpointFirstTryBonus : 0);
+
+    const feedbackKey = [
+      opts.eventType,
+      lesson.slug,
+      opts.stepIndex ?? "lesson",
+      opts.firstTry ? "first" : "base",
+    ].join(":");
+
+    showLocalPointsFeedback(points, feedbackKey);
+
+    if (mode !== "path") return null;
+    const result = await awardGreyPoints({
+      eventType: opts.eventType,
+      pathId: lesson.pathId,
+      lessonSlug: lesson.slug,
+      stepIndex: opts.stepIndex,
+      firstTry: opts.firstTry,
+      metadata: opts.metadata,
+    });
+    showGreyFeedback(result);
+    return result;
+  }
+
   async function next() {
     if (block?.type === "checkpoint" && !checkpointDone) return;
     if (isLast) {
       track(mode === "try" ? "sample_completed" : "lesson_completed", {
         lessonId: lesson.id,
       });
-      await persistProgress(true);
+      await awardEvent({
+        eventType: "step_completed",
+        stepIndex: step,
+        metadata: { blockType: block?.type },
+      });
+      await awardEvent({ eventType: "lesson_completed" });
+      if (!reviewMode) {
+        await persistProgress(true);
+      }
       onComplete?.();
       return;
     }
+    void awardEvent({
+      eventType: "step_completed",
+      stepIndex: step,
+      metadata: { blockType: block?.type },
+    });
     setCheckpointAnswer(null);
     setCheckpointDone(false);
     setStep((s) => s + 1);
   }
 
   function handleCheckpointSelect(index: number) {
+    const attempts = checkpointAttempts.current[step] ?? 0;
+    checkpointAttempts.current[step] = attempts + 1;
     setCheckpointAnswer(index);
     if (index === block.correctIndex) {
       setCheckpointDone(true);
       track("checkpoint_passed", { lessonId: lesson.id });
+      void awardEvent({
+        eventType: "checkpoint_correct",
+        stepIndex: step,
+        firstTry: attempts === 0,
+      });
     }
   }
 
@@ -723,9 +874,23 @@ export default function LessonEngine({
           </h1>
           <p className="mt-2 text-sm text-slate-500">{lesson.hook}</p>
         </div>
-        <span className="shrink-0 rounded-full bg-violet-100 px-3 py-1 text-sm font-bold text-violet-700">
-          {step + 1}/{lesson.blocks.length}
-        </span>
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          <span className="rounded-full bg-violet-100 px-3 py-1 text-sm font-bold text-violet-700">
+            {step + 1}/{lesson.blocks.length}
+          </span>
+          <button
+            type="button"
+            onClick={toggleSound}
+            className={`rounded-full border px-3 py-1 text-xs font-bold shadow-sm transition ${
+              soundOn
+                ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                : "border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
+            }`}
+            aria-label={soundOn ? "Turn Grey Points sound off" : "Turn Grey Points sound on"}
+          >
+            {soundOn ? "Sound on" : "Sound off"}
+          </button>
+        </div>
       </div>
 
       <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-200">
@@ -750,6 +915,13 @@ export default function LessonEngine({
                 checkpointAnswer={checkpointAnswer}
                 checkpointDone={checkpointDone}
                 onCheckpointSelect={handleCheckpointSelect}
+                onDeepDiveOpen={() =>
+                  void awardEvent({
+                    eventType: "deep_dive_opened",
+                    stepIndex: step,
+                    metadata: { blockType: block?.type },
+                  })
+                }
                 showSignupCta={showSignupCta}
                 mode={mode}
                 nextSlug={nextSlug}
@@ -762,6 +934,13 @@ export default function LessonEngine({
               checkpointAnswer={checkpointAnswer}
               checkpointDone={checkpointDone}
               onCheckpointSelect={handleCheckpointSelect}
+              onDeepDiveOpen={() =>
+                void awardEvent({
+                  eventType: "deep_dive_opened",
+                  stepIndex: step,
+                  metadata: { blockType: block?.type },
+                })
+              }
               showSignupCta={showSignupCta}
               mode={mode}
               nextSlug={nextSlug}

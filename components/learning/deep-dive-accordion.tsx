@@ -1,14 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type Props = {
   cta: string;
   content: string;
+  onOpen?: () => void;
 };
 
-export default function DeepDiveAccordion({ cta, content }: Props) {
+export default function DeepDiveAccordion({ cta, content, onOpen }: Props) {
   const [open, setOpen] = useState(false);
+  const openedOnce = useRef(false);
+
+  function toggleOpen() {
+    setOpen((current) => {
+      const next = !current;
+      if (next && !openedOnce.current) {
+        openedOnce.current = true;
+        onOpen?.();
+      }
+      return next;
+    });
+  }
 
   return (
     <div className="mt-8 rounded-2xl border border-violet-100/80 bg-gradient-to-br from-violet-50/40 via-white to-slate-50/60 p-4 sm:p-5">
@@ -21,7 +34,7 @@ export default function DeepDiveAccordion({ cta, content }: Props) {
 
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={toggleOpen}
         className="group flex w-full items-center gap-2 text-left"
       >
         <span

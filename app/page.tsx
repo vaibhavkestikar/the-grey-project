@@ -11,7 +11,7 @@ export default function HomePage() {
       <HomeHero />
       <LearningPathsView
         collapsibleLive={false}
-        subheading="Outcome driven paths for people who ship AI, not just bookmark threads about it. Curious Builders is completely free. First Build launches soon with limited seats. Three more paths stack after that."
+        subheading="Outcome driven paths for people who ship AI, not just bookmark threads about it. Earn Grey Points, collect skill badges, and redeem practical assets as you learn. Curious Builders is completely free. First Build launches soon with limited seats."
       />
       <SampleLessonCta />
       <FounderSection />

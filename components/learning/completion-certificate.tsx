@@ -11,6 +11,7 @@ export type CertificateData = {
   pathTitle: string;
   pathDescription: string;
   completedAt: string;
+  badges?: Array<{ name: string; description: string }>;
 };
 
 type Props = {
@@ -95,6 +96,36 @@ export default function CompletionCertificate({
               {formatCertificateDate(data.completedAt)}
             </p>
           </div>
+
+          {data.badges && data.badges.length > 0 && (
+            <div className="mx-auto mt-8 max-w-2xl border-t border-violet-100 pt-6">
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                Skill badges earned
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {data.badges.slice(0, 6).map((badge) => (
+                  <div
+                    key={badge.name}
+                    className="rounded-2xl border border-violet-100 bg-gradient-to-br from-white to-violet-50 p-4 text-left shadow-sm"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-4 border-violet-100 bg-gradient-to-br from-violet-500 to-blue-500 text-[10px] font-black text-white">
+                        GP
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-violet-800">
+                          {badge.name}
+                        </p>
+                        <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                          {badge.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="mx-auto mt-8 flex max-w-sm flex-col items-center">
             <Image

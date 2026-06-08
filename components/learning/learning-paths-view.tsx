@@ -30,6 +30,20 @@ export default function LearningPathsView({
             {heading}
           </h2>
           <p className="mt-4 max-w-2xl text-lg text-slate-600">{subheading}</p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {[
+              "Earn Grey Points",
+              "Collect skill badges",
+              "Redeem practical PDFs",
+            ].map((pill) => (
+              <span
+                key={pill}
+                className="rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-bold text-violet-700"
+              >
+                {pill}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="mt-10">
@@ -52,11 +66,12 @@ export default function LearningPathsView({
               <p className="mt-2 max-w-2xl text-slate-600">
                 Stack what you need next: production trust, agentic workflows, or
                 strategy that survives a leadership meeting. First 3 lessons free on
-                each path. Same interactive vibe. Zero buzzword bingo.
+                each path. Same interactive vibe, with Grey Points, badges, and
+                useful assets to redeem as you go. Zero buzzword bingo.
               </p>
             </div>
             <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {comingSoon.map((path) => (
+              {comingSoon.map((path, index) => (
                 <ComingSoonPathCard
                   key={path.id}
                   title={path.title}
@@ -66,6 +81,7 @@ export default function LearningPathsView({
                   why={path.why}
                   outcomes={path.outcomes}
                   waitlistKey={path.waitlistKey}
+                  pathNumber={index + 3}
                 />
               ))}
             </div>

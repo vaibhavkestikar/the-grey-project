@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
 import { useAuth } from "@/components/providers/auth-provider";
+import GreyPointsNavPill from "@/components/learning/grey-points-nav-pill";
 import { firstNameFromEmail } from "@/lib/utils/name";
 
 export default function SiteNavbar() {
@@ -64,6 +65,7 @@ export default function SiteNavbar() {
           )}
           {!loading && user && (
             <>
+              <GreyPointsNavPill />
               <span className="hidden text-sm font-semibold text-slate-700 lg:inline">
                 Hi, {firstName}
               </span>
@@ -96,9 +98,12 @@ export default function SiteNavbar() {
       {open && (
         <div className="border-t border-slate-200 bg-white px-4 py-4 lg:hidden">
           {user && (
-            <p className="px-4 pb-2 text-sm font-semibold text-slate-700">
-              Hi, {firstName}
-            </p>
+            <div className="flex items-center justify-between gap-3 px-4 pb-2">
+              <p className="text-sm font-semibold text-slate-700">
+                Hi, {firstName}
+              </p>
+              <GreyPointsNavPill />
+            </div>
           )}
           <Link href="/try/prediction" className="block rounded-xl px-4 py-3 font-medium" onClick={() => setOpen(false)}>
             Start Learning

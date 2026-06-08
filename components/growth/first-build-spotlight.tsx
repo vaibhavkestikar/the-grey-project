@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import CountdownTimer from "@/components/growth/countdown-timer";
 import LearningPathPill from "@/components/learning/learning-path-pill";
 import PathHookRibbon from "@/components/learning/path-hook-ribbon";
+import PathNumberRibbon from "@/components/learning/path-number-ribbon";
 import PathValueAccordion from "@/components/learning/path-value-accordion";
 import PathMetaPills from "@/components/learning/path-meta-pills";
 import PathValueGrid from "@/components/learning/path-value-grid";
@@ -67,11 +68,12 @@ export default function FirstBuildSpotlight() {
 
   return (
     <article className="relative overflow-hidden rounded-[2rem] border-2 border-amber-300/60 bg-gradient-to-br from-amber-500 via-orange-500 to-rose-600 shadow-2xl shadow-orange-200">
+      <PathNumberRibbon number={2} />
       <PathHookRibbon label="Launching soon" className="top-6 rotate-3" />
       <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10" />
       <div className="pointer-events-none absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-white/5" />
 
-      <div className="relative p-6 md:p-10">
+      <div className="relative p-6 pt-16 md:p-10 md:pt-16">
         <div className="flex flex-wrap items-center gap-3">
           <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-white backdrop-blur">
             Next to launch

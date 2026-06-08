@@ -20,6 +20,9 @@ export default function CuriousBuildersCertificatePage() {
   const [defaultFirstName, setDefaultFirstName] = useState("");
   const [defaultLastName, setDefaultLastName] = useState("");
   const [completedLessons, setCompletedLessons] = useState(0);
+  const [badges, setBadges] = useState<
+    Array<{ name: string; description: string }>
+  >([]);
   const [lessonCount, setLessonCount] = useState(
     CURIOUS_BUILDERS_PATH.lessonCount
   );
@@ -40,6 +43,16 @@ export default function CuriousBuildersCertificatePage() {
 
       const listRes = await fetch("/api/certificate/list");
       const listData = await listRes.json().catch(() => ({ certificates: [] }));
+      const greyRes = await fetch("/api/grey/summary");
+      const greyData = await greyRes.json().catch(() => ({ badges: [] }));
+      const earnedBadges = (greyData.badges ?? []).map(
+        (badge: { name: string; description: string }) => ({
+          name: badge.name,
+          description: badge.description,
+        })
+      );
+      setBadges(earnedBadges);
+
       const pathCert = (listData.certificates ?? []).find(
         (cert: { pathId: string }) =>
           cert.pathId === CURIOUS_BUILDERS_PATH.id
@@ -58,6 +71,7 @@ export default function CuriousBuildersCertificatePage() {
             pathTitle: pathCert.pathTitle,
             pathDescription: pathCert.pathDescription,
             completedAt: pathCert.completedAt ?? new Date().toISOString(),
+            badges: earnedBadges,
           });
         }
       }
@@ -111,7 +125,7 @@ export default function CuriousBuildersCertificatePage() {
                 defaultFirstName={defaultFirstName}
                 defaultLastName={defaultLastName}
                 onIssued={(data) => {
-                  setCertificate(data);
+                  setCertificate({ ...data, badges });
                   setEligible(false);
                 }}
               />
@@ -131,6 +145,22 @@ export default function CuriousBuildersCertificatePage() {
               >
                 Back to lessons
               </Link>
+              <div className="mt-8 rounded-2xl border border-dashed border-violet-200 bg-violet-50/50 p-4">
+                <p className="mb-4 text-sm font-semibold text-violet-800">
+                  Specimen preview. The real certificate unlocks after all lessons.
+                </p>
+                <CompletionCertificate
+                  data={{
+                    recipientName: "Your Name",
+                    pathTitle: CURIOUS_BUILDERS_PATH.title,
+                    pathDescription: CURIOUS_BUILDERS_PATH.description,
+                    completedAt: new Date().toISOString(),
+                  }}
+                  certificateId="certificate-specimen"
+                  showDownload={false}
+                  compact
+                />
+              </div>
             </>
           )}
         </div>

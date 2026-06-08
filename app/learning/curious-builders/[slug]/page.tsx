@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import PathFeedbackForm from "@/components/feedback/path-feedback-form";
 import SiteNavbar from "@/components/marketing/site-navbar";
@@ -27,6 +28,16 @@ export default function PathLessonPage() {
   const [reviewMode, setReviewMode] = useState(false);
   const [showPathFeedback, setShowPathFeedback] = useState(false);
   const [pathFeedbackDone, setPathFeedbackDone] = useState(false);
+  const [completionBadges, setCompletionBadges] = useState<
+    Array<{ id: string; name: string; description: string; lessonSlug?: string }>
+  >([]);
+  const [greySummary, setGreySummary] = useState<{
+    totalPoints: number;
+    availablePoints: number;
+    currentStreak: number;
+    badgeCount: number;
+  } | null>(null);
+  const certificateToastShown = useRef(false);
 
   const isLastLesson = lesson ? isLastLessonInPath(slug) : false;
 
@@ -71,6 +82,54 @@ export default function PathLessonPage() {
       }
     })();
   }, [completed, isLastLesson]);
+
+  useEffect(() => {
+    if (!completed || !lesson) return;
+
+    void (async () => {
+      const res = await fetch("/api/grey/summary");
+      const data = await res.json().catch(() => ({ badges: [] }));
+      const badges = (data.badges ?? []).filter(
+        (badge: { id: string; lessonSlug?: string }) =>
+          badge.lessonSlug === lesson.slug ||
+          (isLastLesson && badge.id === "curious-builder")
+      );
+      setCompletionBadges(badges);
+      setGreySummary({
+        totalPoints: data.profile?.totalPoints ?? 0,
+        availablePoints: data.profile?.availablePoints ?? 0,
+        currentStreak: data.profile?.currentStreak ?? 0,
+        badgeCount: data.badges?.length ?? 0,
+      });
+
+      if (!certificateToastShown.current) {
+        certificateToastShown.current = true;
+        toast.custom(
+          () => (
+            <div className="rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-blue-50 p-4 shadow-xl">
+              <p className="text-xs font-black uppercase tracking-widest text-violet-700">
+                Certificate specimen
+              </p>
+              <p className="mt-1 font-black text-slate-950">
+                Want a peek at the finish line?
+              </p>
+              <p className="mt-1 max-w-xs text-sm leading-relaxed text-slate-600">
+                Check the certificate area. Complete the full path to unlock the
+                real one.
+              </p>
+              <Link
+                href={`/learning/curious-builders/${PATH_CERTIFICATE_SLUG}`}
+                className="mt-3 inline-flex rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white"
+              >
+                View specimen
+              </Link>
+            </div>
+          ),
+          { duration: 6500 }
+        );
+      }
+    })();
+  }, [completed, isLastLesson, lesson]);
 
   if (!lesson) {
     return (
@@ -129,6 +188,95 @@ export default function PathLessonPage() {
                   ? `You finished ${CURIOUS_BUILDERS_PATH.title}. That is the whole path. Genuinely impressive.`
                   : `${lesson.title}. Nice work.`}
               </p>
+              {greySummary && (
+                <div className="mx-auto mt-6 grid max-w-xl gap-3 sm:grid-cols-3">
+                  <div className="rounded-2xl border border-violet-100 bg-violet-50 p-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-violet-600">
+                      Grey Points
+                    </p>
+                    <p className="mt-1 text-3xl font-black text-violet-800">
+                      {greySummary.totalPoints}
+                    </p>
+                    <p className="mt-1 text-xs text-violet-700">earned so far</p>
+                  </div>
+                  <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-amber-700">
+                      Badges
+                    </p>
+                    <p className="mt-1 text-3xl font-black text-amber-800">
+                      {greySummary.badgeCount}
+                    </p>
+                    <p className="mt-1 text-xs text-amber-700">evidence markers</p>
+                  </div>
+                  <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-emerald-700">
+                      Streak
+                    </p>
+                    <p className="mt-1 text-3xl font-black text-emerald-800">
+                      {greySummary.currentStreak}d
+                    </p>
+                    <p className="mt-1 text-xs text-emerald-700">keep it warm</p>
+                  </div>
+                </div>
+              )}
+              {completionBadges.length > 0 && (
+                <div className="mx-auto mt-6 max-w-xl rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-blue-50 p-5 text-left">
+                  <p className="text-xs font-bold uppercase tracking-widest text-violet-600">
+                    Badge evidence
+                  </p>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    {completionBadges.map((badge) => (
+                      <div
+                        key={badge.id}
+                        className="rounded-2xl border border-violet-100 bg-white p-4 shadow-sm"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-4 border-violet-100 bg-gradient-to-br from-violet-500 to-blue-500 text-xs font-black text-white">
+                            GP
+                          </div>
+                          <div>
+                            <p className="font-black text-slate-950">{badge.name}</p>
+                            <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                              {badge.description}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="mx-auto mt-6 max-w-xl rounded-3xl border border-slate-200 bg-slate-50 p-5 text-left">
+                <p className="font-black text-slate-950">
+                  Your profile now has the full receipt.
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  Find your Grey Points, badge collection, streak, and Grey Store
+                  assets in the profile section. Keep earning points to unlock the
+                  practical PDF packs, then finish the full path to claim the
+                  completion certificate.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <Link
+                    href="/account"
+                    className="rounded-xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white"
+                  >
+                    View profile
+                  </Link>
+                  <Link
+                    href="/account#grey-store"
+                    className="rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-semibold text-violet-700"
+                  >
+                    Unlock assets
+                  </Link>
+                  <Link
+                    href={`/learning/curious-builders/${PATH_CERTIFICATE_SLUG}`}
+                    className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700"
+                  >
+                    Certificate specimen
+                  </Link>
+                </div>
+              </div>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 {lessonIndex < CURIOUS_BUILDERS_LESSONS.length - 1 ? (
                   <Link

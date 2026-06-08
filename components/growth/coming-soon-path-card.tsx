@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { track } from "@/services/analytics/track";
+import PathNumberRibbon from "@/components/learning/path-number-ribbon";
 import PathMetaPills from "@/components/learning/path-meta-pills";
 import PathValueAccordion from "@/components/learning/path-value-accordion";
 import { FREE_LESSON_COUNT, PAID_PATH_TRIAL_PILLS } from "@/types/paths";
@@ -65,6 +66,7 @@ type Props = {
   why: string;
   outcomes: string;
   waitlistKey?: string;
+  pathNumber?: number;
 };
 
 async function parseWaitlistResponse(res: Response) {
@@ -84,6 +86,7 @@ export default function ComingSoonPathCard({
   why,
   outcomes,
   waitlistKey,
+  pathNumber,
 }: Props) {
   const scheme = (waitlistKey && SCHEMES[waitlistKey]) ? SCHEMES[waitlistKey] : DEFAULT_SCHEME;
 
@@ -131,11 +134,12 @@ export default function ComingSoonPathCard({
 
   return (
     <article
-      className={`flex h-full flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-lg ${scheme.hover}`}
+      className={`relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-lg ${scheme.hover}`}
     >
+      {pathNumber ? <PathNumberRibbon number={pathNumber} /> : null}
       {/* ── Colored header ── */}
       <div
-        className={`relative overflow-hidden bg-gradient-to-br ${scheme.header} p-5 text-white sm:p-6`}
+        className={`relative overflow-hidden bg-gradient-to-br ${scheme.header} p-5 pt-16 text-white sm:p-6 sm:pt-16`}
       >
         {/* Decorative circles */}
         <div
