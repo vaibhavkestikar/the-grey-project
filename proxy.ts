@@ -1,4 +1,4 @@
-import { AUTH_RECOVERY_COOKIE } from "@/lib/auth/recovery";
+import { AUTH_RECOVERY_COOKIE, isRecoveryRedirectExempt } from "@/lib/auth/recovery";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -17,7 +17,8 @@ export async function proxy(request: NextRequest) {
   if (
     isRecoveryFlow &&
     pathname !== "/reset-password" &&
-    !pathname.startsWith("/auth/callback")
+    !pathname.startsWith("/auth/callback") &&
+    !isRecoveryRedirectExempt(pathname)
   ) {
     return NextResponse.redirect(new URL("/reset-password", request.url));
   }

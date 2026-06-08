@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import AuthHeader from "@/components/auth/auth-header";
 import UnverifiedLoginPanel from "@/components/auth/unverified-login-panel";
 import { isEmailNotVerifiedError } from "@/lib/auth/errors";
+import { clearRecoveryFlow } from "@/lib/auth/recovery";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginForm() {
@@ -21,13 +22,19 @@ export default function LoginForm() {
   const [callbackError, setCallbackError] = useState(false);
 
   useEffect(() => {
+    if (searchParams.get("password_updated") === "1") {
+      clearRecoveryFlow();
+      void supabase.auth.signOut();
+      toast.success("Password updated. Sign in with your new password.");
+    }
+
     if (searchParams.get("error") === "auth_callback") {
       setCallbackError(true);
       toast.error(
         "That verification link could not be completed. Request a fresh link below."
       );
     }
-  }, [searchParams]);
+  }, [searchParams, supabase]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();

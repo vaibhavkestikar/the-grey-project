@@ -3,14 +3,8 @@
 import { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { AUTH_RECOVERY_COOKIE } from "@/lib/auth/recovery";
+import { clearRecoveryFlow, hasRecoveryCookie, isRecoveryRedirectExempt } from "@/lib/auth/recovery";
 import { createClient } from "@/lib/supabase/client";
-
-function hasRecoveryCookie(): boolean {
-  return document.cookie
-    .split("; ")
-    .some((c) => c.startsWith(`${AUTH_RECOVERY_COOKIE}=1`));
-}
 
 function hashHasAuthTokens(): boolean {
   if (typeof window === "undefined" || !window.location.hash) return false;
@@ -66,7 +60,8 @@ export default function AuthSessionHandler() {
     if (
       hasRecoveryCookie() &&
       pathname !== "/reset-password" &&
-      !pathname.startsWith("/auth/callback")
+      !pathname.startsWith("/auth/callback") &&
+      !isRecoveryRedirectExempt(pathname)
     ) {
       router.replace("/reset-password");
     }
@@ -75,19 +70,13 @@ export default function AuthSessionHandler() {
   useEffect(() => {
     const supabase = createClient();
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") {
-        document.cookie = `${AUTH_RECOVERY_COOKIE}=1; path=/; max-age=600; samesite=lax`;
-        router.replace("/reset-password");
+    void supabase.auth.getSession().then(({ data: { session } }) => {
+      // Recovery session can linger after password reset; drop stale recovery state on public pages.
+      if (!session && hasRecoveryCookie()) {
+        clearRecoveryFlow();
       }
     });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [router]);
+  }, [pathname]);
 
   return null;
 }

@@ -1,7 +1,7 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 
 import { trackAuthFunnelEvent } from "@/lib/auth/funnel";
-import { AUTH_RECOVERY_COOKIE } from "@/lib/auth/recovery";
+import { markRecoveryFlow } from "@/lib/auth/recovery";
 import { createClient } from "@/lib/supabase/client";
 
 export type CallbackMode = "signup" | "recovery" | "email_change";
@@ -59,10 +59,6 @@ function resolveCallbackMode(url: URL, fallback: CallbackMode): CallbackMode {
   if (type === "recovery") return "recovery";
   if (type === "email_change") return "email_change";
   return fallback;
-}
-
-function markRecoveryFlow() {
-  document.cookie = `${AUTH_RECOVERY_COOKIE}=1; path=/; max-age=600; samesite=lax`;
 }
 
 export type CallbackErrorCode =

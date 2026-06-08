@@ -24,6 +24,8 @@ If your site is also reachable via `www`, add those variants too:
 https://www.thegreyproject.com/auth/callback
 https://www.thegreyproject.com/auth/callback?type=signup
 https://www.thegreyproject.com/auth/callback/recovery
+https://www.thegreyproject.com/auth/callback/recovery?type=recovery
+https://www.thegreyproject.com/auth/callback?type=email_change
 ```
 
 Set **Site URL** in Supabase to your **Production** domain in Vercel. If apex redirects to www (307), use www:
@@ -48,32 +50,34 @@ Keep **enabled** under Authentication → Providers → Email.
 
 ## Email template (Confirm signup)
 
+Supabase templates are **HTML**, not Markdown. Do not put `[text](url)` inside `href`.
+
 Use a direct token link so verification works on mobile even when the signup
 browser tab is gone (PKCE verifier cookie not required):
 
 **Subject:** Welcome To The Grey Project
 
-**Body:**
+**Body (HTML):**
 
-You're one click away from understanding AI deeply.
-
-[Verify Email]({{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup)
+```html
+<h2>Welcome to The Grey Project</h2>
+<p>You're one click away from understanding AI deeply.</p>
+<p><a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup">Verify Email</a></p>
+```
 
 Do **not** rely on `{{ .ConfirmationURL }}` alone for mobile signup verification.
 That path can require the original browser session and fail in mobile Gmail/Chrome.
 
 ## Email template (Reset password)
 
-Use a direct token link so password reset works on mobile even when the request
-browser tab is gone (PKCE verifier cookie not required):
-
 **Subject:** Reset your Grey Project password
 
-**Body:**
+**Body (HTML):**
 
-Click below to choose a new password.
-
-[Reset Password]({{ .SiteURL }}/auth/callback/recovery?token_hash={{ .TokenHash }}&type=recovery)
+```html
+<p>Click below to choose a new password.</p>
+<p><a href="{{ .SiteURL }}/auth/callback/recovery?token_hash={{ .TokenHash }}&type=recovery">Reset Password</a></p>
+```
 
 Do **not** rely on `{{ .ConfirmationURL }}` alone for mobile password reset.
 That path can fail in mobile Gmail/Chrome for the same PKCE reason as signup verification.
@@ -83,15 +87,14 @@ That path can fail in mobile Gmail/Chrome for the same PKCE reason as signup ver
 Supabase sends this when a user confirms a new email from **Authentication → Email Templates →
 Change email address** (or "Confirm email change" depending on dashboard version).
 
-Use a direct token link so confirmation works on mobile:
-
 **Subject:** Confirm your new email for The Grey Project
 
-**Body:**
+**Body (HTML):**
 
-Confirm your new email address:
-
-[Confirm new email]({{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=email_change)
+```html
+<p>Confirm your new email address:</p>
+<p><a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=email_change">Confirm new email address</a></p>
+```
 
 Do **not** rely on `{{ .ConfirmationURL }}` alone. It can fail on mobile for the same PKCE reason.
 

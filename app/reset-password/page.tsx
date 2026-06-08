@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 import AuthHeader from "@/components/auth/auth-header";
-import { AUTH_RECOVERY_COOKIE } from "@/lib/auth/recovery";
+import { clearRecoveryFlow } from "@/lib/auth/recovery";
 import { waitForAuthSession } from "@/lib/auth/wait-for-session";
 import { createClient } from "@/lib/supabase/client";
 
@@ -25,7 +25,6 @@ export default function ResetPasswordPage() {
         return;
       }
 
-      document.cookie = `${AUTH_RECOVERY_COOKIE}=1; path=/; max-age=600; samesite=lax`;
       setReady(true);
     })();
   }, [router, supabase]);
@@ -47,9 +46,10 @@ export default function ResetPasswordPage() {
 
       toast.success("Password updated successfully");
 
-      document.cookie = `${AUTH_RECOVERY_COOKIE}=; path=/; max-age=0`;
+      clearRecoveryFlow();
+      await supabase.auth.signOut();
 
-      router.push("/login?password_updated=1");
+      router.replace("/login?password_updated=1");
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong");
