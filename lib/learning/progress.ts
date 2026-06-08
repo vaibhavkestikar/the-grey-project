@@ -115,19 +115,27 @@ export async function fetchLessonProgressMap(
 
 export async function fetchLessonProgress(
   lessonSlug: string,
-  pathId: string = PATH_ID
+  pathId: string = PATH_ID,
+  authenticatedUserId?: string | null
 ): Promise<LessonProgress | null> {
+  const hasKnownAuth = authenticatedUserId !== undefined;
+  let userId = authenticatedUserId;
+
+  if (!hasKnownAuth) {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    userId = user?.id ?? null;
+  }
+
+  if (!userId) return getGuestLessonProgress(pathId, lessonSlug);
+
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return getGuestLessonProgress(pathId, lessonSlug);
-
   const { data } = await supabase
     .from("lesson_progress")
     .select("lesson_slug, completed, progress_percent, last_position")
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .eq("course_slug", pathId)
     .eq("lesson_slug", lessonSlug)
     .maybeSingle();
@@ -135,20 +143,29 @@ export async function fetchLessonProgress(
   return data;
 }
 
-export async function saveLessonProgress(opts: {
-  pathId?: string;
-  lessonSlug: string;
-  step: number;
-  totalSteps: number;
-  markComplete?: boolean;
-}): Promise<void> {
+export async function saveLessonProgress(
+  opts: {
+    pathId?: string;
+    lessonSlug: string;
+    step: number;
+    totalSteps: number;
+    markComplete?: boolean;
+  },
+  authenticatedUserId?: string | null
+): Promise<void> {
   const pathId = opts.pathId ?? PATH_ID;
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const hasKnownAuth = authenticatedUserId !== undefined;
+  let userId = authenticatedUserId;
 
-  if (!user) {
+  if (!hasKnownAuth) {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    userId = user?.id ?? null;
+  }
+
+  if (!userId) {
     saveGuestLessonProgress({
       pathId,
       lessonSlug: opts.lessonSlug,
@@ -162,18 +179,22 @@ export async function saveLessonProgress(opts: {
   const { lessonSlug, step, totalSteps, markComplete } = opts;
   const progressPercent = Math.round(((step + 1) / totalSteps) * 100);
 
+  const supabase = createClient();
   const { data: existing } = await supabase
     .from("lesson_progress")
-    .select("id, completed, progress_percent")
-    .eq("user_id", user.id)
+    .select("id, completed, progress_percent, last_position")
+    .eq("user_id", userId)
     .eq("course_slug", pathId)
     .eq("lesson_slug", lessonSlug)
     .maybeSingle();
 
-  const completed =
-    existing?.completed || markComplete || progressPercent >= 100;
+  if (existing?.completed && !markComplete) {
+    return;
+  }
+
+  const completed = markComplete === true || progressPercent >= 100;
   const row = {
-    user_id: user.id,
+    user_id: userId,
     course_slug: pathId,
     module_slug: pathId,
     lesson_slug: lessonSlug,
@@ -191,7 +212,7 @@ export async function saveLessonProgress(opts: {
     await supabase
       .from("lesson_progress")
       .update(row)
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .eq("lesson_slug", lessonSlug);
   }
 }

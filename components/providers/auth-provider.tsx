@@ -17,86 +17,57 @@ type AuthContextType = {
   loading: boolean;
 };
 
-const AuthContext =
-  createContext<AuthContextType>({
-    user: null,
-    loading: true,
-  });
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  loading: true,
+});
 
-export function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-
-  const [user, setUser] =
-    useState<User | null>(null);
-
-  const [loading, setLoading] =
-    useState(true);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const supabase = createClient();
 
-    const supabase =
-      createClient();
-
-    async function getUser() {
-
+    async function initAuth() {
       const {
-        data: { user },
-      } =
-        await supabase.auth.getUser();
+        data: { user: initialUser },
+      } = await supabase.auth.getUser();
 
-      if (user) {
-        await mergeGuestProgressOnSignIn();
-      }
-
-      setUser(user);
-
+      setUser(initialUser);
       setLoading(false);
+
+      if (initialUser) {
+        void mergeGuestProgressOnSignIn();
+      }
     }
 
-    getUser();
+    void initAuth();
 
     const {
       data: authListener,
-    } =
-      supabase.auth.onAuthStateChange(
-        async (event, session) => {
-          if (event === "SIGNED_IN" && session?.user) {
-            await mergeGuestProgressOnSignIn();
-          }
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      const nextUser = session?.user ?? null;
+      setUser(nextUser);
+      setLoading(false);
 
-          setUser(
-            session?.user ?? null
-          );
-        }
-      );
+      if (event === "SIGNED_IN" && nextUser) {
+        void mergeGuestProgressOnSignIn();
+      }
+    });
 
     return () => {
       authListener.subscription.unsubscribe();
     };
-
   }, []);
 
   return (
-
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-      }}
-    >
-
+    <AuthContext.Provider value={{ user, loading }}>
       {children}
-
     </AuthContext.Provider>
-
   );
 }
 
 export function useAuth() {
-
   return useContext(AuthContext);
-
 }

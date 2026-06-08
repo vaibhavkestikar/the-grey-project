@@ -22,7 +22,6 @@ import {
   saveLessonProgress,
 } from "@/lib/learning/progress";
 import { useAuth } from "@/components/providers/auth-provider";
-import { createClient } from "@/lib/supabase/client";
 import { recordGuestGreyEvent, finalizeGuestFreeLesson } from "@/lib/learning/guest-progress";
 import { getNextLessonSlug, getLessonBySlug } from "@/data/curious-builders-path";
 import type { LessonBlock, LessonVisual, StructuredLesson } from "@/types/lesson";
@@ -588,6 +587,9 @@ export default function LessonEngine({
   const isAuthenticated = !authLoading && Boolean(user);
   const effectiveMode = isAuthenticated && mode === "try" ? "path" : mode;
   const effectiveShowSignupCta = showSignupCta && !isAuthenticated;
+  const onCompleteRef = useRef(onComplete);
+
+  onCompleteRef.current = onComplete;
 
   const [step, setStep] = useState(0);
   const [checkpointAnswer, setCheckpointAnswer] = useState<number | null>(null);
@@ -605,12 +607,30 @@ export default function LessonEngine({
   const progressPct = Math.round(((step + 1) / lesson.blocks.length) * 100);
 
   useEffect(() => {
+    setStep(0);
+    setCheckpointAnswer(null);
+    setCheckpointDone(false);
+    setProgressLoaded(false);
+    setAlreadyCompleted(false);
+    completionReported.current = false;
+    maxStepReached.current = 0;
+    checkpointAttempts.current = {};
+    localFeedbackShown.current = new Set();
+  }, [lesson.slug]);
+
+  useEffect(() => {
+    if (authLoading) return;
+
+    let cancelled = false;
+
     void (async () => {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      const saved = await fetchLessonProgress(lesson.slug, lesson.pathId);
+      const saved = await fetchLessonProgress(
+        lesson.slug,
+        lesson.pathId,
+        user?.id ?? null
+      );
+
+      if (cancelled) return;
 
       if (saved?.completed && !reviewMode) {
         if (mode === "try" && !user) {
@@ -622,7 +642,7 @@ export default function LessonEngine({
         setAlreadyCompleted(true);
         if (!completionReported.current) {
           completionReported.current = true;
-          onComplete?.();
+          onCompleteRef.current?.();
         }
       } else if (
         saved?.last_position !== undefined &&
@@ -632,21 +652,37 @@ export default function LessonEngine({
       ) {
         setStep(Math.min(saved.last_position, lesson.blocks.length - 1));
       }
+
       setProgressLoaded(true);
     })();
-  }, [lesson.slug, lesson.pathId, lesson.blocks.length, mode, onComplete, reviewMode]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    authLoading,
+    user?.id,
+    lesson.slug,
+    lesson.pathId,
+    lesson.blocks.length,
+    mode,
+    reviewMode,
+  ]);
 
   const persistProgress = useCallback(
     async (markComplete?: boolean) => {
-      await saveLessonProgress({
-        pathId: lesson.pathId,
-        lessonSlug: lesson.slug,
-        step,
-        totalSteps: lesson.blocks.length,
-        markComplete,
-      });
+      await saveLessonProgress(
+        {
+          pathId: lesson.pathId,
+          lessonSlug: lesson.slug,
+          step,
+          totalSteps: lesson.blocks.length,
+          markComplete,
+        },
+        user?.id ?? null
+      );
     },
-    [lesson.slug, lesson.pathId, lesson.blocks.length, step]
+    [lesson.slug, lesson.pathId, lesson.blocks.length, step, user?.id]
   );
 
   useEffect(() => {
@@ -863,7 +899,7 @@ export default function LessonEngine({
     }
   }
 
-  if (!progressLoaded) {
+  if (!progressLoaded || authLoading) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center">
         <p className="text-slate-500">Loading lesson...</p>

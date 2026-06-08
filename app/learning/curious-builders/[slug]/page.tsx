@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import PathFeedbackForm from "@/components/feedback/path-feedback-form";
 import SiteNavbar from "@/components/marketing/site-navbar";
 import LessonEngine from "@/components/learning/lesson-engine";
+import { useAuth } from "@/components/providers/auth-provider";
 import {
   CURIOUS_BUILDERS_LESSONS,
   CURIOUS_BUILDERS_PATH,
@@ -15,11 +16,12 @@ import {
   isLastLessonInPath,
 } from "@/data/curious-builders-path";
 import { PATH_CERTIFICATE_SLUG } from "@/lib/learning/certificate";
-import { createClient } from "@/lib/supabase/client";
+import { fetchLessonProgress } from "@/lib/learning/progress";
 
 export default function PathLessonPage() {
   const params = useParams();
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const slug = params.slug as string;
   const lesson = getLessonBySlug(slug);
   const [authReady, setAuthReady] = useState(false);
@@ -41,30 +43,44 @@ export default function PathLessonPage() {
 
   const isLastLesson = lesson ? isLastLessonInPath(slug) : false;
 
+  const handleLessonComplete = useCallback(() => {
+    setReviewMode(false);
+    setCompleted(true);
+  }, []);
+
   useEffect(() => {
-    void (async () => {
-      if (!lesson) return;
+    setCompleted(false);
+    setReviewMode(false);
+    setAuthReady(false);
+    setAllowed(false);
+  }, [slug]);
 
-      if (lesson.free) {
-        setAllowed(true);
-        setAuthReady(true);
-        return;
+  useEffect(() => {
+    if (!lesson || authLoading) return;
+
+    if (!lesson.free && !user) {
+      router.replace(`/login?next=/learning/curious-builders/${slug}`);
+      return;
+    }
+
+    setAllowed(true);
+    setAuthReady(true);
+  }, [lesson, authLoading, user, router, slug]);
+
+  useEffect(() => {
+    if (!lesson || authLoading) return;
+
+    void fetchLessonProgress(
+      lesson.slug,
+      CURIOUS_BUILDERS_PATH.id,
+      user?.id ?? null
+    ).then((saved) => {
+      if (saved?.completed) {
+        setCompleted(true);
+        setReviewMode(false);
       }
-
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        router.replace(`/login?next=/learning/curious-builders/${slug}`);
-        return;
-      }
-
-      setAllowed(true);
-      setAuthReady(true);
-    })();
-  }, [lesson, router, slug]);
+    });
+  }, [lesson, authLoading, user?.id]);
 
   useEffect(() => {
     if (!completed || !isLastLesson) return;
@@ -324,10 +340,7 @@ export default function PathLessonPage() {
               mode="path"
               showSignupCta={false}
               reviewMode={reviewMode}
-              onComplete={() => {
-                setReviewMode(false);
-                setCompleted(true);
-              }}
+              onComplete={handleLessonComplete}
             />
           </div>
         )}

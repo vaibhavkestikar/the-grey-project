@@ -149,7 +149,7 @@ export async function completeClientAuthCallback(mode: CallbackMode): Promise<{
   }
 
   if (!isRecoveryFlow && !isEmailChangeFlow) {
-    await mergeGuestProgressOnSignIn();
+    void mergeGuestProgressOnSignIn();
   }
 
   if (redirectPath.startsWith("/reset-password")) {
