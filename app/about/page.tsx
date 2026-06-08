@@ -18,7 +18,7 @@ const experiences = [
     role: "Lead Decision Scientist",
     duration: "2022 to 2025",
     description:
-      "Worked across machine learning, recommendation systems, customer intelligence, pricing analytics, and large scale data science systems powering retail decisions.",
+      "Worked across  machine learning, recommendation systems, customer intelligence, pricing analytics, and large scale data science systems powering retail decisions.",
   },
 
   {
