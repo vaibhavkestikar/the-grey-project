@@ -159,7 +159,7 @@ export const lessonNeurons: StructuredLesson = {
       visual: {
         kind: "callout",
         text: "Gradient descent is the algorithm that turned 'learn from examples' from a nice idea into a working technology.",
-        color: "green",
+        color: "emerald",
       },
       deepDive: {
         cta: "Why local optima don't kill training the way textbooks suggest",

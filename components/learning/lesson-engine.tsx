@@ -111,6 +111,7 @@ function LessonVisualBlock({ visual }: { visual: LessonVisual }) {
       amber: "border-amber-200 bg-amber-50 text-amber-900",
       emerald: "border-emerald-200 bg-emerald-50 text-emerald-900",
       red: "border-red-200 bg-red-50 text-red-900",
+      slate: "border-slate-200 bg-slate-50 text-slate-900",
     };
     const c = colorClasses[visual.color ?? "violet"];
     return (
@@ -387,6 +388,26 @@ function VisualBlock({ block }: { block: LessonBlock }) {
       )}
       {block.body && (
         <p className="mt-4 text-lg leading-relaxed text-slate-600">{block.body}</p>
+      )}
+      {block.items && block.items.length > 0 && (
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          {block.items.map((item) => (
+            <div
+              key={item.label}
+              className="rounded-2xl border border-blue-100 bg-blue-50/60 p-5"
+            >
+              <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                {item.label}
+              </p>
+              <p className="mt-3 rounded-xl border border-blue-100 bg-white p-4 text-sm leading-relaxed text-slate-800">
+                {item.content}
+              </p>
+              {item.note && (
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.note}</p>
+              )}
+            </div>
+          ))}
+        </div>
       )}
       {block.visual && (
         <div className="mt-6">

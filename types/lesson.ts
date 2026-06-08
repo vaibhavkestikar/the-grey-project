@@ -37,7 +37,7 @@ export type LessonVisual =
   | {
       kind: "callout";
       text: string;
-      color?: "violet" | "blue" | "amber" | "emerald" | "red";
+      color?: "violet" | "blue" | "amber" | "emerald" | "red" | "slate";
     };
 
 export type LessonBlock = {
@@ -61,6 +61,8 @@ export type LessonBlock = {
   learned?: string[];
   /** Inline visual component */
   visual?: LessonVisual;
+  /** Side-by-side examples for visual blocks */
+  items?: Array<{ label: string; content: string; note?: string }>;
   /**
    * Apply block: role-specific application examples.
    * Each item represents how someone in that role would use this concept today.
