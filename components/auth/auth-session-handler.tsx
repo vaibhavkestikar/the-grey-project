@@ -49,11 +49,14 @@ export default function AuthSessionHandler() {
     if ((code || tokenHash) && !onCallback) {
       const params = searchParams.toString();
       const isRecovery = type === "recovery";
+      const isEmailChange = type === "email_change";
       const target = isRecovery ? "/auth/callback/recovery" : "/auth/callback";
-      const nextParams =
-        isRecovery && !searchParams.has("type")
-          ? `${params ? `${params}&` : ""}type=recovery`
-          : params;
+      let nextParams = params;
+      if (isRecovery && !searchParams.has("type")) {
+        nextParams = `${params ? `${params}&` : ""}type=recovery`;
+      } else if (isEmailChange && !searchParams.has("type")) {
+        nextParams = `${params ? `${params}&` : ""}type=email_change`;
+      }
       window.location.replace(
         nextParams ? `${target}?${nextParams}` : target
       );

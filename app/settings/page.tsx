@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import SiteNavbar from "@/components/marketing/site-navbar";
 import { useAuth } from "@/components/providers/auth-provider";
-import { getAuthCallbackUrlWithType } from "@/lib/auth/redirect-url";
+import { getEmailChangeCallbackUrl } from "@/lib/auth/redirect-url";
+import { waitForAuthSession } from "@/lib/auth/wait-for-session";
 import { createClient } from "@/lib/supabase/client";
 
-export default function SettingsPage() {
+function SettingsContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -24,6 +26,40 @@ export default function SettingsPage() {
   const [experience, setExperience] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [emailChangeError, setEmailChangeError] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("error") === "email_change_callback") {
+      setEmailChangeError(true);
+      toast.error(
+        "That email confirmation link expired or opened in a different browser tab. Request a new one below."
+      );
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (searchParams.get("email_updated") !== "1" || authLoading || !user) {
+      return;
+    }
+
+    void (async () => {
+      await waitForAuthSession(supabase);
+      const {
+        data: { user: latestUser },
+      } = await supabase.auth.getUser();
+
+      if (latestUser?.email) {
+        setEmail(latestUser.email);
+        await supabase
+          .from("user_profiles")
+          .update({ email: latestUser.email })
+          .eq("id", latestUser.id);
+      }
+
+      toast.success("Email address updated.");
+      router.replace("/settings");
+    })();
+  }, [authLoading, router, searchParams, supabase, user]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -100,7 +136,7 @@ export default function SettingsPage() {
       setLoading(true);
       const { error } = await supabase.auth.updateUser(
         { email },
-        { emailRedirectTo: getAuthCallbackUrlWithType("email_change") }
+        { emailRedirectTo: getEmailChangeCallbackUrl() }
       );
       if (error) {
         toast.error(error.message);
@@ -245,6 +281,12 @@ export default function SettingsPage() {
               <p className="mt-2 text-sm text-slate-500">
                 Current email: <span className="font-semibold text-slate-800">{email}</span>
               </p>
+              {emailChangeError && (
+                <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+                  Your confirmation link expired or opened outside the browser where you
+                  requested the change. Enter the new email and click Update email again.
+                </div>
+              )}
               <div className="mt-6 space-y-4">
                 <input
                   type="email"
@@ -287,5 +329,19 @@ export default function SettingsPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
+          <p className="text-slate-600">Loading your profile...</p>
+        </main>
+      }
+    >
+      <SettingsContent />
+    </Suspense>
   );
 }

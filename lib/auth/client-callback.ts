@@ -53,11 +53,22 @@ export function resolveCallbackRedirect(
   return "/welcome";
 }
 
+function resolveCallbackMode(url: URL, fallback: CallbackMode): CallbackMode {
+  const type =
+    url.searchParams.get("type") ?? parseHashParams(url).get("type");
+  if (type === "recovery") return "recovery";
+  if (type === "email_change") return "email_change";
+  return fallback;
+}
+
 function markRecoveryFlow() {
   document.cookie = `${AUTH_RECOVERY_COOKIE}=1; path=/; max-age=600; samesite=lax`;
 }
 
-export type CallbackErrorCode = "auth_callback" | "password_reset_callback";
+export type CallbackErrorCode =
+  | "auth_callback"
+  | "password_reset_callback"
+  | "email_change_callback";
 
 export async function completeClientAuthCallback(mode: CallbackMode): Promise<{
   redirectPath: string;
@@ -65,6 +76,7 @@ export async function completeClientAuthCallback(mode: CallbackMode): Promise<{
 }> {
   const supabase = createClient();
   const url = new URL(window.location.href);
+  const effectiveMode = resolveCallbackMode(url, mode);
   const code = url.searchParams.get("code");
   const token_hash = url.searchParams.get("token_hash");
   const hashParams = parseHashParams(url);
@@ -73,15 +85,22 @@ export async function completeClientAuthCallback(mode: CallbackMode): Promise<{
   const otpType = resolveOtpType(
     url.searchParams.get("type"),
     hashParams.get("type"),
-    mode
+    effectiveMode
   );
+  const redirectPath = resolveCallbackRedirect(url, effectiveMode);
   const isRecoveryFlow =
-    mode === "recovery" ||
+    effectiveMode === "recovery" ||
     otpType === "recovery" ||
-    resolveCallbackRedirect(url, mode).startsWith("/reset-password");
+    redirectPath.startsWith("/reset-password");
+  const isEmailChangeFlow =
+    effectiveMode === "email_change" ||
+    otpType === "email_change" ||
+    redirectPath.startsWith("/settings");
   const failureError: CallbackErrorCode = isRecoveryFlow
     ? "password_reset_callback"
-    : "auth_callback";
+    : isEmailChangeFlow
+      ? "email_change_callback"
+      : "auth_callback";
 
   let authError: Error | null = null;
 
@@ -124,11 +143,9 @@ export async function completeClientAuthCallback(mode: CallbackMode): Promise<{
     return { redirectPath: "/login", error: failureError };
   }
 
-  if (!isRecoveryFlow) {
+  if (!isRecoveryFlow && !isEmailChangeFlow) {
     await trackAuthFunnelEvent(user.id, "email_verified");
   }
-
-  const redirectPath = resolveCallbackRedirect(url, mode);
 
   if (redirectPath === "/welcome") {
     await trackAuthFunnelEvent(user.id, "signup_completed");

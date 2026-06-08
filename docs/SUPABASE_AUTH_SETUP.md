@@ -76,6 +76,23 @@ Click below to choose a new password.
 Do **not** rely on `{{ .ConfirmationURL }}` alone for mobile password reset.
 That path can fail in mobile Gmail/Chrome for the same PKCE reason as signup verification.
 
+## Email template (Change email address)
+
+Supabase sends this when a user confirms a new email from **Authentication → Email Templates →
+Change email address** (or "Confirm email change" depending on dashboard version).
+
+Use a direct token link so confirmation works on mobile:
+
+**Subject:** Confirm your new email for The Grey Project
+
+**Body:**
+
+Confirm your new email address:
+
+[Confirm new email]({{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=email_change)
+
+Do **not** rely on `{{ .ConfirmationURL }}` alone. It can fail on mobile for the same PKCE reason.
+
 ## Migrations
 
 Run in order:

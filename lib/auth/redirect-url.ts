@@ -40,9 +40,13 @@ export function getAuthCallbackUrlWithType(
   if (type === "recovery") {
     return getRecoveryCallbackUrl();
   }
-  return `${getSiteUrl()}/auth/callback?type=${type}`;
+  return getEmailChangeCallbackUrl();
 }
 
 export function getRecoveryCallbackUrl(): string {
   return `${getSiteUrl()}/auth/callback/recovery?type=recovery`;
+}
+
+export function getEmailChangeCallbackUrl(): string {
+  return `${getSiteUrl()}/auth/callback?type=email_change`;
 }

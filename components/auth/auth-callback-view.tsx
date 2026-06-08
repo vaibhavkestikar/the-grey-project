@@ -36,6 +36,12 @@ export default function AuthCallbackView({ mode }: Props) {
           return;
         }
 
+        if (result.error === "email_change_callback") {
+          setMessage("That email confirmation link could not be used. Redirecting...");
+          router.replace("/settings?error=email_change_callback");
+          return;
+        }
+
         setMessage("Could not verify your link. Redirecting...");
         router.replace(`/login?error=${result.error}`);
         return;

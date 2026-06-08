@@ -56,6 +56,12 @@ export async function proxy(request: NextRequest) {
       : "/auth/callback";
     if (isRecovery && !callbackUrl.searchParams.has("type")) {
       callbackUrl.searchParams.set("type", "recovery");
+    } else if (
+      type === "email_change" &&
+      callbackUrl.pathname === "/auth/callback" &&
+      !callbackUrl.searchParams.has("type")
+    ) {
+      callbackUrl.searchParams.set("type", "email_change");
     }
     return NextResponse.redirect(callbackUrl);
   }
