@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Award, Lock } from "lucide-react";
 
 import {
-  fetchLessonProgressMap,
   fetchPathProgressSnapshot,
+  isLessonProgressComplete,
   type LessonProgress,
 } from "@/lib/learning/progress";
+import { mergeGuestProgressOnSignIn } from "@/lib/learning/merge-guest-progress";
 import { PATH_ID } from "@/data/curious-builders-path";
 import { PATH_CERTIFICATE_SLUG } from "@/lib/learning/certificate";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -34,32 +35,69 @@ export default function PathLessonList({
   const [pathComplete, setPathComplete] = useState(false);
   const [certificateIssued, setCertificateIssued] = useState(false);
   const [completedLessons, setCompletedLessons] = useState(0);
+  const [ready, setReady] = useState(false);
 
-  useEffect(() => {
-    if (showCertificate && pathId) {
-      void fetchPathProgressSnapshot(pathId).then((snapshot) => {
-        setProgressMap(snapshot.progressMap);
-        setPathComplete(snapshot.pathComplete);
-        setCertificateIssued(snapshot.certificateIssued);
-        setCompletedLessons(snapshot.completedLessons);
-      });
-      return;
+  const resolvedPathId = pathId ?? PATH_ID;
+
+  const loadProgress = useCallback(async () => {
+    if (authLoading) return;
+
+    if (user) {
+      await mergeGuestProgressOnSignIn();
     }
 
-    void fetchLessonProgressMap(pathId ?? PATH_ID).then(setProgressMap);
-  }, [user, showCertificate, pathId]);
+    if (showCertificate && pathId) {
+      const snapshot = await fetchPathProgressSnapshot(pathId);
+      setProgressMap(snapshot.progressMap);
+      setPathComplete(snapshot.pathComplete);
+      setCertificateIssued(snapshot.certificateIssued);
+      setCompletedLessons(snapshot.completedLessons);
+    } else {
+      const snapshot = await fetchPathProgressSnapshot(resolvedPathId);
+      setProgressMap(snapshot.progressMap);
+    }
+
+    setReady(true);
+  }, [authLoading, user, showCertificate, pathId, resolvedPathId]);
+
+  useEffect(() => {
+    setReady(false);
+    void loadProgress();
+  }, [loadProgress]);
+
+  useEffect(() => {
+    function handleFocus() {
+      void loadProgress();
+    }
+
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [loadProgress]);
 
   const certificateHref = `${baseHref}/${PATH_CERTIFICATE_SLUG}`;
   const certificateLocked = !pathComplete;
   const certificateRequiresAccount = !authLoading && !user;
 
+  if (!ready) {
+    return (
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+        Loading progress...
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       {lessons.map((lesson, index) => {
         const progress = progressMap.get(lesson.slug);
-        const completed = progress?.completed;
+        const completed = isLessonProgressComplete(
+          progress,
+          lesson.blocks.length
+        );
         const inProgress =
-          progress && !progress.completed && progress.progress_percent > 0;
+          progress &&
+          !completed &&
+          (progress.progress_percent > 0 || progress.last_position > 0);
         const requiresAccount = !lesson.free && !authLoading && !user;
         const href = requiresAccount
           ? `/register?next=${encodeURIComponent(`${baseHref}/${lesson.slug}`)}`

@@ -16,7 +16,10 @@ import {
   isLastLessonInPath,
 } from "@/data/curious-builders-path";
 import { PATH_CERTIFICATE_SLUG } from "@/lib/learning/certificate";
-import { fetchLessonProgress } from "@/lib/learning/progress";
+import {
+  fetchLessonProgress,
+  isLessonProgressComplete,
+} from "@/lib/learning/progress";
 import { mergeGuestProgressOnSignIn } from "@/lib/learning/merge-guest-progress";
 
 export default function PathLessonPage() {
@@ -74,17 +77,15 @@ export default function PathLessonPage() {
     if (!lesson || authLoading) return;
 
     void (async () => {
-      if (user) {
-        await mergeGuestProgressOnSignIn();
-      }
+      await mergeGuestProgressOnSignIn();
 
       const saved = await fetchLessonProgress(
         lesson.slug,
         CURIOUS_BUILDERS_PATH.id,
-        user?.id ?? null
+        user?.id
       );
 
-      if (saved?.completed) {
+      if (isLessonProgressComplete(saved, lesson.blocks.length)) {
         setCompleted(true);
         setReviewMode(false);
       }

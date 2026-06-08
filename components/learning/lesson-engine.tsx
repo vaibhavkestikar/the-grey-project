@@ -20,6 +20,7 @@ import {
 } from "@/lib/grey/sound";
 import {
   fetchLessonProgress,
+  isLessonProgressComplete,
   saveLessonProgress,
 } from "@/lib/learning/progress";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -629,12 +630,15 @@ export default function LessonEngine({
       const saved = await fetchLessonProgress(
         lesson.slug,
         lesson.pathId,
-        user?.id ?? null
+        user?.id
       );
 
       if (cancelled) return;
 
-      if (saved?.completed && !reviewMode) {
+      if (
+        isLessonProgressComplete(saved, lesson.blocks.length) &&
+        !reviewMode
+      ) {
         if (mode === "try" && !user) {
           setStep(lesson.blocks.length - 1);
           setProgressLoaded(true);
@@ -649,7 +653,7 @@ export default function LessonEngine({
       } else if (
         saved?.last_position !== undefined &&
         saved.last_position > 0 &&
-        !saved.completed &&
+        !isLessonProgressComplete(saved, lesson.blocks.length) &&
         !reviewMode
       ) {
         setStep(Math.min(saved.last_position, lesson.blocks.length - 1));
@@ -673,7 +677,7 @@ export default function LessonEngine({
 
   const persistProgress = useCallback(
     async (markComplete?: boolean) => {
-      await saveLessonProgress(
+      return saveLessonProgress(
         {
           pathId: lesson.pathId,
           lessonSlug: lesson.slug,
@@ -681,7 +685,7 @@ export default function LessonEngine({
           totalSteps: lesson.blocks.length,
           markComplete,
         },
-        user?.id ?? null
+        user?.id
       );
     },
     [lesson.slug, lesson.pathId, lesson.blocks.length, step, user?.id]
@@ -895,7 +899,11 @@ export default function LessonEngine({
       });
       await awardEvent({ eventType: "lesson_completed" });
       if (!reviewMode) {
-        await persistProgress(true);
+        const saved = await persistProgress(true);
+        if (!saved) {
+          toast.error("Could not save lesson progress. Please try again.");
+          return;
+        }
       }
       if (mode !== "try" || isAuthenticated) {
         onComplete?.();

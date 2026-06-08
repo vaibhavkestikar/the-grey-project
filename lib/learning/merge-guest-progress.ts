@@ -51,13 +51,18 @@ async function mergeGuestLessonRecord(
     progressPercent > (existing.progress_percent ?? 0) ||
     lastPosition > (existing.last_position ?? 0)
   ) {
-    const { error } = await supabase
+    const { error: updateError } = await supabase
       .from("lesson_progress")
       .update(row)
       .eq("user_id", userId)
       .eq("course_slug", guest.pathId)
       .eq("lesson_slug", guest.lessonSlug);
-    if (error) return false;
+    if (updateError) {
+      const { error: upsertError } = await supabase.from("lesson_progress").upsert(row, {
+        onConflict: "user_id,course_slug,lesson_slug",
+      });
+      if (upsertError) return false;
+    }
   }
 
   for (const event of guest.pendingEvents) {

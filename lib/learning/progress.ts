@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import { PATH_ID } from "@/data/curious-builders-path";
+import { getLessonBySlug, PATH_ID } from "@/data/curious-builders-path";
 import {
   getCertificatePath,
   hasCertificateIssued,
@@ -26,18 +26,76 @@ export type PathProgressSnapshot = {
   totalLessons: number;
 };
 
+function lessonTotalSteps(lessonSlug: string): number | undefined {
+  return getLessonBySlug(lessonSlug)?.blocks.length;
+}
+
+/** True when the learner finished, even if the DB flag was never set. */
+export function isLessonProgressComplete(
+  progress: LessonProgress | null | undefined,
+  totalSteps?: number
+): boolean {
+  if (!progress) return false;
+  if (progress.completed === true) return true;
+  if (progress.progress_percent >= 100) return true;
+  const steps = totalSteps ?? lessonTotalSteps(progress.lesson_slug);
+  if (steps && progress.last_position >= steps - 1) return true;
+  return false;
+}
+
+export function normalizeLessonProgress(
+  progress: LessonProgress,
+  totalSteps?: number
+): LessonProgress {
+  const steps = totalSteps ?? lessonTotalSteps(progress.lesson_slug);
+  if (!isLessonProgressComplete(progress, steps)) return progress;
+
+  return {
+    ...progress,
+    completed: true,
+    progress_percent: 100,
+    last_position: steps ? steps - 1 : progress.last_position,
+  };
+}
+
+async function resolveProgressUserId(userId?: string): Promise<string | null> {
+  if (userId) return userId;
+
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return user?.id ?? null;
+}
+
+async function repairIncompleteCompletion(
+  userId: string,
+  pathId: string,
+  progress: LessonProgress,
+  totalSteps: number
+): Promise<void> {
+  if (progress.completed || !isLessonProgressComplete(progress, totalSteps)) {
+    return;
+  }
+
+  await saveLessonProgress(
+    {
+      pathId,
+      lessonSlug: progress.lesson_slug,
+      step: totalSteps - 1,
+      totalSteps,
+      markComplete: true,
+    },
+    userId
+  );
+}
+
 export async function fetchPathProgressSnapshot(
   pathId: string
 ): Promise<PathProgressSnapshot> {
   const config = getCertificatePath(pathId);
   const totalLessons = config?.lessonSlugs.length ?? 0;
-  const empty: PathProgressSnapshot = {
-    progressMap: new Map(),
-    pathComplete: false,
-    certificateIssued: false,
-    completedLessons: 0,
-    totalLessons,
-  };
 
   const supabase = createClient();
   const {
@@ -45,18 +103,11 @@ export async function fetchPathProgressSnapshot(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const progressMap = getGuestProgressMapForDisplay(pathId);
-    const completedLessons = 0;
-    const rows = [...progressMap.values()].map((row) => ({
-      lesson_slug: row.lesson_slug,
-      completed: false,
-    }));
-
     return {
-      progressMap,
+      progressMap: getGuestProgressMapForDisplay(pathId),
       pathComplete: false,
       certificateIssued: false,
-      completedLessons,
+      completedLessons: 0,
       totalLessons,
     };
   }
@@ -71,19 +122,27 @@ export async function fetchPathProgressSnapshot(
 
   const rows = data ?? [];
   const progressMap = new Map<string, LessonProgress>();
+
   for (const row of rows) {
-    progressMap.set(row.lesson_slug, row);
+    const normalized = normalizeLessonProgress(row);
+    progressMap.set(row.lesson_slug, normalized);
+
+    const steps = lessonTotalSteps(row.lesson_slug);
+    if (steps) {
+      void repairIncompleteCompletion(user.id, pathId, row, steps);
+    }
   }
 
+  const normalizedRows = [...progressMap.values()];
   const completedLessons = config
-    ? config.lessonSlugs.filter(
-        (slug) => progressMap.get(slug)?.completed === true
+    ? config.lessonSlugs.filter((slug) =>
+        isLessonProgressComplete(progressMap.get(slug))
       ).length
     : 0;
 
   return {
     progressMap,
-    pathComplete: isPathFullyComplete(pathId, rows),
+    pathComplete: isPathFullyComplete(pathId, normalizedRows),
     certificateIssued: hasCertificateIssued(pathId, rows),
     completedLessons,
     totalLessons,
@@ -93,46 +152,24 @@ export async function fetchPathProgressSnapshot(
 export async function fetchLessonProgressMap(
   pathId: string = PATH_ID
 ): Promise<Map<string, LessonProgress>> {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return getGuestProgressMapForDisplay(pathId);
-
-  const { data } = await supabase
-    .from("lesson_progress")
-    .select("lesson_slug, completed, progress_percent, last_position")
-    .eq("user_id", user.id)
-    .eq("course_slug", pathId);
-
-  const map = new Map<string, LessonProgress>();
-  for (const row of data ?? []) {
-    map.set(row.lesson_slug, row);
-  }
-  return map;
+  const snapshot = await fetchPathProgressSnapshot(pathId);
+  return snapshot.progressMap;
 }
 
 export async function fetchLessonProgress(
   lessonSlug: string,
   pathId: string = PATH_ID,
-  authenticatedUserId?: string | null
+  authenticatedUserId?: string
 ): Promise<LessonProgress | null> {
-  const hasKnownAuth = authenticatedUserId !== undefined;
-  let userId = authenticatedUserId;
+  const userId = await resolveProgressUserId(authenticatedUserId);
 
-  if (!hasKnownAuth) {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    userId = user?.id ?? null;
+  if (!userId) {
+    const guest = getGuestLessonProgress(pathId, lessonSlug);
+    return guest ? normalizeLessonProgress(guest) : null;
   }
 
-  if (!userId) return getGuestLessonProgress(pathId, lessonSlug);
-
   const supabase = createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("lesson_progress")
     .select("lesson_slug, completed, progress_percent, last_position")
     .eq("user_id", userId)
@@ -140,7 +177,19 @@ export async function fetchLessonProgress(
     .eq("lesson_slug", lessonSlug)
     .maybeSingle();
 
-  return data;
+  if (error || !data) return null;
+
+  const totalSteps = lessonTotalSteps(lessonSlug);
+  const normalized = normalizeLessonProgress(
+    data,
+    totalSteps
+  );
+
+  if (totalSteps) {
+    void repairIncompleteCompletion(userId, pathId, data, totalSteps);
+  }
+
+  return normalized;
 }
 
 export async function saveLessonProgress(
@@ -151,19 +200,10 @@ export async function saveLessonProgress(
     totalSteps: number;
     markComplete?: boolean;
   },
-  authenticatedUserId?: string | null
-): Promise<void> {
+  authenticatedUserId?: string
+): Promise<boolean> {
   const pathId = opts.pathId ?? PATH_ID;
-  const hasKnownAuth = authenticatedUserId !== undefined;
-  let userId = authenticatedUserId;
-
-  if (!hasKnownAuth) {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    userId = user?.id ?? null;
-  }
+  const userId = await resolveProgressUserId(authenticatedUserId);
 
   if (!userId) {
     saveGuestLessonProgress({
@@ -173,14 +213,14 @@ export async function saveLessonProgress(
       totalSteps: opts.totalSteps,
       markComplete: opts.markComplete,
     });
-    return;
+    return true;
   }
 
   const { lessonSlug, step, totalSteps, markComplete } = opts;
   const progressPercent = Math.round(((step + 1) / totalSteps) * 100);
 
   const supabase = createClient();
-  const { data: existing } = await supabase
+  const { data: existing, error: readError } = await supabase
     .from("lesson_progress")
     .select("id, completed, progress_percent, last_position")
     .eq("user_id", userId)
@@ -188,11 +228,17 @@ export async function saveLessonProgress(
     .eq("lesson_slug", lessonSlug)
     .maybeSingle();
 
+  if (readError) return false;
+
   if (existing?.completed && !markComplete) {
-    return;
+    return true;
   }
 
-  const completed = markComplete === true || progressPercent >= 100;
+  const completed =
+    existing?.completed === true ||
+    markComplete === true ||
+    progressPercent >= 100;
+
   const row = {
     user_id: userId,
     course_slug: pathId,
@@ -208,14 +254,23 @@ export async function saveLessonProgress(
     updated_at: new Date().toISOString(),
   };
 
+  const { error: upsertError } = await supabase.from("lesson_progress").upsert(row, {
+    onConflict: "user_id,course_slug,lesson_slug",
+  });
+
+  if (!upsertError) return true;
+
   if (!existing) {
-    await supabase.from("lesson_progress").insert(row);
-  } else {
-    await supabase
-      .from("lesson_progress")
-      .update(row)
-      .eq("user_id", userId)
-      .eq("course_slug", pathId)
-      .eq("lesson_slug", lessonSlug);
+    const { error: insertError } = await supabase.from("lesson_progress").insert(row);
+    return !insertError;
   }
+
+  const { error: updateError } = await supabase
+    .from("lesson_progress")
+    .update(row)
+    .eq("user_id", userId)
+    .eq("course_slug", pathId)
+    .eq("lesson_slug", lessonSlug);
+
+  return !updateError;
 }

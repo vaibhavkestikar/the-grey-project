@@ -8,7 +8,10 @@ import {
   PATH_ID,
 } from "@/data/curious-builders-path";
 import { mergeGuestProgressOnSignIn } from "@/lib/learning/merge-guest-progress";
-import { fetchLessonProgressMap } from "@/lib/learning/progress";
+import {
+  fetchLessonProgressMap,
+  isLessonProgressComplete,
+} from "@/lib/learning/progress";
 import { getPathContinueHref } from "@/lib/learning/resume-path";
 
 type Props = {
@@ -33,7 +36,11 @@ export default function PostSignupActions({
       await mergeGuestProgressOnSignIn();
       const progressMap = await fetchLessonProgressMap(PATH_ID);
       const nextLesson = CURIOUS_BUILDERS_LESSONS.find(
-        (lesson) => progressMap.get(lesson.slug)?.completed !== true
+        (lesson) =>
+          !isLessonProgressComplete(
+            progressMap.get(lesson.slug),
+            lesson.blocks.length
+          )
       );
 
       setContinueHref(

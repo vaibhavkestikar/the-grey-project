@@ -1,13 +1,20 @@
 import type { StructuredLesson } from "@/types/lesson";
 
-import type { LessonProgress } from "@/lib/learning/progress";
+import {
+  isLessonProgressComplete,
+  type LessonProgress,
+} from "@/lib/learning/progress";
 
 export function getNextIncompleteLesson(
   lessons: StructuredLesson[],
   progressMap: Map<string, LessonProgress>
 ): StructuredLesson | undefined {
   return lessons.find(
-    (lesson) => progressMap.get(lesson.slug)?.completed !== true
+    (lesson) =>
+      !isLessonProgressComplete(
+        progressMap.get(lesson.slug),
+        lesson.blocks.length
+      )
   );
 }
 
