@@ -7,6 +7,25 @@ import { useRouter } from "next/navigation";
 import AuthHeader from "@/components/auth/auth-header";
 import { createClient } from "@/lib/supabase/client";
 
+async function waitForVerifiedUser(
+  supabase: ReturnType<typeof createClient>,
+  attempts = 8
+) {
+  for (let i = 0; i < attempts; i += 1) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user?.email_confirmed_at) {
+      return user;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+
+  return null;
+}
+
 export default function WelcomePage() {
   const router = useRouter();
   const supabase = createClient();
@@ -15,21 +34,30 @@ export default function WelcomePage() {
 
   useEffect(() => {
     void (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = await waitForVerifiedUser(supabase);
       if (!user) {
-        router.replace("/login");
+        const {
+          data: { user: latestUser },
+        } = await supabase.auth.getUser();
+
+        if (!latestUser) {
+          router.replace("/login");
+          return;
+        }
+
+        router.replace(
+          `/verify-email?email=${encodeURIComponent(latestUser.email ?? "")}`
+        );
         return;
       }
-      if (!user.email_confirmed_at) {
-        router.replace(`/verify-email?email=${encodeURIComponent(user.email ?? "")}`);
-        return;
-      }
+
       const first =
-        (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "";
+        (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] ??
+        "";
       setName(first);
       setReady(true);
     })();
-  }, [router, supabase.auth]);
+  }, [router, supabase]);
 
   if (!ready) {
     return (

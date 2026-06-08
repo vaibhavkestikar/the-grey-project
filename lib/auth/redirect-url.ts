@@ -30,18 +30,19 @@ export function getSiteUrl(): string {
 }
 
 export function getAuthCallbackUrl(): string {
-  return `${getSiteUrl()}/auth/callback`;
+  // type=signup keeps OTP verification explicit for server and client handlers.
+  return `${getSiteUrl()}/auth/callback?type=signup`;
 }
 
 export function getAuthCallbackUrlWithType(
   type: "recovery" | "email_change"
 ): string {
   if (type === "recovery") {
-    return `${getSiteUrl()}/auth/callback/recovery`;
+    return getRecoveryCallbackUrl();
   }
-  return `${getAuthCallbackUrl()}?type=${type}`;
+  return `${getSiteUrl()}/auth/callback?type=${type}`;
 }
 
 export function getRecoveryCallbackUrl(): string {
-  return `${getSiteUrl()}/auth/callback/recovery`;
+  return `${getSiteUrl()}/auth/callback/recovery?type=recovery`;
 }

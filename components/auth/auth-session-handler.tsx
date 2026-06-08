@@ -7,7 +7,19 @@ import { AUTH_RECOVERY_COOKIE } from "@/lib/auth/recovery";
 import { createClient } from "@/lib/supabase/client";
 
 function hasRecoveryCookie(): boolean {
-  return document.cookie.split("; ").some((c) => c.startsWith(`${AUTH_RECOVERY_COOKIE}=1`));
+  return document.cookie
+    .split("; ")
+    .some((c) => c.startsWith(`${AUTH_RECOVERY_COOKIE}=1`));
+}
+
+function hashHasAuthTokens(): boolean {
+  if (typeof window === "undefined" || !window.location.hash) return false;
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  return Boolean(
+    hash.get("access_token") ||
+      hash.get("refresh_token") ||
+      hash.get("token_hash")
+  );
 }
 
 export default function AuthSessionHandler() {
@@ -21,12 +33,30 @@ export default function AuthSessionHandler() {
     const type = searchParams.get("type");
     const onCallback = pathname.startsWith("/auth/callback");
 
-    // If auth params land outside our callback routes, forward to the server handler.
+    // Hash tokens never reach the server. Send them to the client callback page.
+    if (hashHasAuthTokens() && !onCallback) {
+      const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      const hashType = params.get("type");
+      const target =
+        type === "recovery" || hashType === "recovery"
+          ? "/auth/callback/recovery"
+          : "/auth/callback";
+      window.location.replace(`${target}${window.location.hash}`);
+      return;
+    }
+
+    // If auth params land outside callback routes, forward to the client handler.
     if ((code || tokenHash) && !onCallback) {
       const params = searchParams.toString();
-      const target =
-        type === "recovery" ? "/auth/callback/recovery" : "/auth/callback";
-      window.location.replace(params ? `${target}?${params}` : target);
+      const isRecovery = type === "recovery";
+      const target = isRecovery ? "/auth/callback/recovery" : "/auth/callback";
+      const nextParams =
+        isRecovery && !searchParams.has("type")
+          ? `${params ? `${params}&` : ""}type=recovery`
+          : params;
+      window.location.replace(
+        nextParams ? `${target}?${nextParams}` : target
+      );
       return;
     }
 
