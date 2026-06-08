@@ -17,17 +17,26 @@ function getCanonicalHost(): string | null {
   }
 }
 
+function shouldBypassCanonicalRedirect(host: string): boolean {
+  return (
+    host.startsWith("localhost") ||
+    host.endsWith(".vercel.app") ||
+    host.includes("127.0.0.1")
+  );
+}
+
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const hasAuthCode = request.nextUrl.searchParams.has("code");
   const hasTokenHash = request.nextUrl.searchParams.has("token_hash");
-  const isRecoveryFlow = request.cookies.get(AUTH_RECOVERY_COOKIE)?.value === "1";
+  const isRecoveryFlow =
+    request.cookies.get(AUTH_RECOVERY_COOKIE)?.value === "1";
 
   const canonicalHost = getCanonicalHost();
   if (
     canonicalHost &&
     request.nextUrl.host !== canonicalHost &&
-    !request.nextUrl.host.startsWith("localhost")
+    !shouldBypassCanonicalRedirect(request.nextUrl.host)
   ) {
     const canonicalUrl = request.nextUrl.clone();
     canonicalUrl.host = canonicalHost;
@@ -43,7 +52,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/reset-password", request.url));
   }
 
-  // Supabase sometimes lands auth params on the site root. Forward to our callback routes.
+  // Supabase sometimes lands auth params on the site root. Forward to callback pages.
   if (
     (hasAuthCode || hasTokenHash) &&
     !pathname.startsWith("/auth/callback")
@@ -66,42 +75,48 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(callbackUrl);
   }
 
-  let response = NextResponse.next({ request });
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            request.cookies.set(name, value);
-          });
-          response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options);
-          });
-        },
-      },
-    }
-  );
-
-  let user = null;
-  try {
-    const { data } = await supabase.auth.getUser();
-    user = data.user;
-  } catch {
-    return response;
-  }
-
   const isProtected = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
 
-  if (isProtected && !user) {
+  if (!isProtected) {
+    return NextResponse.next({ request });
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  let response = NextResponse.next({ request });
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => {
+          request.cookies.set(name, value);
+        });
+        response = NextResponse.next({ request });
+        cookiesToSet.forEach(({ name, value, options }) => {
+          response.cookies.set(name, value, options);
+        });
+      },
+    },
+  });
+
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+  } catch {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
