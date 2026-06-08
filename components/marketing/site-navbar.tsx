@@ -51,15 +51,15 @@ export default function SiteNavbar() {
             <>
               <Link
                 href="/login"
-                className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-violet-300 hover:text-violet-600 sm:px-4 lg:border-0 lg:px-4 lg:font-medium"
+                className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-violet-300 hover:text-violet-600 sm:px-4"
               >
                 Sign in
               </Link>
               <Link
-                href="/try/prediction"
-                className="hidden rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-200 hover:bg-violet-700 lg:inline-flex"
+                href="/register"
+                className="rounded-xl bg-violet-600 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:bg-violet-700 sm:px-4 lg:px-5 lg:py-2.5"
               >
-                Start Learning
+                Register
               </Link>
             </>
           )}
@@ -136,7 +136,7 @@ export default function SiteNavbar() {
                 className="mt-2 block rounded-xl bg-violet-600 px-4 py-3 text-center font-semibold text-white"
                 onClick={() => setOpen(false)}
               >
-                Create account
+                Register
               </Link>
             </>
           ) : (
