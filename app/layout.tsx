@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "The Grey Project",
     description: "Understand AI Like You Built It.",
-    url: "https://thegreyproject.com",
+    url: "https://www.thegreyproject.com",
     siteName: "The Grey Project",
     type: "website",
   },

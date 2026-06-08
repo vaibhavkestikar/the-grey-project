@@ -10,7 +10,7 @@ import BlogLearningCta from "@/components/growth/blog-learning-cta";
 import { blogPosts, getBlogPost } from "@/data/blog-posts";
 import { mdxComponents } from "@/components/mdx-components";
 
-const SITE = "https://thegreyproject.com";
+const SITE = "https://www.thegreyproject.com";
 
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({

@@ -7,42 +7,12 @@ const protectedRoutes = [
   "/learning/foundations-of-ai/module-2",
 ];
 
-function getCanonicalHost(): string | null {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!siteUrl) return null;
-  try {
-    return new URL(siteUrl).host;
-  } catch {
-    return null;
-  }
-}
-
-function shouldBypassCanonicalRedirect(host: string): boolean {
-  return (
-    host.startsWith("localhost") ||
-    host.endsWith(".vercel.app") ||
-    host.includes("127.0.0.1")
-  );
-}
-
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const hasAuthCode = request.nextUrl.searchParams.has("code");
   const hasTokenHash = request.nextUrl.searchParams.has("token_hash");
   const isRecoveryFlow =
     request.cookies.get(AUTH_RECOVERY_COOKIE)?.value === "1";
-
-  const canonicalHost = getCanonicalHost();
-  if (
-    canonicalHost &&
-    request.nextUrl.host !== canonicalHost &&
-    !shouldBypassCanonicalRedirect(request.nextUrl.host)
-  ) {
-    const canonicalUrl = request.nextUrl.clone();
-    canonicalUrl.host = canonicalHost;
-    canonicalUrl.protocol = "https:";
-    return NextResponse.redirect(canonicalUrl);
-  }
 
   if (
     isRecoveryFlow &&

@@ -26,19 +26,21 @@ https://www.thegreyproject.com/auth/callback?type=signup
 https://www.thegreyproject.com/auth/callback/recovery
 ```
 
-Set **Site URL** to your production domain (non-www):
+Set **Site URL** in Supabase to your **Production** domain in Vercel. If apex redirects to www (307), use www:
 
 ```
-https://thegreyproject.com
+https://www.thegreyproject.com
 ```
 
-Also set in Vercel:
+Keep apex redirect URLs in the allow list too (links may hit apex first before Vercel forwards to www).
+
+Also set in Vercel (must match Production domain, not the apex redirect source):
 
 ```
-NEXT_PUBLIC_SITE_URL=https://thegreyproject.com
+NEXT_PUBLIC_SITE_URL=https://www.thegreyproject.com
 ```
 
-This keeps auth links, cookies, and redirects on one canonical host.
+Do **not** set `NEXT_PUBLIC_SITE_URL` to the apex URL when Vercel redirects `thegreyproject.com` → `www.thegreyproject.com`. That mismatch caused the previous redirect loop together with app middleware.
 
 ## Confirm email
 
@@ -112,7 +114,7 @@ SUPABASE_SERVICE_ROLE_KEY=...
 Production (Vercel):
 
 ```
-NEXT_PUBLIC_SITE_URL=https://thegreyproject.com
+NEXT_PUBLIC_SITE_URL=https://www.thegreyproject.com
 ```
 
 Important: auth email links use `NEXT_PUBLIC_SITE_URL` in production. If old emails
