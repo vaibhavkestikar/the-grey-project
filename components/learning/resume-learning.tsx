@@ -1,18 +1,46 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import { getResumeLesson } from "@/lib/get-resume-lesson";
-import { getLessonBySlug, PATH_ID } from "@/data/curious-builders-path";
+import { getLessonBySlug } from "@/data/curious-builders-path";
+import { createClient } from "@/lib/supabase/client";
 
-export default async function ResumeLearning() {
-  const lesson = await getResumeLesson();
+type ResumeProgress = {
+  lesson_slug: string;
+  course_slug: string;
+  progress_percent: number;
+};
+
+export default function ResumeLearning() {
+  const [lesson, setLesson] = useState<ResumeProgress | null>(null);
+
+  useEffect(() => {
+    void (async () => {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("lesson_progress")
+        .select("lesson_slug, course_slug, progress_percent")
+        .eq("user_id", user.id)
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error || !data) return;
+      setLesson(data);
+    })();
+  }, []);
+
   if (!lesson) return null;
 
   const meta = getLessonBySlug(lesson.lesson_slug);
-  const href =
-    lesson.course_slug === PATH_ID ||
-    lesson.course_slug === "foundations-of-ai"
-      ? `/learning/curious-builders/${lesson.lesson_slug}`
-      : `/learning/curious-builders/${lesson.lesson_slug}`;
+  const href = `/learning/curious-builders/${lesson.lesson_slug}`;
 
   return (
     <section className="px-4 py-6 md:px-6 md:py-8">
