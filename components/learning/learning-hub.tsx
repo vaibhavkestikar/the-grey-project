@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import LearningPathsView from "@/components/learning/learning-paths-view";
 import PathMetaPills from "@/components/learning/path-meta-pills";
 import { CURIOUS_BUILDERS_PILLS } from "@/types/paths";
@@ -27,20 +25,6 @@ export default function LearningHub() {
             paths include the first 3 lessons free.
           </p>
           <PathMetaPills labels={[...CURIOUS_BUILDERS_PILLS]} className="mt-5" />
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/try/prediction"
-              className="rounded-2xl bg-violet-600 px-8 py-4 text-center font-semibold text-white shadow-lg"
-            >
-              Start free
-            </Link>
-            <Link
-              href="/learning/curious-builders"
-              className="rounded-2xl border border-slate-200 bg-white px-8 py-4 text-center font-semibold text-slate-800"
-            >
-              Open live path
-            </Link>
-          </div>
         </div>
       </section>
 

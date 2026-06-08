@@ -27,9 +27,6 @@ export default function SiteNavbar() {
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
-          <Link href="/try/prediction" className="text-sm font-medium text-slate-600 hover:text-violet-600">
-            Start Learning
-          </Link>
           <Link href="/learning" className="text-sm font-medium text-slate-600 hover:text-violet-600">
             Learning paths
           </Link>
@@ -105,9 +102,6 @@ export default function SiteNavbar() {
               <GreyPointsNavPill />
             </div>
           )}
-          <Link href="/try/prediction" className="block rounded-xl px-4 py-3 font-medium" onClick={() => setOpen(false)}>
-            Start Learning
-          </Link>
           <Link href="/learning" className="block rounded-xl px-4 py-3 font-medium" onClick={() => setOpen(false)}>
             Learning paths
           </Link>
