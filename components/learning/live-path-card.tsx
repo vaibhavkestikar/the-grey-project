@@ -18,9 +18,10 @@ import { getPathById } from "@/types/paths";
 
 type Props = {
   collapsible?: boolean;
+  compact?: boolean;
 };
 
-export default function LivePathCard({ collapsible = true }: Props) {
+export default function LivePathCard({ collapsible = true, compact = false }: Props) {
   const [open, setOpen] = useState(!collapsible);
   const pathMeta = getPathById("curious-builders");
 
@@ -39,11 +40,13 @@ export default function LivePathCard({ collapsible = true }: Props) {
           {CURIOUS_BUILDERS_PATH.title}
         </h3>
         <p className="mt-2 text-violet-100">{CURIOUS_BUILDERS_PATH.subtitle}</p>
-        <p className="mt-4 max-w-xl text-sm text-violet-100/90">
-          {CURIOUS_BUILDERS_PATH.description}
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-violet-100/90">
+          {compact
+            ? CURIOUS_BUILDERS_PATH.cardSummary
+            : CURIOUS_BUILDERS_PATH.description}
         </p>
 
-        {pathMeta && (
+        {pathMeta && !compact && (
           <PathValueGrid
             who={pathMeta.who}
             why={pathMeta.why}

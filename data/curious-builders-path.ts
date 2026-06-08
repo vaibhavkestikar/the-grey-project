@@ -23,10 +23,11 @@ export const CURIOUS_BUILDERS_LESSONS: StructuredLesson[] = [
 export const CURIOUS_BUILDERS_PATH = {
   id: PATH_ID,
   title: "Curious Builders",
-  subtitle:
-    "7 interactive lessons with Python sandboxes that run in your browser. No setup. No fluff. Built by a practitioner.",
+  subtitle: "7 interactive lessons. Python in your browser. 100% free.",
+  cardSummary:
+    "From prediction to production ML. Interactive steps, browser Python, and a completion certificate.",
   description:
-    "Learn how AI actually works — then run the math yourself. Write spam filters, simulate data leakage, and run the sigmoid inside every AI neuron in code you can edit. For founders, PMs, analysts, and builders who are done nodding in meetings and Googling on mute.",
+    "Learn how AI actually works, then run the math yourself. Write spam filters, simulate data leakage, and run the sigmoid inside every AI neuron in code you can edit. For founders, PMs, analysts, and builders who are done nodding in meetings and Googling on mute.",
   get totalMinutes() {
     return CURIOUS_BUILDERS_LESSONS.reduce(
       (sum, l) => sum + l.durationMinutes,

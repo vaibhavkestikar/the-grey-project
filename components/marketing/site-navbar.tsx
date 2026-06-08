@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Home, Menu, X } from "lucide-react";
 
 import { useAuth } from "@/components/providers/auth-provider";
 import GreyPointsNavPill from "@/components/learning/grey-points-nav-pill";
@@ -27,6 +27,9 @@ export default function SiteNavbar() {
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
+          <Link href="/" className="text-sm font-medium text-slate-600 hover:text-violet-600">
+            Home
+          </Link>
           <Link href="/learning" className="text-sm font-medium text-slate-600 hover:text-violet-600">
             Learning paths
           </Link>
@@ -44,17 +47,24 @@ export default function SiteNavbar() {
         </nav>
 
         <div className="flex items-center gap-2 lg:gap-3">
+          <Link
+            href="/"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-700 transition hover:border-violet-300 hover:text-violet-600 lg:hidden"
+            aria-label="Home"
+          >
+            <Home className="h-5 w-5" />
+          </Link>
           {!loading && !user && (
             <>
               <Link
                 href="/login"
-                className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-violet-300 hover:text-violet-600 sm:px-4"
+                className="hidden rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-violet-300 hover:text-violet-600 lg:inline-flex lg:px-4"
               >
                 Sign in
               </Link>
               <Link
                 href="/register"
-                className="rounded-xl bg-violet-600 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:bg-violet-700 sm:px-4 lg:px-5 lg:py-2.5"
+                className="hidden rounded-xl bg-violet-600 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:bg-violet-700 lg:inline-flex lg:px-5 lg:py-2.5"
               >
                 Register
               </Link>
@@ -102,6 +112,9 @@ export default function SiteNavbar() {
               <GreyPointsNavPill />
             </div>
           )}
+          <Link href="/" className="block rounded-xl px-4 py-3 font-medium" onClick={() => setOpen(false)}>
+            Home
+          </Link>
           <Link href="/learning" className="block rounded-xl px-4 py-3 font-medium" onClick={() => setOpen(false)}>
             Learning paths
           </Link>

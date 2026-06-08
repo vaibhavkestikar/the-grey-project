@@ -5,14 +5,16 @@ import { AUDIENCE_PATHS } from "@/types/paths";
 
 type Props = {
   collapsibleLive?: boolean;
+  compact?: boolean;
   heading?: string;
   subheading?: string;
 };
 
 export default function LearningPathsView({
   collapsibleLive = true,
+  compact = false,
   heading = "Learning Paths",
-  subheading = "Outcome driven paths for people who ship AI, not just bookmark threads about it. Curious Builders is completely free. First Build launches soon with limited seats. Three more paths stack after that.",
+  subheading = "Stackable AI paths with interactive lessons, Grey Points, and skill badges. Curious Builders is free. Start today.",
 }: Props) {
   const comingSoon = AUDIENCE_PATHS.filter(
     (p) => p.status !== "live" && !p.featured
@@ -30,24 +32,26 @@ export default function LearningPathsView({
             {heading}
           </h2>
           <p className="mt-4 max-w-2xl text-lg text-slate-600">{subheading}</p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {[
-              "Earn Grey Points",
-              "Collect skill badges",
-              "Redeem practical PDFs",
-            ].map((pill) => (
-              <span
-                key={pill}
-                className="rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-bold text-violet-700"
-              >
-                {pill}
-              </span>
-            ))}
-          </div>
+          {!compact && (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {[
+                "Earn Grey Points",
+                "Collect skill badges",
+                "Redeem practical PDFs",
+              ].map((pill) => (
+                <span
+                  key={pill}
+                  className="rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-bold text-violet-700"
+                >
+                  {pill}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="mt-10">
-          <LivePathCard collapsible={collapsibleLive} />
+          <LivePathCard collapsible={collapsibleLive} compact={compact} />
         </div>
 
         <div className="mt-14">
@@ -64,10 +68,7 @@ export default function LearningPathsView({
                 More paths cooking
               </h3>
               <p className="mt-2 max-w-2xl text-slate-600">
-                Stack what you need next: production trust, agentic workflows, or
-                strategy that survives a leadership meeting. First 3 lessons free on
-                each path. Same interactive vibe, with Grey Points, badges, and
-                useful assets to redeem as you go. Zero buzzword bingo.
+                Production AI, agentic workflows, and strategy. First 3 lessons free on each path.
               </p>
             </div>
             <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">

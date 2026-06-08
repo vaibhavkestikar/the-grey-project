@@ -26,11 +26,12 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Understand AI Like You Built It. Interactive lessons, live sandboxes, zero buzzword bingo.",
+    "Interactive AI learning with browser Python sandboxes. Learn LLMs, ML, and production AI. Free Curious Builders path. Earn Grey Points and skill badges.",
 
   openGraph: {
-    title: "The Grey Project",
-    description: "Understand AI Like You Built It.",
+    title: "The Grey Project: Learn How AI Actually Works",
+    description:
+      "Interactive AI courses with live sandboxes. Start free with Curious Builders.",
     url: "https://www.thegreyproject.com",
     siteName: "The Grey Project",
     type: "website",

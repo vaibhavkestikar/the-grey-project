@@ -13,16 +13,13 @@ export default function LearningHub() {
             Learn AI. Never Forget.
           </span>
           <h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 md:text-6xl">
-            Your learning paths
+            AI learning paths
           </h1>
           <p className="mt-4 max-w-2xl text-xl text-slate-600">
-            Outcome driven paths for people who use and ship AI, not just collect
-            LinkedIn certificates like Pokémon cards.
+            Interactive lessons for builders who ship AI, not just collect certificates.
           </p>
           <p className="mt-2 max-w-2xl text-base text-slate-500">
-            Start with Curious Builders. It is completely free. Stack First Build,
-            Reliable AI, Agentic Systems, or AI Strategy when you are ready. Later
-            paths include the first 3 lessons free.
+            Start with Curious Builders (free). Stack more paths when you are ready.
           </p>
           <PathMetaPills labels={[...CURIOUS_BUILDERS_PILLS]} className="mt-5" />
         </div>

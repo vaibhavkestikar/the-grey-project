@@ -3,6 +3,18 @@ import HomeHero from "@/components/marketing/home-hero";
 import LearningPathsView from "@/components/learning/learning-paths-view";
 import SampleLessonCta from "@/components/marketing/sample-lesson-cta";
 import FounderSection from "@/components/marketing/founder-section";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Learn How AI Actually Works: Interactive Lessons",
+  description:
+    "Free interactive AI courses with browser Python sandboxes. Learn LLMs, machine learning, and production AI. Earn Grey Points and skill badges at The Grey Project.",
+  openGraph: {
+    title: "The Grey Project: Learn How AI Actually Works",
+    description:
+      "Interactive AI learning paths with live sandboxes. Start free with Curious Builders.",
+  },
+};
 
 export default function HomePage() {
   return (
@@ -11,7 +23,8 @@ export default function HomePage() {
       <HomeHero />
       <LearningPathsView
         collapsibleLive={false}
-        subheading="Outcome driven paths for people who ship AI, not just bookmark threads about it. Earn Grey Points, collect skill badges, and redeem practical assets as you learn. Curious Builders is completely free. First Build launches soon with limited seats."
+        compact
+        subheading="Free Curious Builders path live now. Earn Grey Points, unlock badges, and stack advanced paths next."
       />
       <SampleLessonCta />
       <FounderSection />
@@ -36,7 +49,7 @@ export default function HomePage() {
         </div>
       </section>
       <footer className="border-t border-slate-200 px-4 py-10 text-center text-sm text-slate-500">
-        © {new Date().getFullYear()} The Grey Project · Learn AI. Never Forget. · No buzzwords were harmed.
+        © {new Date().getFullYear()} The Grey Project. Learn AI. Never Forget.
       </footer>
     </main>
   );
