@@ -3,10 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import AuthHeader from "@/components/auth/auth-header";
+import PostSignupActions from "@/components/learning/post-signup-actions";
 import { getAuthCallbackUrl } from "@/lib/auth/redirect-url";
 import { trackAuthFunnelEvent } from "@/lib/auth/funnel";
 import { createClient } from "@/lib/supabase/client";
@@ -15,7 +16,6 @@ const POLL_MS = 5000;
 const RESEND_COOLDOWN = 60;
 
 export default function VerifyEmailView() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
 
@@ -83,14 +83,11 @@ export default function VerifyEmailView() {
         <main className="flex min-h-[calc(100dvh-68px)] items-center justify-center px-4 py-8">
           <div className="w-full max-w-lg rounded-[2rem] border border-emerald-200 bg-white p-10 text-center shadow-2xl">
             <p className="text-5xl">✓</p>
-            <h1 className="mt-6 text-3xl font-black">Email Verified</h1>
-            <button
-              type="button"
-              onClick={() => router.push("/learning")}
-              className="mt-8 w-full rounded-2xl bg-violet-600 py-4 font-semibold text-white"
-            >
-              Start Learning
-            </button>
+            <h1 className="mt-6 text-3xl font-black">Email verified</h1>
+            <p className="mt-4 text-slate-600">
+              Your account is ready. Pick up where your free sample left off.
+            </p>
+            <PostSignupActions />
           </div>
         </main>
       </>

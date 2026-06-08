@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import AuthHeader from "@/components/auth/auth-header";
+import PostSignupActions from "@/components/learning/post-signup-actions";
 import { createClient } from "@/lib/supabase/client";
 
 async function waitForVerifiedUser(
@@ -79,26 +79,7 @@ export default function WelcomePage() {
             Your brain is about to get an upgrade. Let&apos;s understand AI together,
             for real this time.
           </p>
-          <div className="mt-10 flex flex-col gap-4">
-            <Link
-              href="/try/prediction"
-              className="rounded-2xl bg-violet-600 py-4 font-semibold text-white"
-            >
-              Start Sample
-            </Link>
-            <Link
-              href="/learning/curious-builders/prediction"
-              className="rounded-2xl border py-4 font-semibold text-slate-800"
-            >
-              Continue Learning
-            </Link>
-            <Link
-              href="/learning"
-              className="rounded-2xl bg-slate-50 py-4 font-semibold text-slate-700"
-            >
-              Explore learning paths
-            </Link>
-          </div>
+          <PostSignupActions />
         </div>
       </main>
     </>

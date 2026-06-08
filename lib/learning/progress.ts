@@ -5,6 +5,11 @@ import {
   hasCertificateIssued,
   isPathFullyComplete,
 } from "@/lib/learning/certificate";
+import {
+  getGuestLessonProgress,
+  getGuestProgressMapForDisplay,
+  saveGuestLessonProgress,
+} from "@/lib/learning/guest-progress";
 
 export type LessonProgress = {
   lesson_slug: string;
@@ -39,7 +44,22 @@ export async function fetchPathProgressSnapshot(
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return empty;
+  if (!user) {
+    const progressMap = getGuestProgressMapForDisplay(pathId);
+    const completedLessons = 0;
+    const rows = [...progressMap.values()].map((row) => ({
+      lesson_slug: row.lesson_slug,
+      completed: false,
+    }));
+
+    return {
+      progressMap,
+      pathComplete: false,
+      certificateIssued: false,
+      completedLessons,
+      totalLessons,
+    };
+  }
 
   const { data } = await supabase
     .from("lesson_progress")
@@ -70,21 +90,21 @@ export async function fetchPathProgressSnapshot(
   };
 }
 
-export async function fetchLessonProgressMap(): Promise<
-  Map<string, LessonProgress>
-> {
+export async function fetchLessonProgressMap(
+  pathId: string = PATH_ID
+): Promise<Map<string, LessonProgress>> {
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return new Map();
+  if (!user) return getGuestProgressMapForDisplay(pathId);
 
   const { data } = await supabase
     .from("lesson_progress")
     .select("lesson_slug, completed, progress_percent, last_position")
     .eq("user_id", user.id)
-    .eq("course_slug", PATH_ID);
+    .eq("course_slug", pathId);
 
   const map = new Map<string, LessonProgress>();
   for (const row of data ?? []) {
@@ -94,19 +114,21 @@ export async function fetchLessonProgressMap(): Promise<
 }
 
 export async function fetchLessonProgress(
-  lessonSlug: string
+  lessonSlug: string,
+  pathId: string = PATH_ID
 ): Promise<LessonProgress | null> {
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return null;
+  if (!user) return getGuestLessonProgress(pathId, lessonSlug);
 
   const { data } = await supabase
     .from("lesson_progress")
     .select("lesson_slug, completed, progress_percent, last_position")
     .eq("user_id", user.id)
+    .eq("course_slug", pathId)
     .eq("lesson_slug", lessonSlug)
     .maybeSingle();
 
@@ -114,17 +136,28 @@ export async function fetchLessonProgress(
 }
 
 export async function saveLessonProgress(opts: {
+  pathId?: string;
   lessonSlug: string;
   step: number;
   totalSteps: number;
   markComplete?: boolean;
 }): Promise<void> {
+  const pathId = opts.pathId ?? PATH_ID;
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return;
+  if (!user) {
+    saveGuestLessonProgress({
+      pathId,
+      lessonSlug: opts.lessonSlug,
+      step: opts.step,
+      totalSteps: opts.totalSteps,
+      markComplete: opts.markComplete,
+    });
+    return;
+  }
 
   const { lessonSlug, step, totalSteps, markComplete } = opts;
   const progressPercent = Math.round(((step + 1) / totalSteps) * 100);
@@ -133,6 +166,7 @@ export async function saveLessonProgress(opts: {
     .from("lesson_progress")
     .select("id, completed, progress_percent")
     .eq("user_id", user.id)
+    .eq("course_slug", pathId)
     .eq("lesson_slug", lessonSlug)
     .maybeSingle();
 
@@ -140,8 +174,8 @@ export async function saveLessonProgress(opts: {
     existing?.completed || markComplete || progressPercent >= 100;
   const row = {
     user_id: user.id,
-    course_slug: PATH_ID,
-    module_slug: PATH_ID,
+    course_slug: pathId,
+    module_slug: pathId,
     lesson_slug: lessonSlug,
     progress_percent: completed
       ? 100

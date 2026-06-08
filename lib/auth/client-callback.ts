@@ -2,6 +2,7 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 
 import { trackAuthFunnelEvent } from "@/lib/auth/funnel";
 import { markRecoveryFlow } from "@/lib/auth/recovery";
+import { mergeGuestProgressOnSignIn } from "@/lib/learning/merge-guest-progress";
 import { createClient } from "@/lib/supabase/client";
 
 export type CallbackMode = "signup" | "recovery" | "email_change";
@@ -145,6 +146,10 @@ export async function completeClientAuthCallback(mode: CallbackMode): Promise<{
 
   if (redirectPath === "/welcome") {
     await trackAuthFunnelEvent(user.id, "signup_completed");
+  }
+
+  if (!isRecoveryFlow && !isEmailChangeFlow) {
+    await mergeGuestProgressOnSignIn();
   }
 
   if (redirectPath.startsWith("/reset-password")) {

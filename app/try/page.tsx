@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 import SiteNavbar from "@/components/marketing/site-navbar";
@@ -5,6 +7,7 @@ import PathLessonList from "@/components/learning/path-lesson-list";
 import LearningPathPill from "@/components/learning/learning-path-pill";
 import PathMetaPills from "@/components/learning/path-meta-pills";
 import PathValueGrid from "@/components/learning/path-value-grid";
+import { useAuth } from "@/components/providers/auth-provider";
 import {
   CURIOUS_BUILDERS_PATH,
   getFreeLessons,
@@ -12,9 +15,14 @@ import {
 import { CURIOUS_BUILDERS_PILLS, getPathById } from "@/types/paths";
 
 export default function TryPage() {
+  const { user, loading: authLoading } = useAuth();
+  const isAuthenticated = !authLoading && Boolean(user);
   const freeLessons = getFreeLessons();
   const totalMinutes = freeLessons.reduce((s, l) => s + l.durationMinutes, 0);
   const pathMeta = getPathById("curious-builders");
+  const lessonBaseHref = isAuthenticated
+    ? "/learning/curious-builders"
+    : "/try";
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#f8fafc]">
@@ -30,9 +38,18 @@ export default function TryPage() {
           {CURIOUS_BUILDERS_PATH.title}
         </h1>
         <p className="mt-4 text-lg text-slate-600">
-          Two free lessons. About {totalMinutes} minutes. No account needed to start.
-          The full path is completely free with an account for progress tracking and
-          your completion certificate.
+          {isAuthenticated ? (
+            <>
+              Welcome back. Your progress is saved — continue the full path from
+              where you left off.
+            </>
+          ) : (
+            <>
+              Two free lessons. About {totalMinutes} minutes. No account needed to
+              start. The full path is completely free with an account for progress
+              tracking and your completion certificate.
+            </>
+          )}
         </p>
 
         <PathMetaPills className="mt-4" labels={[...CURIOUS_BUILDERS_PILLS]} />
@@ -47,24 +64,48 @@ export default function TryPage() {
         )}
 
         <div className="mt-10">
-          <PathLessonList lessons={freeLessons} baseHref="/try" />
+          <PathLessonList
+            lessons={freeLessons}
+            baseHref={lessonBaseHref}
+            pathId={CURIOUS_BUILDERS_PATH.id}
+          />
         </div>
 
         <div className="premium-card mt-12 p-8 text-center">
-          <p className="font-semibold text-slate-900">
-            Liked what you saw? Create a free account to unlock the rest, save
-            progress, and earn your completion certificate.
-          </p>
-          <p className="mt-2 text-sm text-slate-500">
-            The full path stays free. No credit card. No &ldquo;limited time offer&rdquo;
-            nonsense.
-          </p>
-          <Link
-            href="/register"
-            className="mt-4 inline-flex rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
-          >
-            Create free account
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <p className="font-semibold text-slate-900">
+                You&apos;re signed in. Continue the full Curious Builders path.
+              </p>
+              <p className="mt-2 text-sm text-slate-500">
+                Progress, Grey Points, badges, and your certificate are all tied
+                to your account.
+              </p>
+              <Link
+                href="/learning/curious-builders"
+                className="mt-4 inline-flex rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
+              >
+                Go to learning path
+              </Link>
+            </>
+          ) : (
+            <>
+              <p className="font-semibold text-slate-900">
+                Liked what you saw? Create a free account to unlock the rest, save
+                progress, and earn your completion certificate.
+              </p>
+              <p className="mt-2 text-sm text-slate-500">
+                The full path stays free. No credit card. No &ldquo;limited time
+                offer&rdquo; nonsense.
+              </p>
+              <Link
+                href="/register"
+                className="mt-4 inline-flex rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
+              >
+                Create free account
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </main>

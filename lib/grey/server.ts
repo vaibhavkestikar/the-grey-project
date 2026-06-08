@@ -10,6 +10,7 @@ import {
   getPathLessonSlugs,
   getStoreItemById,
 } from "@/lib/grey/config";
+import { buildGreyEventKey } from "@/lib/grey/event-key";
 import { CERTIFICATE_PATHS } from "@/lib/learning/certificate";
 
 type GreyProfileRow = {
@@ -45,16 +46,6 @@ function yesterdayIsoDate(today: string) {
   const date = new Date(`${today}T00:00:00.000Z`);
   date.setUTCDate(date.getUTCDate() - 1);
   return date.toISOString().slice(0, 10);
-}
-
-function eventKey(input: GreyAwardInput) {
-  const parts = [
-    input.eventType,
-    input.pathId,
-    input.lessonSlug ?? "path",
-    input.stepIndex ?? "all",
-  ];
-  return parts.join(":");
 }
 
 function pointsFor(input: GreyAwardInput) {
@@ -178,7 +169,7 @@ async function maybeAwardPathCompletion(
   if (!pathComplete) return { points: 0, badge: null };
 
   const pathEvent: GreyAwardInput = { eventType: "path_completed", pathId };
-  const key = eventKey(pathEvent);
+  const key = buildGreyEventKey(pathEvent);
   const { data: existing } = await supabase
     .from("grey_points_ledger")
     .select("id")
@@ -257,7 +248,7 @@ export async function awardGreyPoints(
   input: GreyAwardInput
 ): Promise<GreyAwardResult> {
   const points = pointsFor(input);
-  const key = eventKey(input);
+  const key = buildGreyEventKey(input);
 
   const { data: existing } = await supabase
     .from("grey_points_ledger")

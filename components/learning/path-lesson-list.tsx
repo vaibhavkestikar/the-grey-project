@@ -9,6 +9,7 @@ import {
   fetchPathProgressSnapshot,
   type LessonProgress,
 } from "@/lib/learning/progress";
+import { PATH_ID } from "@/data/curious-builders-path";
 import { PATH_CERTIFICATE_SLUG } from "@/lib/learning/certificate";
 import { useAuth } from "@/components/providers/auth-provider";
 import type { StructuredLesson } from "@/types/lesson";
@@ -45,7 +46,7 @@ export default function PathLessonList({
       return;
     }
 
-    void fetchLessonProgressMap().then(setProgressMap);
+    void fetchLessonProgressMap(pathId ?? PATH_ID).then(setProgressMap);
   }, [user, showCertificate, pathId]);
 
   const certificateHref = `${baseHref}/${PATH_CERTIFICATE_SLUG}`;

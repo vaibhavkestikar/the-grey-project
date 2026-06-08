@@ -54,6 +54,11 @@ export default function RegisterPage() {
 
       track("signup_started");
 
+      const nextPath = new URLSearchParams(window.location.search).get("next");
+      const emailRedirectTo = nextPath?.startsWith("/")
+        ? `${getAuthCallbackUrl()}&next=${encodeURIComponent(nextPath)}`
+        : getAuthCallbackUrl();
+
       const {
         data,
         error,
@@ -66,8 +71,7 @@ export default function RegisterPage() {
 
           options: {
 
-            emailRedirectTo:
-              getAuthCallbackUrl(),
+            emailRedirectTo,
 
             data: {
 

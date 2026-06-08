@@ -6,19 +6,25 @@ import { useParams } from "next/navigation";
 
 import SiteNavbar from "@/components/marketing/site-navbar";
 import LessonEngine from "@/components/learning/lesson-engine";
+import { useAuth } from "@/components/providers/auth-provider";
 import {
   getFreeLessons,
   getLessonBySlug,
+  getNextLessonSlug,
+  PATH_ID,
 } from "@/data/curious-builders-path";
 
 export default function TryLessonPage() {
   const params = useParams();
   const slug = params.slug as string;
   const lesson = getLessonBySlug(slug);
+  const { user, loading: authLoading } = useAuth();
   const [completed, setCompleted] = useState(false);
   const [reviewMode, setReviewMode] = useState(false);
 
   const isFree = lesson?.free === true;
+  const isAuthenticated = !authLoading && Boolean(user);
+  const nextSlug = slug ? getNextLessonSlug(slug) : null;
 
   if (!isFree || !lesson) {
     return (
@@ -35,12 +41,31 @@ export default function TryLessonPage() {
   const index = freeLessons.findIndex((l) => l.slug === slug);
   const nextFree = freeLessons[index + 1];
 
+  const nextLessonHref = isAuthenticated
+    ? nextSlug
+      ? `/learning/${PATH_ID}/${nextSlug}`
+      : `/learning/${PATH_ID}`
+    : nextFree
+      ? `/try/${nextFree.slug}`
+      : "/register";
+
+  const nextLessonLabel = isAuthenticated
+    ? nextSlug
+      ? "Next lesson →"
+      : "Continue path →"
+    : nextFree
+      ? "Next lesson →"
+      : "Continue learning →";
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#f8fafc]">
       <SiteNavbar />
 
       <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
-        <Link href="/try" className="text-sm font-medium text-slate-500 hover:text-violet-600">
+        <Link
+          href={isAuthenticated ? `/learning/${PATH_ID}` : "/try"}
+          className="text-sm font-medium text-slate-500 hover:text-violet-600"
+        >
           ← Curious Builders
         </Link>
 
@@ -54,21 +79,26 @@ export default function TryLessonPage() {
             </h1>
             <p className="mt-4 text-lg text-slate-600">
               You finished <strong>{lesson.title}</strong>.
+              {isAuthenticated && (
+                <>
+                  {" "}
+                  Progress saved to your account.
+                </>
+              )}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-              {nextFree ? (
+              <Link
+                href={nextLessonHref}
+                className="rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
+              >
+                {nextLessonLabel}
+              </Link>
+              {isAuthenticated && (
                 <Link
-                  href={`/try/${nextFree.slug}`}
-                  className="rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
+                  href="/account"
+                  className="rounded-2xl border border-violet-200 bg-violet-50 px-8 py-4 font-semibold text-violet-800"
                 >
-                  Next lesson →
-                </Link>
-              ) : (
-                <Link
-                  href="/register"
-                  className="rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
-                >
-                  Continue learning →
+                  View profile
                 </Link>
               )}
               <button
@@ -87,6 +117,7 @@ export default function TryLessonPage() {
               mode="try"
               reviewMode={reviewMode}
               onComplete={() => {
+                if (!isAuthenticated) return;
                 setReviewMode(false);
                 setCompleted(true);
               }}

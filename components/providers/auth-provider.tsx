@@ -10,6 +10,7 @@ import {
 import { User } from "@supabase/supabase-js";
 
 import { createClient } from "@/lib/supabase/client";
+import { mergeGuestProgressOnSignIn } from "@/lib/learning/merge-guest-progress";
 
 type AuthContextType = {
   user: User | null;
@@ -46,6 +47,10 @@ export function AuthProvider({
       } =
         await supabase.auth.getUser();
 
+      if (user) {
+        await mergeGuestProgressOnSignIn();
+      }
+
       setUser(user);
 
       setLoading(false);
@@ -57,7 +62,11 @@ export function AuthProvider({
       data: authListener,
     } =
       supabase.auth.onAuthStateChange(
-        (_event, session) => {
+        async (event, session) => {
+          if (event === "SIGNED_IN" && session?.user) {
+            await mergeGuestProgressOnSignIn();
+          }
+
           setUser(
             session?.user ?? null
           );

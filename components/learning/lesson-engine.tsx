@@ -21,6 +21,9 @@ import {
   fetchLessonProgress,
   saveLessonProgress,
 } from "@/lib/learning/progress";
+import { useAuth } from "@/components/providers/auth-provider";
+import { createClient } from "@/lib/supabase/client";
+import { recordGuestGreyEvent, finalizeGuestFreeLesson } from "@/lib/learning/guest-progress";
 import { getNextLessonSlug, getLessonBySlug } from "@/data/curious-builders-path";
 import type { LessonBlock, LessonVisual, StructuredLesson } from "@/types/lesson";
 
@@ -317,14 +320,12 @@ function ReflectBlock({
   block,
   showSignupCta,
   mode,
-  nextSlug,
-  hasFreeNextLesson,
+  onCreateAccount,
 }: {
   block: LessonBlock;
   showSignupCta: boolean;
   mode: string;
-  nextSlug: string | null;
-  hasFreeNextLesson: boolean;
+  onCreateAccount?: () => void;
 }) {
   return (
     <div>
@@ -364,22 +365,13 @@ function ReflectBlock({
           <p className="font-semibold text-violet-900">
             Save progress and unlock the full path
           </p>
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/register"
-              className="rounded-xl bg-violet-600 px-6 py-3 text-center font-semibold text-white"
-            >
-              Create free account
-            </Link>
-            {nextSlug && hasFreeNextLesson ? (
-              <Link
-                href={`/try/${nextSlug}`}
-                className="rounded-xl border border-violet-200 bg-white px-6 py-3 text-center font-semibold text-violet-700"
-              >
-                Next lesson →
-              </Link>
-            ) : null}
-          </div>
+          <Link
+            href="/register?next=/welcome"
+            onClick={onCreateAccount}
+            className="mt-4 inline-flex rounded-xl bg-violet-600 px-6 py-3 text-center font-semibold text-white"
+          >
+            Create free account
+          </Link>
         </div>
       )}
     </div>
@@ -515,8 +507,7 @@ function BlockContent({
   onDeepDiveOpen,
   showSignupCta,
   mode,
-  nextSlug,
-  hasFreeNextLesson,
+  onCreateAccount,
 }: {
   block: LessonBlock;
   checkpointAnswer: number | null;
@@ -525,8 +516,7 @@ function BlockContent({
   onDeepDiveOpen: () => void;
   showSignupCta: boolean;
   mode: string;
-  nextSlug: string | null;
-  hasFreeNextLesson: boolean;
+  onCreateAccount?: () => void;
 }) {
   let inner: React.ReactNode;
 
@@ -556,8 +546,7 @@ function BlockContent({
           block={block}
           showSignupCta={showSignupCta}
           mode={mode}
-          nextSlug={nextSlug}
-          hasFreeNextLesson={hasFreeNextLesson}
+          onCreateAccount={onCreateAccount}
         />
       );
       break;
@@ -595,6 +584,11 @@ export default function LessonEngine({
   reviewMode = false,
   onReviewStart,
 }: Props) {
+  const { user, loading: authLoading } = useAuth();
+  const isAuthenticated = !authLoading && Boolean(user);
+  const effectiveMode = isAuthenticated && mode === "try" ? "path" : mode;
+  const effectiveShowSignupCta = showSignupCta && !isAuthenticated;
+
   const [step, setStep] = useState(0);
   const [checkpointAnswer, setCheckpointAnswer] = useState<number | null>(null);
   const [checkpointDone, setCheckpointDone] = useState(false);
@@ -612,30 +606,47 @@ export default function LessonEngine({
 
   useEffect(() => {
     void (async () => {
-      const saved = await fetchLessonProgress(lesson.slug);
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const saved = await fetchLessonProgress(lesson.slug, lesson.pathId);
+
       if (saved?.completed && !reviewMode) {
+        if (mode === "try" && !user) {
+          setStep(lesson.blocks.length - 1);
+          setProgressLoaded(true);
+          return;
+        }
+
         setAlreadyCompleted(true);
         if (!completionReported.current) {
           completionReported.current = true;
           onComplete?.();
         }
-      } else if (saved?.last_position && !saved.completed && !reviewMode) {
+      } else if (
+        saved?.last_position !== undefined &&
+        saved.last_position > 0 &&
+        !saved.completed &&
+        !reviewMode
+      ) {
         setStep(Math.min(saved.last_position, lesson.blocks.length - 1));
       }
       setProgressLoaded(true);
     })();
-  }, [lesson.slug, lesson.blocks.length, onComplete, reviewMode]);
+  }, [lesson.slug, lesson.pathId, lesson.blocks.length, mode, onComplete, reviewMode]);
 
   const persistProgress = useCallback(
     async (markComplete?: boolean) => {
       await saveLessonProgress({
+        pathId: lesson.pathId,
         lessonSlug: lesson.slug,
         step,
         totalSteps: lesson.blocks.length,
         markComplete,
       });
     },
-    [lesson.slug, lesson.blocks.length, step]
+    [lesson.slug, lesson.pathId, lesson.blocks.length, step]
   );
 
   useEffect(() => {
@@ -658,11 +669,22 @@ export default function LessonEngine({
     }
   }, [step, progressLoaded, alreadyCompleted, persistProgress, reviewMode]);
 
+  const hideAnonymousTryFooter =
+    mode === "try" && !isAuthenticated && isLast && effectiveShowSignupCta;
+
+  const handleCreateAccount = useCallback(() => {
+    finalizeGuestFreeLesson({
+      pathId: lesson.pathId,
+      lessonSlug: lesson.slug,
+      totalSteps: lesson.blocks.length,
+    });
+  }, [lesson.pathId, lesson.slug, lesson.blocks.length]);
+
   const nextSlug = getNextLessonSlug(lesson.slug);
   const nextLesson = nextSlug ? getLessonBySlug(nextSlug) : null;
   const hasFreeNextLesson = Boolean(nextLesson?.free);
   const nextHref =
-    mode === "try"
+    effectiveMode === "try"
       ? nextSlug && hasFreeNextLesson
         ? `/try/${nextSlug}`
         : "/register"
@@ -772,7 +794,18 @@ export default function LessonEngine({
 
     showLocalPointsFeedback(points, feedbackKey);
 
-    if (mode !== "path") return null;
+    if (mode === "try" && lesson.free && !isAuthenticated) {
+      recordGuestGreyEvent({
+        eventType: opts.eventType,
+        pathId: lesson.pathId,
+        lessonSlug: lesson.slug,
+        stepIndex: opts.stepIndex,
+        firstTry: opts.firstTry,
+        metadata: opts.metadata,
+      });
+    }
+
+    if (effectiveMode !== "path") return null;
     const result = await awardGreyPoints({
       eventType: opts.eventType,
       pathId: lesson.pathId,
@@ -800,7 +833,9 @@ export default function LessonEngine({
       if (!reviewMode) {
         await persistProgress(true);
       }
-      onComplete?.();
+      if (mode !== "try" || isAuthenticated) {
+        onComplete?.();
+      }
       return;
     }
     void awardEvent({
@@ -922,10 +957,9 @@ export default function LessonEngine({
                     metadata: { blockType: block?.type },
                   })
                 }
-                showSignupCta={showSignupCta}
+                showSignupCta={effectiveShowSignupCta}
                 mode={mode}
-                nextSlug={nextSlug}
-                hasFreeNextLesson={hasFreeNextLesson}
+                onCreateAccount={handleCreateAccount}
               />
             </div>
           ) : (
@@ -941,15 +975,15 @@ export default function LessonEngine({
                   metadata: { blockType: block?.type },
                 })
               }
-              showSignupCta={showSignupCta}
+              showSignupCta={effectiveShowSignupCta}
               mode={mode}
-              nextSlug={nextSlug}
-              hasFreeNextLesson={hasFreeNextLesson}
+              onCreateAccount={handleCreateAccount}
             />
           )}
         </motion.div>
       </AnimatePresence>
 
+      {!hideAnonymousTryFooter && (
       <div className="safe-bottom sticky bottom-0 z-20 -mx-4 border-t border-slate-200/80 bg-white/95 px-4 py-4 backdrop-blur-md md:static md:mx-0 md:mt-8 md:border-0 md:bg-transparent md:p-0">
         <div className="flex gap-3">
           {step > 0 && (
@@ -970,15 +1004,22 @@ export default function LessonEngine({
             {isLast ? "Complete lesson" : "Continue →"}
           </button>
         </div>
-        {isLast && (
+        {isLast && effectiveMode !== "try" && (
           <Link
             href={nextHref}
             className="mt-3 block text-center text-sm font-semibold text-violet-600"
           >
-            {nextSlug ? (hasFreeNextLesson ? "Continue to next lesson →" : "Create account to continue →") : "Back to learning path"}
+            {effectiveMode === "path"
+              ? nextSlug
+                ? "Continue to next lesson →"
+                : "Back to learning path"
+              : nextSlug && hasFreeNextLesson
+                ? "Continue to next lesson →"
+                : "Create account to continue →"}
           </Link>
         )}
       </div>
+      )}
     </div>
   );
 }
