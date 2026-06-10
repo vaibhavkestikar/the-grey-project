@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import AuthHeader from "@/components/auth/auth-header";
 import PostSignupActions from "@/components/learning/post-signup-actions";
+import { mergeGuestProgressOnSignIn } from "@/lib/learning/merge-guest-progress";
 import { createClient } from "@/lib/supabase/client";
 
 async function waitForVerifiedUser(
@@ -56,6 +57,7 @@ export default function WelcomePage() {
         "";
       setName(first);
       setReady(true);
+      void mergeGuestProgressOnSignIn();
     })();
   }, [router, supabase]);
 

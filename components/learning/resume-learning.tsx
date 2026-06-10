@@ -51,7 +51,7 @@ export default function ResumeLearning() {
               <p className="text-xs font-semibold uppercase tracking-wider text-violet-200">
                 Continue learning
               </p>
-              <h2 className="mt-2 text-2xl font-black md:text-4xl">
+              <h2 className="path-card-title mt-2 text-2xl font-black md:text-4xl">
                 {meta?.title ?? lesson.lesson_slug.replace(/-/g, " ")}
               </h2>
               <p className="mt-2 text-violet-100">

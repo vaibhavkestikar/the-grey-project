@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import {
   CURIOUS_BUILDERS_LESSONS,
@@ -18,22 +19,34 @@ import {
 import { getPathContinueHref } from "@/lib/learning/resume-path";
 import { useAuth } from "@/components/providers/auth-provider";
 
+const CONTINUE_HREF_KEY = "tgf:continue-href";
+
 type Props = {
   className?: string;
   primaryClassName?: string;
   secondaryClassName?: string;
 };
 
+function readCachedContinueHref(): string | null {
+  if (typeof window === "undefined") return null;
+  return sessionStorage.getItem(CONTINUE_HREF_KEY);
+}
+
 export default function PostSignupActions({
   className = "mt-10 flex flex-col gap-4",
   primaryClassName = "rounded-2xl bg-violet-600 py-4 font-semibold text-white text-center",
   secondaryClassName = "rounded-2xl border py-4 font-semibold text-slate-800 text-center",
 }: Props) {
+  const router = useRouter();
   const { user } = useAuth();
   const [continueHref, setContinueHref] = useState(
-    `/learning/${PATH_ID}/prediction`
+    () => readCachedContinueHref() ?? `/learning/${PATH_ID}/prediction`
   );
   const [continueLabel, setContinueLabel] = useState("Continue learning");
+
+  useEffect(() => {
+    router.prefetch(continueHref);
+  }, [continueHref, router]);
 
   useEffect(() => {
     if (!user) return;
@@ -52,23 +65,29 @@ export default function PostSignupActions({
           )
       );
 
-      setContinueHref(
-        getPathContinueHref(PATH_ID, CURIOUS_BUILDERS_LESSONS, progressMap)
+      const href = getPathContinueHref(
+        PATH_ID,
+        CURIOUS_BUILDERS_LESSONS,
+        progressMap
       );
-      setContinueLabel(
+      const label =
         nextLesson && nextLesson.slug !== CURIOUS_BUILDERS_LESSONS[0]?.slug
           ? `Continue to ${nextLesson.title}`
-          : "Continue learning"
-      );
+          : "Continue learning";
+
+      sessionStorage.setItem(CONTINUE_HREF_KEY, href);
+      setContinueHref(href);
+      setContinueLabel(label);
+      router.prefetch(href);
     })();
-  }, [user]);
+  }, [user, router]);
 
   return (
     <div className={className}>
-      <Link href={continueHref} className={primaryClassName}>
+      <Link href={continueHref} className={primaryClassName} prefetch>
         {continueLabel}
       </Link>
-      <Link href="/learning" className={secondaryClassName}>
+      <Link href="/learning" className={secondaryClassName} prefetch>
         Explore learning paths
       </Link>
     </div>

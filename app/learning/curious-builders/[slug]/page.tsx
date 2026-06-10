@@ -20,7 +20,7 @@ import {
   fetchLessonProgress,
   isLessonProgressComplete,
 } from "@/lib/learning/progress";
-import { mergeGuestProgressOnSignIn } from "@/lib/learning/merge-guest-progress";
+import { mergeGuestProgressOnSignIn, isGuestProgressMerged } from "@/lib/learning/merge-guest-progress";
 
 export default function PathLessonPage() {
   const params = useParams();
@@ -77,7 +77,9 @@ export default function PathLessonPage() {
     if (!lesson || authLoading) return;
 
     void (async () => {
-      await mergeGuestProgressOnSignIn();
+      if (user?.id && !isGuestProgressMerged(user.id)) {
+        await mergeGuestProgressOnSignIn();
+      }
 
       const saved = await fetchLessonProgress(
         lesson.slug,
@@ -166,13 +168,15 @@ export default function PathLessonPage() {
     );
   }
 
-  if (!authReady || !progressChecked) {
+  if (!authReady || !allowed) {
     return (
       <main className="flex min-h-screen items-center justify-center">
         <p className="text-slate-600">Loading lesson...</p>
       </main>
     );
   }
+
+  const showCompletionScreen = progressChecked && completed && !reviewMode;
 
   if (!allowed) return null;
 
@@ -189,7 +193,7 @@ export default function PathLessonPage() {
           ← Learning path
         </Link>
 
-        {completed && !reviewMode && showPathFeedback && !pathFeedbackDone ? (
+        {showCompletionScreen && showPathFeedback && !pathFeedbackDone ? (
           <div className="mt-8">
             <PathFeedbackForm
               pathId={CURIOUS_BUILDERS_PATH.id}
@@ -203,7 +207,7 @@ export default function PathLessonPage() {
               }}
             />
           </div>
-        ) : completed && !reviewMode ? (
+        ) : showCompletionScreen ? (
           <div className="mt-8 space-y-8">
             <div className="premium-card p-8 text-center md:p-12">
               <p className="text-4xl">{isLastLesson ? "🏁" : "✓"}</p>

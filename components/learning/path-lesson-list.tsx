@@ -87,7 +87,6 @@ export default function PathLessonList({
   }, [authLoading, user, showCertificate, pathId, resolvedPathId]);
 
   useEffect(() => {
-    setReady(false);
     void loadProgress();
   }, [loadProgress]);
 
