@@ -2,7 +2,7 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 
 import { Suspense } from "react";
 
@@ -14,8 +14,11 @@ import {
 } from "@/components/providers/auth-provider";
 import AuthSessionHandler from "@/components/auth/auth-session-handler";
 
-const inter = Inter({
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -64,7 +67,7 @@ export default function RootLayout({
     >
 
       <body
-        className={`${inter.className} bg-[#f8fafc] text-slate-900 antialiased`}
+        className={`${poppins.variable} ${poppins.className} bg-surface text-ink antialiased`}
       >
 
         <AuthProvider>

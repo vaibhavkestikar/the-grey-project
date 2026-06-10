@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
 import DeepDiveAccordion from "@/components/learning/deep-dive-accordion";
+import { LessonFlowSteps, LessonStepList } from "@/components/learning/lesson-step-list";
 import PlaygroundRenderer from "@/components/playgrounds/playground-renderer";
 import { track } from "@/services/analytics/track";
 import { awardGreyPoints } from "@/lib/grey/client";
@@ -96,25 +97,7 @@ function LessonVisualBlock({ visual }: { visual: LessonVisual }) {
   }
 
   if (visual.kind === "flow") {
-    return (
-      <div className="mt-6 overflow-x-auto pb-1">
-        <div className="flex min-w-max items-center gap-2">
-          {visual.steps.map((step, i) => (
-            <div key={step.label} className="flex items-center gap-2">
-              <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-center">
-                <p className="text-sm font-bold text-blue-800">{step.label}</p>
-                {step.detail && (
-                  <p className="mt-0.5 text-xs text-blue-500">{step.detail}</p>
-                )}
-              </div>
-              {i < visual.steps.length - 1 && (
-                <span className="shrink-0 font-bold text-blue-300">→</span>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    return <LessonFlowSteps steps={visual.steps} />;
   }
 
   if (visual.kind === "callout") {
@@ -206,17 +189,7 @@ function BuildBlock({ block }: { block: LessonBlock }) {
       )}
 
       {block.highlights && block.highlights.length > 0 && (
-        <div className="mt-6 space-y-3">
-          {block.highlights.map((h) => (
-            <div
-              key={h}
-              className="flex items-start gap-3 rounded-2xl border border-violet-100 bg-violet-50 p-4"
-            >
-              <span className="mt-0.5 shrink-0 font-black text-violet-400">→</span>
-              <p className="font-medium text-violet-900">{h}</p>
-            </div>
-          ))}
-        </div>
+        <LessonStepList items={block.highlights} variant="violet" />
       )}
 
       {block.visual && <LessonVisualBlock visual={block.visual} />}
@@ -343,20 +316,10 @@ function ReflectBlock({
         )}
         {block.learned && block.learned.length > 0 && (
           <div className="mt-6">
-            <p className="mb-3 text-xs font-bold uppercase tracking-widest text-emerald-600">
+            <p className="mb-3 text-xs font-bold uppercase tracking-widest text-brand-success">
               What you now know
             </p>
-            <div className="space-y-2">
-              {block.learned.map((item) => (
-                <div
-                  key={item}
-                  className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-white p-3"
-                >
-                  <span className="mt-0.5 shrink-0 font-black text-emerald-500">✓</span>
-                  <p className="font-medium text-slate-800">{item}</p>
-                </div>
-              ))}
-            </div>
+            <LessonStepList items={block.learned} variant="emerald" />
           </div>
         )}
       </div>
@@ -366,13 +329,15 @@ function ReflectBlock({
           <p className="font-semibold text-violet-900">
             Save progress and unlock the full path
           </p>
-          <Link
-            href="/register?next=/welcome"
-            onClick={onCreateAccount}
-            className="mt-4 inline-flex rounded-xl bg-violet-600 px-6 py-3 text-center font-semibold text-white"
-          >
-            Create free account
-          </Link>
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/register?next=/welcome"
+              onClick={onCreateAccount}
+              className="inline-flex flex-1 items-center justify-center rounded-xl bg-violet-600 px-6 py-3 text-center font-semibold text-white"
+            >
+              Create free account
+            </Link>
+          </div>
         </div>
       )}
     </div>
@@ -417,17 +382,7 @@ function VisualBlock({ block }: { block: LessonBlock }) {
         </div>
       )}
       {block.highlights && block.highlights.length > 0 && (
-        <div className="mt-6 space-y-3">
-          {block.highlights.map((h) => (
-            <div
-              key={h}
-              className="flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4"
-            >
-              <span className="mt-0.5 shrink-0 font-black text-blue-400">→</span>
-              <p className="font-medium text-blue-900">{h}</p>
-            </div>
-          ))}
-        </div>
+        <LessonStepList items={block.highlights} variant="blue" />
       )}
     </div>
   );
@@ -1055,39 +1010,41 @@ export default function LessonEngine({
         </motion.div>
       </AnimatePresence>
 
-      {!hideAnonymousTryFooter && (
+      {(step > 0 || !hideAnonymousTryFooter) && (
       <div className="safe-bottom sticky bottom-0 z-20 -mx-4 border-t border-slate-200/80 bg-white/95 px-4 py-4 backdrop-blur-md md:static md:mx-0 md:mt-8 md:border-0 md:bg-transparent md:p-0">
         <div className="flex gap-3">
           {step > 0 && (
             <button
               type="button"
               onClick={prev}
-              className="rounded-2xl border border-slate-200 px-5 py-4 text-base font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+              className="rounded-2xl border border-slate-200 px-5 py-4 text-base font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900 min-h-[52px]"
             >
-              ← Back
+              Back
             </button>
           )}
+          {!hideAnonymousTryFooter && (
           <button
             type="button"
             onClick={next}
             disabled={block?.type === "checkpoint" && !checkpointDone}
-            className="flex-1 rounded-2xl bg-slate-950 py-4 text-lg font-semibold text-white disabled:opacity-40"
+            className="flex-1 rounded-2xl bg-brand-dark py-4 text-lg font-semibold text-white disabled:opacity-40 min-h-[52px]"
           >
-            {isLast ? "Complete lesson" : "Continue →"}
+            {isLast ? "Complete lesson" : "Continue"}
           </button>
+          )}
         </div>
-        {isLast && effectiveMode !== "try" && (
+        {isLast && effectiveMode !== "try" && !hideAnonymousTryFooter && (
           <Link
             href={nextHref}
             className="mt-3 block text-center text-sm font-semibold text-violet-600"
           >
             {effectiveMode === "path"
               ? nextSlug
-                ? "Continue to next lesson →"
+                ? "Continue to next lesson"
                 : "Back to learning path"
               : nextSlug && hasFreeNextLesson
-                ? "Continue to next lesson →"
-                : "Create account to continue →"}
+                ? "Continue to next lesson"
+                : "Create account to continue"}
           </Link>
         )}
       </div>

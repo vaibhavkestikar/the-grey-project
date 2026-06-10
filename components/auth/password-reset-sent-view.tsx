@@ -7,8 +7,15 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 
 import AuthHeader from "@/components/auth/auth-header";
+import NumberedStepList from "@/components/ui/numbered-step-list";
 import { getRecoveryCallbackUrl } from "@/lib/auth/redirect-url";
 import { createClient } from "@/lib/supabase/client";
+
+const RESET_STEPS = [
+  "Open your email",
+  "Click the reset link",
+  "Choose a new password on the next screen",
+] as const;
 
 export default function PasswordResetSentView() {
   const router = useRouter();
@@ -63,11 +70,7 @@ export default function PasswordResetSentView() {
           </p>
           <p className="mt-2 break-all text-center font-bold text-violet-700">{email}</p>
 
-          <ol className="mt-8 space-y-2 text-sm text-slate-600">
-            <li>1. Open your email</li>
-            <li>2. Click the reset link</li>
-            <li>3. Choose a new password on the next screen</li>
-          </ol>
+          <NumberedStepList steps={RESET_STEPS} className="mt-8" />
 
           <div className="mt-8 grid grid-cols-2 gap-3">
             <a

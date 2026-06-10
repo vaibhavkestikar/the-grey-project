@@ -36,7 +36,7 @@ export const lessonClassicalVsMl: StructuredLesson = {
       icon: "📋",
       body: "The rules approach feels like engineering. You audit examples, you write conditions, you ship. It is clean. It is auditable. And it breaks spectacularly when the real world sends inputs your rules never imagined, which it always does.",
       highlights: [
-        "Rule 1: if subject contains 'FREE MONEY' → spam",
+        "Rule 1: if subject contains 'FREE MONEY' then mark as spam",
         "Edge case: 'Not spam. You get free money for referrals at your bank.'",
         "Rule 2: add exception for banking context. But now you need rule 3 for payday loan ads…",
         "Six months later: 847 rules, 11% false-positive rate, one exhausted engineer",

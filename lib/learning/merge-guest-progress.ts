@@ -78,6 +78,11 @@ function mergedSessionKey(userId: string) {
   return `tgf:guest-merged:${userId}`;
 }
 
+export function isGuestProgressMerged(userId: string): boolean {
+  if (typeof window === "undefined") return false;
+  return sessionStorage.getItem(mergedSessionKey(userId)) === "1";
+}
+
 /** Merge anonymous free-lesson progress and Grey Points after sign-in. */
 export async function mergeGuestProgressOnSignIn(): Promise<boolean> {
   if (mergeInFlight) return mergeInFlight;
@@ -90,6 +95,10 @@ export async function mergeGuestProgressOnSignIn(): Promise<boolean> {
 
     if (!user) return false;
 
+    if (isGuestProgressMerged(user.id)) {
+      return true;
+    }
+
     const guestLessons = getAllGuestLessonRecords();
     if (guestLessons.length === 0) {
       if (typeof window !== "undefined") {
@@ -98,10 +107,10 @@ export async function mergeGuestProgressOnSignIn(): Promise<boolean> {
       return true;
     }
 
-    for (const guest of guestLessons) {
-      const merged = await mergeGuestLessonRecord(user.id, guest);
-      if (!merged) return false;
-    }
+    const results = await Promise.all(
+      guestLessons.map((guest) => mergeGuestLessonRecord(user.id, guest))
+    );
+    if (results.some((merged) => !merged)) return false;
 
     clearGuestProgress();
     if (typeof window !== "undefined") {

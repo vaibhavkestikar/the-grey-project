@@ -33,7 +33,7 @@ export default function HomePage() {
           <p className="text-sm font-bold uppercase tracking-widest text-violet-600">
             Roast us (nicely)
           </p>
-          <h2 className="mt-3 text-2xl font-black text-slate-950 md:text-3xl">
+          <h2 className="mt-3 text-2xl font-black md:text-3xl">
             Built by one person. Your feedback actually moves the roadmap.
           </h2>
           <p className="mt-3 text-slate-600">

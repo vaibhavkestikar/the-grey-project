@@ -8,12 +8,19 @@ import { toast } from "sonner";
 
 import AuthHeader from "@/components/auth/auth-header";
 import PostSignupActions from "@/components/learning/post-signup-actions";
+import NumberedStepList from "@/components/ui/numbered-step-list";
 import { getAuthCallbackUrl } from "@/lib/auth/redirect-url";
 import { trackAuthFunnelEvent } from "@/lib/auth/funnel";
 import { createClient } from "@/lib/supabase/client";
 
 const POLL_MS = 5000;
 const RESEND_COOLDOWN = 60;
+
+const VERIFY_STEPS = [
+  "Open your email",
+  "Click verification",
+  "Return here and we detect it automatically",
+] as const;
 
 export default function VerifyEmailView() {
   const searchParams = useSearchParams();
@@ -112,11 +119,7 @@ export default function VerifyEmailView() {
           </p>
           <p className="mt-2 break-all text-center font-bold text-violet-700">{email}</p>
 
-          <ol className="mt-8 space-y-2 text-sm text-slate-600">
-            <li>1. Open your email</li>
-            <li>2. Click verification</li>
-            <li>3. Return here and we detect it automatically</li>
-          </ol>
+          <NumberedStepList steps={VERIFY_STEPS} className="mt-8" />
 
           <div className="mt-8 grid grid-cols-2 gap-3">
             <a

@@ -66,7 +66,7 @@ export const lessonPrediction: StructuredLesson = {
       body: "Old mental model: someone writes rules, the computer follows them. Reality: you show the system thousands of examples, it finds the patterns, it predicts. No one writes 'spam usually has words like urgent and winner'. You feed it 10,000 labelled emails and let it figure it out. The rules emerge from data.",
       highlights: [
         "No explicit rules. Patterns emerge automatically from examples.",
-        "More data → sharper patterns → more accurate predictions.",
+        "More data leads to sharper patterns and more accurate predictions.",
         "The intelligence lives in the data, not in code any human typed.",
       ],
       visual: {
@@ -129,10 +129,10 @@ export const lessonPrediction: StructuredLesson = {
       icon: "🌐",
       body: "Swap the domain. Keep the engine. The mechanism never changes, only the inputs and the label you are predicting.",
       highlights: [
-        "Spam filter: input = email text → prediction = spam probability",
-        "Fraud detector: input = transaction metadata → prediction = fraud probability",
-        "Language model: input = all previous tokens → prediction = next token probability",
-        "Recommender: input = your watch history → prediction = click probability on each title",
+        "Spam filter: email text to spam probability",
+        "Fraud detector: transaction metadata to fraud probability",
+        "Language model: previous tokens to next token probability",
+        "Recommender: watch history to click probability on each title",
       ],
       visual: {
         kind: "callout",

@@ -18,29 +18,29 @@ export default function SiteNavbar() {
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:h-[72px] md:px-6">
         <Link href="/" className="min-w-0">
-          <span className="block truncate text-lg font-black tracking-tight text-violet-600 sm:text-xl md:text-2xl">
+          <span className="gradient-text gradient-text-shine block truncate text-lg font-black tracking-tight sm:text-xl md:text-2xl">
             The Grey Project
           </span>
-          <span className="mt-0.5 block text-[8px] uppercase tracking-[0.28em] text-slate-500 sm:text-[9px] md:text-[10px]">
+          <span className="brand-subtitle gradient-text gradient-text-shine opacity-90">
             UNCOVERING THE GREY IN AI
           </span>
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
-          <Link href="/" className="text-sm font-medium text-slate-600 hover:text-violet-600">
+          <Link href="/" className="text-sm font-medium text-ink-muted hover:text-brand-accent">
             Home
           </Link>
-          <Link href="/learning" className="text-sm font-medium text-slate-600 hover:text-violet-600">
+          <Link href="/learning" className="text-sm font-medium text-ink-muted hover:text-brand-accent">
             Learning paths
           </Link>
-          <Link href="/blog" className="text-sm font-medium text-slate-600 hover:text-violet-600">
+          <Link href="/blog" className="text-sm font-medium text-ink-muted hover:text-brand-accent">
             Blog
           </Link>
-          <Link href="/feedback" className="text-sm font-medium text-slate-600 hover:text-violet-600">
+          <Link href="/feedback" className="text-sm font-medium text-ink-muted hover:text-brand-accent">
             Feedback
           </Link>
           {user && (
-            <Link href="/account" className="text-sm font-medium text-slate-600 hover:text-violet-600">
+            <Link href="/account" className="text-sm font-medium text-ink-muted hover:text-brand-accent">
               Profile
             </Link>
           )}
@@ -64,7 +64,7 @@ export default function SiteNavbar() {
               </Link>
               <Link
                 href="/register"
-                className="hidden rounded-xl bg-violet-600 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:bg-violet-700 lg:inline-flex lg:px-5 lg:py-2.5"
+                className="hidden rounded-xl bg-brand-accent px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:bg-violet-700 lg:inline-flex lg:px-5 lg:py-2.5"
               >
                 Register
               </Link>
@@ -78,7 +78,7 @@ export default function SiteNavbar() {
               </span>
               <Link
                 href="/learning"
-                className="hidden rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-violet-700 lg:inline-flex"
+                className="hidden rounded-xl bg-brand-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-violet-700 lg:inline-flex"
               >
                 Continue
               </Link>

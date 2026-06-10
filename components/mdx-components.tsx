@@ -73,16 +73,13 @@ export function useMDXComponents(
 
     ol: (props) => (
       <ol
-        className="mt-8 ml-6 list-decimal space-y-4 text-[1.1rem] leading-9 text-slate-700"
+        className="numbered-step-list mt-8 text-[1.05rem] leading-relaxed text-slate-700"
         {...props}
       />
     ),
 
     li: (props) => (
-      <li
-        className="pl-2"
-        {...props}
-      />
+      <li {...props} />
     ),
 
     /* =========================================

@@ -21,27 +21,25 @@ export default function LearningPathsView({
   );
 
   return (
-    <section className="relative px-4 py-16 md:px-6 md:py-20">
-      <div className="pointer-events-none absolute left-1/2 top-8 h-32 w-[min(100%,48rem)] -translate-x-1/2 rounded-full bg-violet-200/40 blur-3xl" />
-      <div className="mx-auto max-w-7xl">
+    <section className="relative px-4 py-14 md:px-6 md:py-20">
+      <div className="pointer-events-none absolute left-1/2 top-8 h-32 w-[min(100%,48rem)] -translate-x-1/2 rounded-full bg-brand-primary/20 blur-3xl" />
+      <div className="mx-auto max-w-3xl">
         <div className="relative">
-          <span className="inline-flex -rotate-1 rounded-lg bg-slate-950 px-4 py-1.5 text-xs font-black uppercase tracking-[0.2em] text-white shadow-lg">
+          <span className="inline-flex rounded-lg bg-brand-dark px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-white">
             Stackable paths
           </span>
-          <h2 className="mt-4 text-3xl font-black text-slate-950 md:text-5xl">
+          <h2 className="mt-4 text-3xl font-black md:text-4xl">
             {heading}
           </h2>
-          <p className="mt-4 max-w-2xl text-lg text-slate-600">{subheading}</p>
+          <p className="mt-3 text-base leading-relaxed text-ink-muted md:text-lg">
+            {subheading}
+          </p>
           {!compact && (
-            <div className="mt-5 flex flex-wrap gap-2">
-              {[
-                "Earn Grey Points",
-                "Collect skill badges",
-                "Redeem practical PDFs",
-              ].map((pill) => (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {["Grey Points", "Skill badges", "Practical PDFs"].map((pill) => (
                 <span
                   key={pill}
-                  className="rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-bold text-violet-700"
+                  className="rounded-full border border-brand-primary/25 bg-white px-3 py-1 text-xs font-semibold text-brand-dark"
                 >
                   {pill}
                 </span>
@@ -50,28 +48,24 @@ export default function LearningPathsView({
           )}
         </div>
 
-        <div className="mt-10">
+        <div className="mt-8 flex flex-col gap-6">
           <LivePathCard collapsible={collapsibleLive} compact={compact} />
-        </div>
-
-        <div className="mt-14">
           <FirstBuildSpotlight />
-        </div>
 
-        {comingSoon.length > 0 && (
-          <>
-            <div className="mt-14">
-              <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-800">
-                On the roadmap
-              </span>
-              <h3 className="mt-3 text-xl font-black text-slate-900 md:text-2xl">
-                More paths cooking
-              </h3>
-              <p className="mt-2 max-w-2xl text-slate-600">
-                Production AI, agentic workflows, and strategy. First 3 lessons free on each path.
-              </p>
-            </div>
-            <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {comingSoon.length > 0 && (
+            <>
+              <div className="pt-4">
+                <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-800">
+                  On the roadmap
+                </span>
+                <h3 className="mt-3 text-xl font-black">
+                  More paths cooking
+                </h3>
+                <p className="mt-2 text-base text-ink-muted">
+                  First 3 lessons free on each path when they launch.
+                </p>
+              </div>
+
               {comingSoon.map((path, index) => (
                 <ComingSoonPathCard
                   key={path.id}
@@ -85,9 +79,9 @@ export default function LearningPathsView({
                   pathNumber={index + 3}
                 />
               ))}
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
     </section>
   );

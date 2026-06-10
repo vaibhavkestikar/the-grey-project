@@ -7,7 +7,7 @@ export default function SampleLessonCta() {
         <p className="text-sm font-bold uppercase tracking-widest text-violet-200">
           Stop nodding. Start knowing.
         </p>
-        <h2 className="mt-4 text-3xl font-black md:text-5xl">
+        <h2 className="mt-4 text-3xl font-black text-white md:text-5xl">
           Build real AI intuition in minutes
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-lg text-violet-100">

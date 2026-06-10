@@ -9,7 +9,8 @@ import {
   isLessonProgressComplete,
   type LessonProgress,
 } from "@/lib/learning/progress";
-import { mergeGuestProgressOnSignIn } from "@/lib/learning/merge-guest-progress";
+import { mergeGuestProgressOnSignIn, isGuestProgressMerged } from "@/lib/learning/merge-guest-progress";
+import { getGuestProgressMapForDisplay } from "@/lib/learning/guest-progress";
 import { PATH_ID } from "@/data/curious-builders-path";
 import { PATH_CERTIFICATE_SLUG } from "@/lib/learning/certificate";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -20,13 +21,23 @@ type Props = {
   baseHref: string;
   pathId?: string;
   showCertificate?: boolean;
+  /** Cap visible rows; rest scroll inside the container */
+  scrollable?: boolean;
+  maxVisibleLessons?: number;
+  compact?: boolean;
 };
+
+/** ~2 compact lesson rows visible before scroll */
+const SCROLL_ROW_HEIGHT_REM = 6.75;
 
 export default function PathLessonList({
   lessons,
   baseHref,
   pathId,
   showCertificate = false,
+  scrollable = false,
+  maxVisibleLessons = 2,
+  compact = false,
 }: Props) {
   const { user, loading: authLoading } = useAuth();
   const [progressMap, setProgressMap] = useState<Map<string, LessonProgress>>(
@@ -42,19 +53,34 @@ export default function PathLessonList({
   const loadProgress = useCallback(async () => {
     if (authLoading) return;
 
-    if (user) {
+    if (!user) {
+      const snapshot = await fetchPathProgressSnapshot(resolvedPathId);
+      setProgressMap(snapshot.progressMap);
+      if (showCertificate && pathId) {
+        setPathComplete(snapshot.pathComplete);
+        setCertificateIssued(snapshot.certificateIssued);
+        setCompletedLessons(snapshot.completedLessons);
+      }
+      setReady(true);
+      return;
+    }
+
+    const guestPreview = getGuestProgressMapForDisplay(resolvedPathId);
+    if (guestPreview.size > 0) {
+      setProgressMap(guestPreview);
+    }
+    setReady(true);
+
+    if (!isGuestProgressMerged(user.id)) {
       await mergeGuestProgressOnSignIn();
     }
 
+    const snapshot = await fetchPathProgressSnapshot(resolvedPathId);
+    setProgressMap(snapshot.progressMap);
     if (showCertificate && pathId) {
-      const snapshot = await fetchPathProgressSnapshot(pathId);
-      setProgressMap(snapshot.progressMap);
       setPathComplete(snapshot.pathComplete);
       setCertificateIssued(snapshot.certificateIssued);
       setCompletedLessons(snapshot.completedLessons);
-    } else {
-      const snapshot = await fetchPathProgressSnapshot(resolvedPathId);
-      setProgressMap(snapshot.progressMap);
     }
 
     setReady(true);
@@ -80,14 +106,18 @@ export default function PathLessonList({
 
   if (!ready) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
-        Loading progress...
+      <div className="rounded-2xl border border-violet-100 bg-violet-50/50 p-4 text-sm text-violet-700">
+        Syncing your progress...
       </div>
     );
   }
 
-  return (
-    <div className="space-y-4">
+  const rowPadding = compact ? "p-4" : "p-5 md:p-6";
+  const iconSize = compact ? "h-10 w-10 text-base" : "h-12 w-12 text-lg";
+  const titleSize = compact ? "text-base" : "text-lg";
+
+  const list = (
+    <div className={compact ? "space-y-3" : "space-y-4"}>
       {lessons.map((lesson, index) => {
         const progress = progressMap.get(lesson.slug);
         const completed = isLessonProgressComplete(
@@ -107,7 +137,7 @@ export default function PathLessonList({
           <Link
             key={lesson.slug}
             href={href}
-            className={`group flex gap-5 rounded-2xl border bg-white p-5 shadow-sm transition hover:shadow-lg md:p-6 ${
+            className={`group flex gap-4 rounded-2xl border bg-white shadow-sm transition hover:shadow-lg sm:gap-5 ${rowPadding} ${
               completed
                 ? "border-emerald-200 hover:border-emerald-300"
                 : requiresAccount
@@ -116,7 +146,7 @@ export default function PathLessonList({
             }`}
           >
             <div
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-lg font-black ${
+              className={`flex shrink-0 items-center justify-center rounded-2xl font-black ${iconSize} ${
                 completed
                   ? "bg-emerald-100 text-emerald-700"
                   : requiresAccount
@@ -128,7 +158,7 @@ export default function PathLessonList({
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-lg font-bold text-slate-900 group-hover:text-violet-700">
+                <h3 className={`${titleSize} font-bold text-slate-900 group-hover:text-violet-700`}>
                   {lesson.title}
                 </h3>
                 {lesson.free && (
@@ -152,13 +182,14 @@ export default function PathLessonList({
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-sm text-slate-600">{lesson.hook}</p>
+              {!compact && (
+                <p className="mt-1 text-sm text-slate-600">{lesson.hook}</p>
+              )}
               <p className="mt-2 text-xs font-semibold text-slate-400">
                 {lesson.durationMinutes} min · {lesson.blocks.length} steps
                 {inProgress && ` · ${progress.progress_percent}% done`}
               </p>
             </div>
-            <span className="hidden self-center text-violet-600 sm:inline">→</span>
           </Link>
         );
       })}
@@ -170,7 +201,7 @@ export default function PathLessonList({
               ? `/register?next=${encodeURIComponent(certificateHref)}`
               : certificateHref
           }
-          className={`group flex gap-5 rounded-2xl border bg-white p-5 shadow-sm transition hover:shadow-lg md:p-6 ${
+          className={`group flex gap-4 rounded-2xl border bg-white shadow-sm transition hover:shadow-lg sm:gap-5 ${rowPadding} ${
             certificateIssued
               ? "border-emerald-200 hover:border-emerald-300"
               : pathComplete
@@ -179,7 +210,7 @@ export default function PathLessonList({
           }`}
         >
           <div
-            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${
+            className={`flex shrink-0 items-center justify-center rounded-2xl ${iconSize} ${
               certificateIssued
                 ? "bg-emerald-100 text-emerald-700"
                 : pathComplete
@@ -199,7 +230,7 @@ export default function PathLessonList({
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-lg font-bold text-slate-900 group-hover:text-violet-700">
+              <h3 className={`${titleSize} font-bold text-slate-900 group-hover:text-violet-700`}>
                 Completion certificate
               </h3>
               {certificateIssued && (
@@ -234,9 +265,33 @@ export default function PathLessonList({
               Certificate · PDF download
             </p>
           </div>
-          <span className="hidden self-center text-violet-600 sm:inline">→</span>
         </Link>
       )}
+    </div>
+  );
+
+  if (!scrollable) {
+    return list;
+  }
+
+  const maxHeightRem =
+    maxVisibleLessons * SCROLL_ROW_HEIGHT_REM + (compact ? 0.75 : 1);
+
+  return (
+    <div className="relative">
+      <div
+        className="overflow-y-auto overscroll-contain pr-1 [-webkit-overflow-scrolling:touch]"
+        style={{ maxHeight: `${maxHeightRem}rem` }}
+      >
+        {list}
+      </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-violet-50/95 to-transparent"
+      />
+      <p className="mt-2 text-center text-xs font-semibold text-violet-600/80">
+        Scroll for more lessons
+      </p>
     </div>
   );
 }

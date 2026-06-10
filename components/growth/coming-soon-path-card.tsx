@@ -3,60 +3,21 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
+import SimplePathCard from "@/components/learning/simple-path-card";
 import { track } from "@/services/analytics/track";
-import PathNumberRibbon from "@/components/learning/path-number-ribbon";
-import PathMetaPills from "@/components/learning/path-meta-pills";
-import PathValueAccordion from "@/components/learning/path-value-accordion";
-import { FREE_LESSON_COUNT, PAID_PATH_TRIAL_PILLS } from "@/types/paths";
+import { FREE_LESSON_COUNT } from "@/types/paths";
 
-/* ─── Per-path color & identity ─────────────────────────────────────────── */
-
-type ColorScheme = {
-  header: string;        // gradient bg classes
-  badge: string;         // pill on the header
-  icon: string;          // large emoji
-  glow: string;          // decorative circle
-  hover: string;         // card border hover
-  accent: string;        // tagline color on body
+const PATH_ICONS: Record<string, string> = {
+  "reliable-ai": "🛡️",
+  "agentic-systems": "🤖",
+  "ai-strategy": "🧭",
 };
 
-const SCHEMES: Record<string, ColorScheme> = {
-  "reliable-ai": {
-    header:  "from-blue-700 via-sky-600 to-teal-500",
-    badge:   "bg-white/20 text-sky-50",
-    icon:    "🛡️",
-    glow:    "bg-sky-300/20",
-    hover:   "hover:border-sky-300 hover:shadow-sky-100",
-    accent:  "text-sky-700",
-  },
-  "agentic-systems": {
-    header:  "from-violet-800 via-purple-700 to-fuchsia-600",
-    badge:   "bg-white/20 text-fuchsia-50",
-    icon:    "🤖",
-    glow:    "bg-fuchsia-300/20",
-    hover:   "hover:border-violet-300 hover:shadow-violet-100",
-    accent:  "text-violet-700",
-  },
-  "ai-strategy": {
-    header:  "from-amber-600 via-orange-500 to-rose-500",
-    badge:   "bg-white/20 text-amber-50",
-    icon:    "🧭",
-    glow:    "bg-orange-300/20",
-    hover:   "hover:border-amber-300 hover:shadow-amber-100",
-    accent:  "text-amber-700",
-  },
+const PATH_THEMES: Record<string, "indigo" | "emerald" | "rose"> = {
+  "reliable-ai": "indigo",
+  "agentic-systems": "emerald",
+  "ai-strategy": "rose",
 };
-
-const DEFAULT_SCHEME: ColorScheme = {
-  header:  "from-slate-700 via-slate-600 to-slate-500",
-  badge:   "bg-white/20 text-slate-100",
-  icon:    "✦",
-  glow:    "bg-slate-300/20",
-  hover:   "hover:border-slate-300",
-  accent:  "text-slate-600",
-};
-
-/* ─── Waitlist helpers ───────────────────────────────────────────────────── */
 
 type Props = {
   title: string;
@@ -76,7 +37,13 @@ async function parseWaitlistResponse(res: Response) {
   }>;
 }
 
-/* ─── Component ──────────────────────────────────────────────────────────── */
+function shortDescription(tagline: string | undefined, description: string): string {
+  if (tagline) return tagline;
+  const firstSentence = description.split(/(?<=[.!?])\s+/)[0];
+  return firstSentence.length > 140
+    ? `${firstSentence.slice(0, 137)}...`
+    : firstSentence;
+}
 
 export default function ComingSoonPathCard({
   title,
@@ -88,18 +55,20 @@ export default function ComingSoonPathCard({
   waitlistKey,
   pathNumber,
 }: Props) {
-  const scheme = (waitlistKey && SCHEMES[waitlistKey]) ? SCHEMES[waitlistKey] : DEFAULT_SCHEME;
-
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [joined, setJoined] = useState(false);
   const [alreadyJoined, setAlreadyJoined] = useState(false);
 
+  const icon = (waitlistKey && PATH_ICONS[waitlistKey]) || "✦";
+  const theme =
+    (waitlistKey && PATH_THEMES[waitlistKey]) || "indigo";
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) {
-      toast.error("We need an email. We're not mind readers. Yet.");
+      toast.error("We need an email to notify you.");
       return;
     }
     setLoading(true);
@@ -127,112 +96,54 @@ export default function ComingSoonPathCard({
     }
 
     track("waitlist_joined", { path: waitlistKey ?? title });
-    toast.success("You're on the list. We'll holler when it drops.");
+    toast.success("You're on the list. We'll notify you at launch.");
     setJoined(true);
     setEmail("");
   }
 
+  const waitlistCta = joined ? (
+    <p className="rounded-2xl bg-brand-success/10 py-4 text-center text-base font-semibold text-brand-success">
+      You&apos;re on the list.
+    </p>
+  ) : alreadyJoined ? (
+    <p className="rounded-2xl bg-amber-50 py-4 text-center text-base font-semibold text-amber-800">
+      Already on the waitlist for this path.
+    </p>
+  ) : open ? (
+    <form onSubmit={submit} className="space-y-3">
+      <input
+        type="email"
+        autoFocus
+        required
+        placeholder="you@email.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="auth-input"
+      />
+      <button type="submit" disabled={loading} className="btn-cta w-full">
+        {loading ? "Joining..." : "Join Waitlist"}
+      </button>
+    </form>
+  ) : (
+    <button type="button" onClick={() => setOpen(true)} className="btn-secondary w-full">
+      Join Waitlist
+    </button>
+  );
+
   return (
-    <article
-      className={`relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-lg ${scheme.hover}`}
-    >
-      {pathNumber ? <PathNumberRibbon number={pathNumber} /> : null}
-      {/* ── Colored header ── */}
-      <div
-        className={`relative overflow-hidden bg-gradient-to-br ${scheme.header} p-5 pt-16 text-white sm:p-6 sm:pt-16`}
-      >
-        {/* Decorative circles */}
-        <div
-          className={`pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full ${scheme.glow}`}
-        />
-        <div
-          className={`pointer-events-none absolute -bottom-8 -left-6 h-24 w-24 rounded-full ${scheme.glow} opacity-60`}
-        />
-
-        <div className="relative">
-          {/* Badges */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-sm">
-              Learning Path
-            </span>
-            <span
-              className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${scheme.badge}`}
-            >
-              Coming soon
-            </span>
-          </div>
-
-          {/* Icon + title */}
-          <div className="mt-4 text-4xl leading-none">{scheme.icon}</div>
-          <h3 className="mt-3 text-xl font-black leading-snug text-white sm:text-2xl">
-            {title}
-          </h3>
-          {tagline && (
-            <p className="mt-1.5 text-sm font-semibold text-white/80">{tagline}</p>
-          )}
-        </div>
-      </div>
-
-      {/* ── White body ── */}
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <p className="text-sm leading-relaxed text-slate-600 sm:text-base">
-          {description}
-        </p>
-
-        <PathValueAccordion
-          who={who}
-          why={why}
-          outcomes={outcomes}
-          className="mt-4"
-        />
-
-        <PathMetaPills
-          className="mt-4"
-          labels={[
-            `First ${FREE_LESSON_COUNT} lessons free`,
-            PAID_PATH_TRIAL_PILLS[1],
-          ]}
-        />
-
-        <div className="mt-auto pt-5">
-          {joined ? (
-            <p className="rounded-xl bg-emerald-50 py-3 text-center text-sm font-semibold text-emerald-700">
-              ✓ You&apos;re in. We&apos;ll ping you at launch.
-            </p>
-          ) : alreadyJoined ? (
-            <p className="rounded-xl bg-amber-50 py-3 text-center text-sm font-semibold text-amber-800">
-              ✓ Already on the waitlist for this path.
-            </p>
-          ) : open ? (
-            <form onSubmit={submit} className="space-y-2">
-              <input
-                type="email"
-                autoFocus
-                required
-                placeholder="you@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-violet-500"
-              />
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-xl bg-slate-950 py-3 text-sm font-semibold text-white disabled:opacity-50"
-              >
-                {loading ? "Joining..." : "Ping me when it drops →"}
-              </button>
-            </form>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              className="w-full rounded-xl border-2 border-slate-200 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900"
-            >
-              Join waitlist
-            </button>
-          )}
-        </div>
-      </div>
-    </article>
+    <SimplePathCard
+      theme={theme}
+      pathNumber={pathNumber}
+      icon={icon}
+      title={title}
+      description={shortDescription(tagline, description)}
+      statusLabel="Coming soon"
+      statusTone="soon"
+      tags={[`First ${FREE_LESSON_COUNT} lessons free`, "Certificate"]}
+      who={who}
+      why={why}
+      outcomes={outcomes}
+      cta={waitlistCta}
+    />
   );
 }

@@ -97,7 +97,7 @@ export const lessonTokensEmbeddings: StructuredLesson = {
       icon: "🗺️",
       body: "After tokenisation, each token gets mapped to a vector: a list of numbers that encodes what the token means and how it relates to everything else. This is the embedding. It is the model's internal representation of the world, expressed as geometry.",
       highlights: [
-        "Each token → a point in a high-dimensional space (GPT-4: 12,288 dimensions)",
+        "Each token maps to a point in high dimensional space (GPT-4: 12,288 dimensions)",
         "Tokens that are used in similar contexts end up close together in this space",
         "Similar meaning = small distance. Opposite meaning = larger distance.",
         "Embeddings can be extracted and used on their own: for search, clustering, and classification",
@@ -147,7 +147,7 @@ export const lessonTokensEmbeddings: StructuredLesson = {
       icon: "🧮",
       body: "Embeddings enable a new class of operations. You can find similar content without exact keyword matches. You can compare meaning programmatically. You can search your product data by meaning rather than text, which is what every serious AI search feature does under the hood.",
       highlights: [
-        "Semantic search: embed query → find nearest document embeddings → return closest matches",
+        "Semantic search: embed query, find nearest document embeddings, return closest matches",
         "Clustering: group documents by meaning without writing categories by hand",
         "Classification: train a simple classifier on embeddings instead of raw text",
         "Retrieval-augmented generation: embed your knowledge base, retrieve relevant chunks, feed to the LLM",
@@ -156,7 +156,7 @@ export const lessonTokensEmbeddings: StructuredLesson = {
         kind: "flow",
         steps: [
           { label: "User query", detail: "text input" },
-          { label: "Embed query", detail: "→ vector" },
+          { label: "Embed query", detail: "becomes a vector" },
           { label: "Nearest neighbour search", detail: "in vector database" },
           { label: "Retrieved chunks", detail: "fed to LLM as context" },
         ],

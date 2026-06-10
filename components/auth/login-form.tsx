@@ -70,11 +70,11 @@ export default function LoginForm() {
   return (
     <>
       <AuthHeader />
-      <main className="relative flex min-h-[calc(100vh-80px)] items-center justify-center overflow-hidden bg-slate-50 px-4 py-10">
+      <main className="relative flex min-h-[calc(100vh-72px)] items-center justify-center overflow-hidden bg-surface px-4 py-10">
         <div className="hero-glow left-1/2 top-0 -translate-x-1/2" />
-        <div className="relative z-10 w-full max-w-md rounded-[2rem] border border-slate-200 bg-white p-6 shadow-2xl md:p-10">
-          <h1 className="text-4xl font-black text-slate-900">Welcome Back</h1>
-          <p className="mt-4 text-slate-600">Continue your AI journey.</p>
+        <div className="auth-shell">
+          <h1 className="text-3xl font-black text-ink sm:text-4xl">Welcome Back</h1>
+          <p className="mt-3 text-base text-ink-muted">Continue your AI journey.</p>
 
           {callbackError && (
             <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
@@ -96,7 +96,7 @@ export default function LoginForm() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 px-5 py-4 outline-none focus:border-violet-500"
+              className="auth-input"
             />
             <input
               type="password"
@@ -104,22 +104,18 @@ export default function LoginForm() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 px-5 py-4 outline-none focus:border-violet-500"
+              className="auth-input"
             />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-2xl bg-violet-600 py-4 font-semibold text-white disabled:opacity-50"
-            >
+            <button type="submit" disabled={loading} className="btn-cta w-full">
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
-          <div className="mt-8 flex justify-between text-sm">
-            <Link href="/register" className="font-medium text-violet-600">
+          <div className="mt-8 flex flex-col gap-3 text-sm sm:flex-row sm:justify-between">
+            <Link href="/register" className="font-medium text-brand-accent">
               Create account
             </Link>
-            <Link href="/forgot-password" className="text-slate-500">
+            <Link href="/forgot-password" className="text-ink-muted">
               Forgot password?
             </Link>
           </div>

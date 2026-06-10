@@ -71,16 +71,15 @@ export default function ResetPasswordPage() {
     <>
       <AuthHeader />
 
-      <main className="relative flex min-h-[calc(100vh-80px)] items-center justify-center overflow-hidden bg-slate-50 px-4 py-10 md:px-6">
+      <main className="relative flex min-h-[calc(100vh-72px)] items-center justify-center overflow-hidden bg-surface px-4 py-10 md:px-6">
         <div className="hero-glow left-1/2 top-0 -translate-x-1/2" />
 
-        <div className="relative z-10 w-full max-w-lg rounded-[2rem] border border-slate-200 bg-white p-6 shadow-2xl md:p-10">
-          <div className="mb-8">
-            <h1 className="text-4xl font-black leading-tight text-slate-950 md:text-5xl">
+        <div className="auth-shell">
+          <div className="mb-8 text-left">
+            <h1 className="text-3xl font-black leading-tight text-ink sm:text-4xl">
               Reset Password
             </h1>
-
-            <p className="mt-4 text-base text-slate-600 md:text-lg">
+            <p className="mt-3 text-base leading-relaxed text-ink-muted">
               Enter your new password.
             </p>
           </div>
@@ -92,14 +91,10 @@ export default function ResetPasswordPage() {
               placeholder="New password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+              className="auth-input"
             />
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-2xl bg-violet-600 px-5 py-4 font-semibold text-white transition hover:bg-violet-700 disabled:opacity-50"
-            >
+            <button type="submit" disabled={loading} className="btn-cta w-full">
               {loading ? "Updating..." : "Update Password"}
             </button>
           </form>

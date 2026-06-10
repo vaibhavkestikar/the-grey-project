@@ -11,6 +11,11 @@ export default function VantaNetBackground() {
   useEffect(() => {
     if (!elRef.current || effectRef.current) return;
 
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
     let cancelled = false;
 
     Promise.all([
@@ -22,27 +27,20 @@ export default function VantaNetBackground() {
       effectRef.current = VANTA.default({
         el: elRef.current,
         THREE,
-        /* visual config */
         mouseControls: false,
         touchControls: false,
         gyroControls: false,
-        /* cool near-white canvas, blends with the white page */
-        backgroundColor: 0xfafbff,
-        /* very subtle slate-blue lines/dots */
-        color: 0xbbc8e8,
-        /* sparse: few nodes so text stays readable */
-        points: 6.0,
-        /* short connection radius, tight precise links */
-        maxDistance: 22.0,
-        /* wide grid spacing, airy not dense */
-        spacing: 22.0,
-        /* slow ambient drift */
-        speed: 0.6,
+        backgroundColor: 0xf8fafc,
+        color: 0x829cbc,
+        points: isMobile ? 4.0 : 6.0,
+        maxDistance: isMobile ? 18.0 : 22.0,
+        spacing: isMobile ? 26.0 : 22.0,
+        speed: isMobile ? 0.35 : 0.55,
         showDots: true,
         minHeight: 200,
         minWidth: 200,
         scale: 1.0,
-        scaleMobile: 0.75,
+        scaleMobile: 0.65,
       });
     });
 
@@ -57,7 +55,7 @@ export default function VantaNetBackground() {
     <div
       ref={elRef}
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-0 opacity-60"
+      className="pointer-events-none absolute inset-0 z-0 opacity-40 md:opacity-50"
     />
   );
 }
