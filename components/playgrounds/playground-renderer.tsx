@@ -1,15 +1,48 @@
 "use client";
 
-import NeuronSandbox from "@/components/playgrounds/neuron-sandbox";
-import PredictNext from "@/components/playgrounds/predict-next";
-import PythonSandbox from "@/components/playgrounds/python-sandbox";
-import RulesVsMlSorter from "@/components/playgrounds/rules-vs-ml-sorter";
-import PromptLab from "@/components/playgrounds/prompt-lab";
-import PipelineStepper from "@/components/playgrounds/pipeline-stepper";
-import Tokenizer from "@/components/playgrounds/tokenizer";
-import EmbeddingExplorer from "@/components/playgrounds/embedding-explorer";
-import HallucinationLab from "@/components/playgrounds/hallucination-lab";
+import dynamic from "next/dynamic";
 import type { PlaygroundId } from "@/types/lesson";
+
+const playgroundFallback = (
+  <div className="min-h-[12rem] animate-pulse rounded-2xl bg-slate-800/40" />
+);
+
+const NeuronSandbox = dynamic(
+  () => import("@/components/playgrounds/neuron-sandbox"),
+  { ssr: false, loading: () => playgroundFallback }
+);
+const PredictNext = dynamic(
+  () => import("@/components/playgrounds/predict-next"),
+  { ssr: false, loading: () => playgroundFallback }
+);
+const PythonSandbox = dynamic(
+  () => import("@/components/playgrounds/python-sandbox"),
+  { ssr: false, loading: () => playgroundFallback }
+);
+const RulesVsMlSorter = dynamic(
+  () => import("@/components/playgrounds/rules-vs-ml-sorter"),
+  { ssr: false, loading: () => playgroundFallback }
+);
+const PromptLab = dynamic(
+  () => import("@/components/playgrounds/prompt-lab"),
+  { ssr: false, loading: () => playgroundFallback }
+);
+const PipelineStepper = dynamic(
+  () => import("@/components/playgrounds/pipeline-stepper"),
+  { ssr: false, loading: () => playgroundFallback }
+);
+const Tokenizer = dynamic(
+  () => import("@/components/playgrounds/tokenizer"),
+  { ssr: false, loading: () => playgroundFallback }
+);
+const EmbeddingExplorer = dynamic(
+  () => import("@/components/playgrounds/embedding-explorer"),
+  { ssr: false, loading: () => playgroundFallback }
+);
+const HallucinationLab = dynamic(
+  () => import("@/components/playgrounds/hallucination-lab"),
+  { ssr: false, loading: () => playgroundFallback }
+);
 
 type Props = {
   id?: PlaygroundId;

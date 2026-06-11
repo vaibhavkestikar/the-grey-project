@@ -2,22 +2,16 @@ import { NextResponse } from "next/server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { parseRating } from "@/lib/api/rating";
 import type { SiteFeedbackPayload } from "@/types/feedback";
-
-function rating(n: unknown, min: number, max: number): number | null {
-  if (typeof n !== "number" || !Number.isInteger(n) || n < min || n > max) {
-    return null;
-  }
-  return n;
-}
 
 export async function POST(request: Request) {
   const body = (await request.json()) as SiteFeedbackPayload;
 
-  const nps = rating(body.nps_score, 0, 10);
-  const overall = rating(body.overall_rating, 1, 5);
-  const clarity = rating(body.clarity_rating, 1, 5);
-  const interactivity = rating(body.interactivity_rating, 1, 5);
+  const nps = parseRating(body.nps_score, 0, 10);
+  const overall = parseRating(body.overall_rating, 1, 5);
+  const clarity = parseRating(body.clarity_rating, 1, 5);
+  const interactivity = parseRating(body.interactivity_rating, 1, 5);
 
   if (nps === null || overall === null || clarity === null || interactivity === null) {
     return NextResponse.json({ error: "Please answer all rating questions." }, { status: 400 });

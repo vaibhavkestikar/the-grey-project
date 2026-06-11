@@ -13,7 +13,17 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "@/components/providers/auth-provider";
-import LlmPipelineDemo from "@/components/playgrounds/llm-pipeline-demo";
+import dynamic from "next/dynamic";
+
+const LlmPipelineDemo = dynamic(
+  () => import("@/components/playgrounds/llm-pipeline-demo"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="min-h-[20rem] animate-pulse rounded-3xl bg-slate-800/40" />
+    ),
+  }
+);
 import NeuralCanvas from "@/components/marketing/home/neural-canvas";
 import FloatingTokens from "@/components/marketing/home/floating-tokens";
 import SectionReveal from "@/components/marketing/home/section-reveal";

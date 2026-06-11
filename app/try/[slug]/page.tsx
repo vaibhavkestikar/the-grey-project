@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -10,23 +10,48 @@ import { useAuth } from "@/components/providers/auth-provider";
 import {
   getFreeLessons,
   getLessonBySlug,
+  getLessonBySlugAsync,
   getNextLessonSlug,
   PATH_ID,
 } from "@/data/curious-builders-path";
+import type { StructuredLesson } from "@/types/lesson";
 
 export default function TryLessonPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const lesson = getLessonBySlug(slug);
+  const lessonMeta = getLessonBySlug(slug);
+  const [lesson, setLesson] = useState<StructuredLesson | null>(null);
+  const [lessonLoading, setLessonLoading] = useState(true);
   const { user, loading: authLoading } = useAuth();
   const [completed, setCompleted] = useState(false);
   const [reviewMode, setReviewMode] = useState(false);
 
-  const isFree = lesson?.free === true;
+  useEffect(() => {
+    let cancelled = false;
+    setLesson(null);
+    setLessonLoading(true);
+
+    if (!lessonMeta?.free) {
+      setLessonLoading(false);
+      return;
+    }
+
+    void getLessonBySlugAsync(slug).then((loaded) => {
+      if (cancelled) return;
+      setLesson(loaded ?? null);
+      setLessonLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, lessonMeta?.free]);
+
+  const isFree = lessonMeta?.free === true;
   const isAuthenticated = !authLoading && Boolean(user);
   const nextSlug = slug ? getNextLessonSlug(slug) : null;
 
-  if (!isFree || !lesson) {
+  if (!isFree || !lessonMeta) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-4 px-4">
         <p className="text-lg font-semibold text-slate-800">Lesson not found</p>
@@ -69,7 +94,9 @@ export default function TryLessonPage() {
           ← Curious Builders
         </Link>
 
-        {completed && !reviewMode ? (
+        {lessonLoading ? (
+          <div className="mt-8 min-h-[24rem] animate-pulse rounded-2xl bg-slate-100" />
+        ) : completed && !reviewMode ? (
           <div className="premium-card mt-8 p-8 text-center md:p-12">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl">
               ✓
@@ -78,7 +105,7 @@ export default function TryLessonPage() {
               Lesson complete
             </h1>
             <p className="mt-4 text-lg text-slate-600">
-              You finished <strong>{lesson.title}</strong>.
+              You finished <strong>{lessonMeta.title}</strong>.
               {isAuthenticated && (
                 <>
                   {" "}
@@ -110,7 +137,7 @@ export default function TryLessonPage() {
               </button>
             </div>
           </div>
-        ) : (
+        ) : lesson ? (
           <div className="mt-6">
             <LessonEngine
               lesson={lesson}
@@ -123,6 +150,8 @@ export default function TryLessonPage() {
               }}
             />
           </div>
+        ) : (
+          <div className="mt-8 text-center text-slate-600">Lesson not found.</div>
         )}
       </div>
     </main>

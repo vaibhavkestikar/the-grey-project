@@ -9,15 +9,15 @@ import {
   isLessonProgressComplete,
   type LessonProgress,
 } from "@/lib/learning/progress";
-import { mergeGuestProgressOnSignIn, isGuestProgressMerged } from "@/lib/learning/merge-guest-progress";
+
 import { getGuestProgressMapForDisplay } from "@/lib/learning/guest-progress";
 import { PATH_ID } from "@/data/curious-builders-path";
 import { PATH_CERTIFICATE_SLUG } from "@/lib/learning/certificate";
 import { useAuth } from "@/components/providers/auth-provider";
-import type { StructuredLesson } from "@/types/lesson";
+import type { LessonSummary } from "@/data/curious-builders-path";
 
 type Props = {
-  lessons: StructuredLesson[];
+  lessons: LessonSummary[];
   baseHref: string;
   pathId?: string;
   showCertificate?: boolean;
@@ -71,10 +71,6 @@ export default function PathLessonList({
     }
     setReady(true);
 
-    if (!isGuestProgressMerged(user.id)) {
-      await mergeGuestProgressOnSignIn();
-    }
-
     const snapshot = await fetchPathProgressSnapshot(resolvedPathId);
     setProgressMap(snapshot.progressMap);
     if (showCertificate && pathId) {
@@ -121,7 +117,7 @@ export default function PathLessonList({
         const progress = progressMap.get(lesson.slug);
         const completed = isLessonProgressComplete(
           progress,
-          lesson.blocks.length
+          lesson.blockCount
         );
         const inProgress =
           progress &&
@@ -185,7 +181,7 @@ export default function PathLessonList({
                 <p className="mt-1 text-sm text-slate-600">{lesson.hook}</p>
               )}
               <p className="mt-2 text-xs font-semibold text-slate-400">
-                {lesson.durationMinutes} min · {lesson.blocks.length} steps
+                {lesson.durationMinutes} min · {lesson.blockCount} steps
                 {inProgress && ` · ${progress.progress_percent}% done`}
               </p>
             </div>

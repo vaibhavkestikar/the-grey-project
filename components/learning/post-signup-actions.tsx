@@ -61,7 +61,7 @@ export default function PostSignupActions({
         (lesson) =>
           !isLessonProgressComplete(
             progressMap.get(lesson.slug),
-            lesson.blocks.length
+            lesson.blockCount
           )
       );
 

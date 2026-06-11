@@ -10,8 +10,10 @@ import {
   getPathLessonSlugs,
   getStoreItemById,
 } from "@/lib/grey/config";
+import { getLessonBlockCount } from "@/data/curious-builders-path";
 import { buildGreyEventKey } from "@/lib/grey/event-key";
 import { CERTIFICATE_PATHS } from "@/lib/learning/certificate";
+import { isLessonProgressComplete } from "@/lib/learning/progress";
 
 type GreyProfileRow = {
   total_points: number;
@@ -149,6 +151,37 @@ async function awardBadge(
   return badge;
 }
 
+async function isPathCompleteInProgress(
+  supabase: SupabaseClient,
+  userId: string,
+  pathId: string
+) {
+  const lessonSlugs = getPathLessonSlugs(pathId);
+  if (lessonSlugs.length === 0) return false;
+
+  const { data } = await supabase
+    .from("lesson_progress")
+    .select("lesson_slug, completed, progress_percent, last_position")
+    .eq("user_id", userId)
+    .eq("course_slug", pathId);
+
+  const progressBySlug = new Map((data ?? []).map((row) => [row.lesson_slug, row]));
+
+  return lessonSlugs.every((slug) => {
+    const progress = progressBySlug.get(slug);
+    if (!progress) return false;
+    return isLessonProgressComplete(
+      {
+        lesson_slug: slug,
+        completed: Boolean(progress.completed),
+        progress_percent: progress.progress_percent ?? 0,
+        last_position: progress.last_position ?? 0,
+      },
+      getLessonBlockCount(slug)
+    );
+  });
+}
+
 async function maybeAwardPathCompletion(
   supabase: SupabaseClient,
   userId: string,
@@ -157,15 +190,7 @@ async function maybeAwardPathCompletion(
   const lessonSlugs = getPathLessonSlugs(pathId);
   if (lessonSlugs.length === 0) return { points: 0, badge: null as GreyBadge | null };
 
-  const { data } = await supabase
-    .from("grey_points_ledger")
-    .select("lesson_slug")
-    .eq("user_id", userId)
-    .eq("path_id", pathId)
-    .eq("event_type", "lesson_completed");
-
-  const completed = new Set((data ?? []).map((row) => row.lesson_slug));
-  const pathComplete = lessonSlugs.every((slug) => completed.has(slug));
+  const pathComplete = await isPathCompleteInProgress(supabase, userId, pathId);
   if (!pathComplete) return { points: 0, badge: null };
 
   const pathEvent: GreyAwardInput = { eventType: "path_completed", pathId };
@@ -242,11 +267,71 @@ async function evaluateBadges(
   return { badges: awarded, extraPoints: 0 };
 }
 
+async function validateGreyAwardInput(
+  supabase: SupabaseClient,
+  userId: string,
+  input: GreyAwardInput
+): Promise<boolean> {
+  if (input.eventType === "path_completed") return false;
+
+  if (!input.lessonSlug) return false;
+
+  const blockCount = getLessonBlockCount(input.lessonSlug);
+  if (!blockCount) return false;
+
+  const { data: progress } = await supabase
+    .from("lesson_progress")
+    .select("completed, progress_percent, last_position")
+    .eq("user_id", userId)
+    .eq("course_slug", input.pathId)
+    .eq("lesson_slug", input.lessonSlug)
+    .maybeSingle();
+
+  const lastPosition = progress?.last_position ?? -1;
+
+  if (input.eventType === "lesson_completed") {
+    if (!progress) return false;
+    return isLessonProgressComplete(
+      {
+        lesson_slug: input.lessonSlug,
+        completed: Boolean(progress.completed),
+        progress_percent: progress.progress_percent ?? 0,
+        last_position: progress.last_position ?? 0,
+      },
+      blockCount
+    );
+  }
+
+  if (
+    input.eventType === "step_completed" ||
+    input.eventType === "checkpoint_correct" ||
+    input.eventType === "deep_dive_opened"
+  ) {
+    if (input.stepIndex === undefined) return false;
+    if (input.stepIndex < 0 || input.stepIndex >= blockCount) return false;
+    return input.stepIndex <= lastPosition + 1;
+  }
+
+  return false;
+}
+
 export async function awardGreyPoints(
   supabase: SupabaseClient,
   user: User,
   input: GreyAwardInput
 ): Promise<GreyAwardResult> {
+  const isValid = await validateGreyAwardInput(supabase, user.id, input);
+  if (!isValid) {
+    const summary = await getGreySummary(supabase, user.id);
+    return {
+      pointsAwarded: 0,
+      totalPoints: summary.profile.totalPoints,
+      availablePoints: summary.profile.availablePoints,
+      badgesAwarded: [],
+      currentStreak: summary.profile.currentStreak,
+    };
+  }
+
   const points = pointsFor(input);
   const key = buildGreyEventKey(input);
 

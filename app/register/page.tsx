@@ -174,17 +174,17 @@ export default function RegisterPage() {
     <>
       <AuthHeader />
 
-      <main className="relative flex min-h-[calc(100vh-80px)] items-center justify-center overflow-hidden bg-slate-50 px-4 py-10 md:px-6 md:py-16">
+      <main className="relative flex min-h-[calc(100vh-72px)] items-center justify-center overflow-hidden bg-surface px-4 py-10 md:px-6 md:py-16">
 
         <div className="hero-glow left-1/2 top-0 -translate-x-1/2" />
 
-        <div className="relative z-10 w-full max-w-2xl rounded-[2rem] border border-slate-200 bg-white p-6 shadow-2xl md:p-10">
+        <div className="auth-shell max-w-2xl">
 
-          <h1 className="text-4xl font-black leading-tight text-slate-900 md:text-5xl">
+          <h1 className="text-4xl font-black leading-tight text-ink md:text-5xl">
             Join The Grey Project
           </h1>
 
-          <p className="mt-4 text-base text-slate-600 md:text-lg">
+          <p className="mt-4 text-base text-ink-muted md:text-lg">
             Learn AI deeply from first principles.
           </p>
 
@@ -205,7 +205,7 @@ export default function RegisterPage() {
                     e.target.value,
                 })
               }
-              className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+              className="auth-input"
             />
 
             <input
@@ -220,7 +220,7 @@ export default function RegisterPage() {
                     e.target.value,
                 })
               }
-              className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+              className="auth-input"
             />
 
             <input
@@ -235,7 +235,7 @@ export default function RegisterPage() {
                     e.target.value,
                 })
               }
-              className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+              className="auth-input"
             />
 
             <select
@@ -248,7 +248,7 @@ export default function RegisterPage() {
                     e.target.value,
                 })
               }
-              className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+              className="auth-input"
             >
 
               <option value="">
@@ -296,7 +296,7 @@ export default function RegisterPage() {
                 required
                 value={roleOther}
                 onChange={(e) => setRoleOther(e.target.value)}
-                className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+                className="auth-input"
               />
             )}
 
@@ -310,7 +310,7 @@ export default function RegisterPage() {
                     e.target.value,
                 })
               }
-              className="rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+              className="auth-input"
             >
 
               <option value="">
@@ -346,7 +346,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 rounded-2xl bg-violet-600 py-4 font-semibold text-white transition hover:bg-violet-700 disabled:opacity-50"
+              className="btn-cta mt-2 w-full"
             >
               {loading
                 ? "Creating Account..."
@@ -359,7 +359,7 @@ export default function RegisterPage() {
 
             <Link
               href="/login"
-              className="font-medium text-violet-600"
+              className="font-medium text-brand-accent"
             >
               Already have an account?
             </Link>

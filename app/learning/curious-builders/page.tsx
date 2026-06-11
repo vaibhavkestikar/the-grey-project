@@ -61,21 +61,21 @@ export default function CuriousBuildersPathPage() {
 
         {/* WHO / WHY / WHAT */}
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-violet-300">Who this is for</p>
-            <p className="mt-2 text-sm leading-relaxed text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-violet-600">Who this is for</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-700">
               Founders, PMs, analysts, and curious builders who use AI tools daily and want clear intuition, not hype.
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-violet-300">Why this exists</p>
-            <p className="mt-2 text-sm leading-relaxed text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-violet-600">Why this exists</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-700">
               Most people can use AI tools. Very few can explain, evaluate, or improve them. This path closes that gap.
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-violet-300">What changes after</p>
-            <p className="mt-2 text-sm leading-relaxed text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-violet-600">What changes after</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-700">
               You make clearer AI product decisions, write better prompts, and catch hallucination risks before they ship.
             </p>
           </div>

@@ -2,14 +2,9 @@ import { NextResponse } from "next/server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { parseRating } from "@/lib/api/rating";
+import { logError } from "@/lib/logger";
 import type { PathFeedbackPayload } from "@/types/feedback";
-
-function rating(n: unknown, min: number, max: number): number | null {
-  if (typeof n !== "number" || !Number.isInteger(n) || n < min || n > max) {
-    return null;
-  }
-  return n;
-}
 
 export async function GET(request: Request) {
   const pathId = new URL(request.url).searchParams.get("path_id");
@@ -38,9 +33,9 @@ export async function POST(request: Request) {
 
   const pathId = body.path_id?.trim();
   const pathTitle = body.path_title?.trim();
-  const nps = rating(body.nps_score, 0, 10);
-  const intuition = rating(body.intuition_rating, 1, 5);
-  const interactivity = rating(body.interactivity_rating, 1, 5);
+  const nps = parseRating(body.nps_score, 0, 10);
+  const intuition = parseRating(body.intuition_rating, 1, 5);
+  const interactivity = parseRating(body.interactivity_rating, 1, 5);
 
   if (!pathId || !pathTitle || nps === null || intuition === null || interactivity === null) {
     return NextResponse.json({ error: "Please answer all required questions." }, { status: 400 });

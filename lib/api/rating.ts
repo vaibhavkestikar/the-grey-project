@@ -1,0 +1,10 @@
+export function parseRating(
+  value: unknown,
+  min: number,
+  max: number
+): number | null {
+  if (typeof value !== "number" || !Number.isInteger(value) || value < min || value > max) {
+    return null;
+  }
+  return value;
+}

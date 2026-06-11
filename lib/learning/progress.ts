@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import { getLessonBySlug, PATH_ID } from "@/data/curious-builders-path";
+import { getLessonBlockCount, PATH_ID } from "@/data/curious-builders-path";
 import {
   getCertificatePath,
   hasCertificateIssued,
@@ -27,7 +27,7 @@ export type PathProgressSnapshot = {
 };
 
 function lessonTotalSteps(lessonSlug: string): number | undefined {
-  return getLessonBySlug(lessonSlug)?.blocks.length;
+  return getLessonBlockCount(lessonSlug);
 }
 
 /** True when the learner finished, even if the DB flag was never set. */

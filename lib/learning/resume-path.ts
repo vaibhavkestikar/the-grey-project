@@ -1,4 +1,4 @@
-import type { StructuredLesson } from "@/types/lesson";
+import type { LessonSummary } from "@/data/curious-builders-path";
 
 import {
   isLessonProgressComplete,
@@ -6,21 +6,21 @@ import {
 } from "@/lib/learning/progress";
 
 export function getNextIncompleteLesson(
-  lessons: StructuredLesson[],
+  lessons: LessonSummary[],
   progressMap: Map<string, LessonProgress>
-): StructuredLesson | undefined {
+): LessonSummary | undefined {
   return lessons.find(
     (lesson) =>
       !isLessonProgressComplete(
         progressMap.get(lesson.slug),
-        lesson.blocks.length
+        lesson.blockCount
       )
   );
 }
 
 export function getPathContinueHref(
   pathId: string,
-  lessons: StructuredLesson[],
+  lessons: LessonSummary[],
   progressMap: Map<string, LessonProgress>
 ): string {
   const nextLesson = getNextIncompleteLesson(lessons, progressMap);

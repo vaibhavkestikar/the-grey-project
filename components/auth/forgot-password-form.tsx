@@ -49,20 +49,20 @@ export default function ForgotPasswordForm() {
     <>
       <AuthHeader />
 
-      <main className="relative flex min-h-[calc(100vh-80px)] items-center justify-center overflow-hidden bg-slate-50 px-4 py-10 md:px-6">
+      <main className="relative flex min-h-[calc(100vh-72px)] items-center justify-center overflow-hidden bg-surface px-4 py-10 md:px-6">
         <div className="hero-glow left-1/2 top-0 -translate-x-1/2" />
 
-        <div className="relative z-10 w-full max-w-md rounded-[2rem] border border-slate-200 bg-white p-6 shadow-2xl md:p-10">
-          <h1 className="text-4xl font-black leading-tight text-slate-900 md:text-5xl">
+        <div className="auth-shell max-w-md">
+          <h1 className="text-3xl font-black text-ink sm:text-4xl">
             Reset Password
           </h1>
 
-          <p className="mt-4 text-base text-slate-600 md:text-lg">
+          <p className="mt-3 text-base text-ink-muted">
             We will send you a reset link.
           </p>
 
           {callbackError && (
-            <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+            <div className="mt-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100">
               Your reset link expired or opened outside the browser where you requested it.
               Enter your email and we&apos;ll send a fresh link.
             </div>
@@ -75,13 +75,13 @@ export default function ForgotPasswordForm() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 px-5 py-4 outline-none transition focus:border-violet-500"
+              className="auth-input"
             />
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-2xl bg-violet-600 py-4 font-semibold text-white transition hover:bg-violet-700"
+              className="btn-cta w-full"
             >
               {loading ? "Sending..." : "Send Reset Link"}
             </button>

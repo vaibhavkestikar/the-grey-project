@@ -4,9 +4,9 @@ type Props = {
 };
 
 const variantClasses: Record<NonNullable<Props["variant"]>, string> = {
-  default: "border border-cyan-500/30 bg-cyan-500/10 text-cyan-200",
+  default: "bg-violet-100 text-violet-700",
   light: "bg-white/20 text-white backdrop-blur",
-  muted: "border border-slate-600 bg-slate-800/60 text-slate-300",
+  muted: "bg-slate-100 text-slate-600",
 };
 
 export default function LearningPathPill({
@@ -15,7 +15,7 @@ export default function LearningPathPill({
 }: Props) {
   return (
     <span
-      className={`inline-flex rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wider ${variantClasses[variant]} ${className}`}
+      className={`inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${variantClasses[variant]} ${className}`}
     >
       Learning path
     </span>

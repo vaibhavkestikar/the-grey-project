@@ -1,17 +1,26 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const protectedRoutes = [
-  "/learning/foundations-of-ai/module-1",
-  "/learning/foundations-of-ai/module-2",
-];
+const PAID_CURIOUS_BUILDERS_SLUGS = new Set([
+  "classical-vs-ml",
+  "prompting",
+  "tokens-embeddings",
+  "neurons",
+  "hallucinations",
+  "ml-workflow",
+]);
+
+function getCuriousBuildersLessonSlug(pathname: string): string | null {
+  const match = pathname.match(/^\/learning\/curious-builders\/([^/]+)$/);
+  if (!match) return null;
+  return match[1];
+}
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const hasAuthCode = request.nextUrl.searchParams.has("code");
   const hasTokenHash = request.nextUrl.searchParams.has("token_hash");
 
-  // Supabase sometimes lands auth params on the site root. Forward to callback pages.
   if (
     (hasAuthCode || hasTokenHash) &&
     !pathname.startsWith("/auth/callback")
@@ -34,18 +43,20 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(callbackUrl);
   }
 
-  const isProtected = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
+  const lessonSlug = getCuriousBuildersLessonSlug(pathname);
+  const requiresAuth =
+    lessonSlug !== null && PAID_CURIOUS_BUILDERS_SLUGS.has(lessonSlug);
 
-  if (!isProtected) {
+  if (!requiresAuth) {
     return NextResponse.next({ request });
   }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!supabaseUrl || !supabaseAnonKey) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   let response = NextResponse.next({ request });
@@ -73,10 +84,14 @@ export async function proxy(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(loginUrl);
     }
   } catch {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   return response;

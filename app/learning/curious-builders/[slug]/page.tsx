@@ -13,21 +13,25 @@ import {
   CURIOUS_BUILDERS_LESSONS,
   CURIOUS_BUILDERS_PATH,
   getLessonBySlug,
+  getLessonBySlugAsync,
   isLastLessonInPath,
 } from "@/data/curious-builders-path";
+import type { StructuredLesson } from "@/types/lesson";
 import { PATH_CERTIFICATE_SLUG } from "@/lib/learning/certificate";
 import {
   fetchLessonProgress,
   isLessonProgressComplete,
 } from "@/lib/learning/progress";
-import { mergeGuestProgressOnSignIn, isGuestProgressMerged } from "@/lib/learning/merge-guest-progress";
+
 
 export default function PathLessonPage() {
   const params = useParams();
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const slug = params.slug as string;
-  const lesson = getLessonBySlug(slug);
+  const lessonMeta = getLessonBySlug(slug);
+  const [lesson, setLesson] = useState<StructuredLesson | null>(null);
+  const [lessonLoading, setLessonLoading] = useState(true);
   const [authReady, setAuthReady] = useState(false);
   const [allowed, setAllowed] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -46,7 +50,7 @@ export default function PathLessonPage() {
   } | null>(null);
   const certificateToastShown = useRef(false);
 
-  const isLastLesson = lesson ? isLastLessonInPath(slug) : false;
+  const isLastLesson = lessonMeta ? isLastLessonInPath(slug) : false;
 
   const handleLessonComplete = useCallback(() => {
     setReviewMode(false);
@@ -62,25 +66,42 @@ export default function PathLessonPage() {
   }, [slug]);
 
   useEffect(() => {
-    if (!lesson || authLoading) return;
+    if (!lessonMeta || authLoading) return;
 
-    if (!lesson.free && !user) {
+    if (!lessonMeta.free && !user) {
       router.replace(`/login?next=/learning/curious-builders/${slug}`);
       return;
     }
 
     setAllowed(true);
     setAuthReady(true);
-  }, [lesson, authLoading, user, router, slug]);
+  }, [lessonMeta, authLoading, user, router, slug]);
 
   useEffect(() => {
-    if (!lesson || authLoading) return;
+    let cancelled = false;
+    setLesson(null);
+    setLessonLoading(true);
+
+    if (!lessonMeta) {
+      setLessonLoading(false);
+      return;
+    }
+
+    void getLessonBySlugAsync(slug).then((loaded) => {
+      if (cancelled) return;
+      setLesson(loaded ?? null);
+      setLessonLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, lessonMeta]);
+
+  useEffect(() => {
+    if (!lesson || !lessonMeta || authLoading) return;
 
     void (async () => {
-      if (user?.id && !isGuestProgressMerged(user.id)) {
-        await mergeGuestProgressOnSignIn();
-      }
-
       const saved = await fetchLessonProgress(
         lesson.slug,
         CURIOUS_BUILDERS_PATH.id,
@@ -93,7 +114,7 @@ export default function PathLessonPage() {
       }
       setProgressChecked(true);
     })();
-  }, [lesson, authLoading, user?.id, slug]);
+  }, [lesson, lessonMeta, authLoading, user?.id, slug]);
 
   useEffect(() => {
     if (!completed || !isLastLesson) return;
@@ -160,7 +181,7 @@ export default function PathLessonPage() {
     })();
   }, [completed, isLastLesson, lesson]);
 
-  if (!lesson) {
+  if (!lessonMeta) {
     return (
       <main className="flex min-h-screen items-center justify-center">
         <p>Lesson not found.</p>
@@ -168,7 +189,7 @@ export default function PathLessonPage() {
     );
   }
 
-  if (!authReady || !allowed) {
+  if (!authReady || !allowed || lessonLoading || !lesson) {
     return (
       <main className="flex min-h-screen items-center justify-center">
         <p className="text-slate-600">Loading lesson...</p>

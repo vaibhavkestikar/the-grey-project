@@ -8,13 +8,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     "",
     "/try",
-    "/learning",
-    "/learning/curious-builders",
-    "/try",
     "/try/prediction",
     "/try/classical-vs-ml",
+    "/learning",
+    "/learning/curious-builders",
     "/blog",
     "/about",
+    "/feedback",
     "/register",
     "/login",
   ].map((path) => ({
