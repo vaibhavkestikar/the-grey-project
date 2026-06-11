@@ -82,14 +82,14 @@ export default function CuriousBuildersCertificatePage() {
 
   if (!ready) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
+      <main className="site-page flex min-h-screen items-center justify-center">
         <p className="text-slate-600">Loading certificate...</p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#f8fafc]">
+    <main className="site-page">
       <SiteNavbar />
       <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
         <Link

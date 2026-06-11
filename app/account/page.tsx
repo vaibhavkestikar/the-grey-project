@@ -71,7 +71,7 @@ export default function AccountPage() {
 
   if (!ready) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
+      <main className="site-page flex min-h-screen items-center justify-center">
         <p className="text-slate-600">Loading your profile...</p>
       </main>
     );
@@ -90,13 +90,13 @@ export default function AccountPage() {
   ].filter((r) => r.value);
 
   return (
-    <main className="min-h-screen bg-[#f8fafc]">
+    <main className="site-page">
       <SiteNavbar />
       <div className="mx-auto max-w-4xl px-4 py-10 md:py-16">
-        <p className="text-sm font-semibold uppercase tracking-wider text-violet-600">
+        <p className="text-sm font-semibold uppercase tracking-wider text-cyan-400">
           Your profile
         </p>
-        <h1 className="mt-2 text-3xl font-black text-slate-950 md:text-4xl">
+        <h1 className="mt-2 text-3xl font-black text-slate-50 md:text-4xl">
           Welcome back, {firstName}
         </h1>
 
@@ -108,7 +108,7 @@ export default function AccountPage() {
           ].map((s) => (
             <div key={s.label} className="premium-card p-6 text-center">
               <p className="text-sm font-semibold text-slate-500">{s.label}</p>
-              <p className="mt-2 text-3xl font-black text-violet-700">{s.value}</p>
+              <p className="mt-2 text-3xl font-black text-cyan-300">{s.value}</p>
             </div>
           ))}
         </div>
@@ -118,8 +118,8 @@ export default function AccountPage() {
         <ProfileCertifications />
 
         <div className="premium-card mt-8 p-6 md:p-8">
-          <h2 className="text-xl font-bold text-slate-900">Profile details</h2>
-          <dl className="mt-6 divide-y divide-slate-100">
+          <h2 className="text-xl font-bold text-slate-50">Profile details</h2>
+          <dl className="mt-6 divide-y divide-slate-700/60">
             {profileRows.map((row) => (
               <div
                 key={row.label}
@@ -128,7 +128,7 @@ export default function AccountPage() {
                 <dt className="text-sm font-semibold text-slate-500">
                   {row.label}
                 </dt>
-                <dd className="break-all text-slate-900 sm:text-right">
+                <dd className="break-all text-slate-200 sm:text-right">
                   {row.value}
                 </dd>
               </div>
@@ -137,21 +137,15 @@ export default function AccountPage() {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/learning"
-            className="rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white"
-          >
+          <Link href="/learning" className="btn-home-cta px-6 py-3">
             Continue learning
           </Link>
-          <Link
-            href="/settings"
-            className="rounded-xl border border-slate-200 px-6 py-3 font-semibold text-slate-700"
-          >
+          <Link href="/settings" className="btn-home-secondary px-6 py-3">
             Edit profile
           </Link>
           <Link
             href="/logout"
-            className="rounded-xl border border-slate-200 px-6 py-3 font-semibold text-slate-600 hover:border-red-300 hover:text-red-600"
+            className="btn-home-secondary px-6 py-3 hover:border-red-400/50 hover:text-red-300"
           >
             Logout
           </Link>

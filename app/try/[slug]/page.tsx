@@ -58,7 +58,7 @@ export default function TryLessonPage() {
       : "Continue learning →";
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#f8fafc]">
+    <main className="site-page">
       <SiteNavbar />
 
       <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">

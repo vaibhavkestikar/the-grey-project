@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function AuthHeader() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-cyan-500/20 bg-slate-950/85 backdrop-blur-xl">
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link href="/" className="flex min-w-0 flex-col">
           <span className="gradient-text gradient-text-shine truncate text-lg font-black leading-none tracking-tight sm:text-2xl">

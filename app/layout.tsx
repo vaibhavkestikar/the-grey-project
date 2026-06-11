@@ -13,6 +13,7 @@ import {
   AuthProvider,
 } from "@/components/providers/auth-provider";
 import AuthSessionHandler from "@/components/auth/auth-session-handler";
+import SiteChrome from "@/components/layout/site-chrome";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -67,8 +68,9 @@ export default function RootLayout({
     >
 
       <body
-        className={`${poppins.variable} ${poppins.className} bg-surface text-ink antialiased`}
+        className={`${poppins.variable} ${poppins.className} site-theme antialiased`}
       >
+        <SiteChrome />
 
         <AuthProvider>
           <Suspense fallback={null}>

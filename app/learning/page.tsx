@@ -4,7 +4,7 @@ import ResumeLearning from "@/components/learning/resume-learning";
 
 export default function LearningPage() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#f8fafc]">
+    <main className="site-page">
       <SiteNavbar />
       <ResumeLearning />
       <LearningHub />

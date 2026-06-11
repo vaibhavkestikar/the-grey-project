@@ -35,7 +35,7 @@ export default function AboutPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#f8f8fc]">
+    <main className="site-page">
 
       {/* NAVBAR */}
 
@@ -43,7 +43,7 @@ export default function AboutPage() {
 
       {/* HERO */}
 
-      <section className="border-b border-slate-200">
+      <section className="border-b border-slate-800">
 
         <div className="mx-auto grid max-w-7xl items-center gap-20 px-6 py-24 lg:grid-cols-2">
 
@@ -51,14 +51,14 @@ export default function AboutPage() {
 
           <div>
 
-            <div className="inline-flex rounded-full bg-violet-100 px-4 py-2 text-sm font-semibold text-violet-700">
+            <div className="site-badge">
               AI Engineer • Data Scientist
             </div>
 
-            <h1 className="mt-8 text-5xl font-black leading-tight text-slate-950 md:text-7xl">
+            <h1 className="mt-8 text-5xl font-black leading-tight text-slate-50 md:text-7xl">
 
               Uncovering The
-              <span className="bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="home-gradient-text home-gradient-text-shine">
                 {" "}Grey{" "}
               </span>
 
@@ -86,17 +86,15 @@ export default function AboutPage() {
 
             <div className="mt-12 flex flex-wrap gap-4">
 
-              <Link
-                href="/learning"
-                className="rounded-2xl bg-gradient-to-r from-violet-600 to-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:scale-[1.02]"
-              >
+              <Link href="/learning" className="btn-home-cta px-8 py-4 text-lg">
                 Start Learning
               </Link>
 
               <a
                 href="https://www.linkedin.com/in/vaibhavkestikar/"
                 target="_blank"
-                className="rounded-2xl border border-slate-300 bg-white px-8 py-4 text-lg font-semibold text-slate-700 transition hover:border-violet-400 hover:text-violet-700"
+                rel="noreferrer"
+                className="btn-home-secondary px-8 py-4 text-lg"
               >
                 LinkedIn
               </a>
@@ -109,9 +107,9 @@ export default function AboutPage() {
 
           <div className="relative flex justify-center">
 
-            <div className="absolute h-[420px] w-[420px] rounded-full bg-gradient-to-r from-violet-300 to-blue-300 blur-3xl opacity-30" />
+            <div className="absolute h-[420px] w-[420px] rounded-full bg-gradient-to-r from-cyan-500/20 to-violet-500/20 blur-3xl" />
 
-            <div className="relative overflow-hidden rounded-[3rem] border border-white/50 bg-white/70 p-4 shadow-2xl backdrop-blur">
+            <div className="relative overflow-hidden rounded-[3rem] border border-cyan-500/25 bg-slate-900/70 p-4 shadow-[0_0_40px_rgba(34,211,238,0.15)] backdrop-blur">
 
               <Image
                 src="/founder.png"

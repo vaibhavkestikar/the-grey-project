@@ -36,7 +36,7 @@ export default function GreyPointsNavPill() {
   return (
     <Link
       href="/account#grey-store"
-      className="inline-flex items-center gap-1.5 rounded-full border border-violet-200 bg-gradient-to-r from-violet-50 to-blue-50 px-3 py-1.5 text-xs font-black text-violet-700 shadow-sm transition hover:border-violet-300 hover:from-violet-100 hover:to-blue-100"
+      className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-gradient-to-r from-cyan-500/15 to-violet-500/15 px-3 py-1.5 text-xs font-black text-cyan-200 shadow-[0_0_12px_rgba(34,211,238,0.15)] transition hover:border-cyan-400/50"
       title="Available Grey Points"
     >
       <span className="h-2 w-2 rounded-full bg-emerald-500" />

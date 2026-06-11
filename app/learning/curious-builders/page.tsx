@@ -47,7 +47,7 @@ export default function CuriousBuildersPathPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#f8fafc]">
+    <main className="site-page">
       <SiteNavbar />
       <div className="mx-auto max-w-3xl px-4 py-10 md:py-14">
         <Link href="/learning" className="text-sm font-medium text-slate-500 hover:text-violet-600">

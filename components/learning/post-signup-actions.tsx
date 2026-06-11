@@ -34,8 +34,8 @@ function readCachedContinueHref(): string | null {
 
 export default function PostSignupActions({
   className = "mt-10 flex flex-col gap-4",
-  primaryClassName = "rounded-2xl bg-violet-600 py-4 font-semibold text-white text-center",
-  secondaryClassName = "rounded-2xl border py-4 font-semibold text-slate-800 text-center",
+  primaryClassName = "btn-home-cta py-4 text-center",
+  secondaryClassName = "btn-home-secondary py-4 text-center",
 }: Props) {
   const router = useRouter();
   const { user } = useAuth();

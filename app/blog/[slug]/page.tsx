@@ -119,7 +119,7 @@ export default async function BlogPostPage({
   };
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#f8fafc]">
+    <main className="site-page">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -131,7 +131,7 @@ export default async function BlogPostPage({
         <div className="mx-auto max-w-4xl px-4 md:px-6">
           <header className="mb-8">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex rounded-full bg-violet-100 px-4 py-2 text-sm font-semibold text-violet-700">
+              <span className="site-badge">
                 {post.category}
               </span>
               <time
@@ -146,16 +146,16 @@ export default async function BlogPostPage({
               </time>
             </div>
 
-            <h1 className="mt-6 text-4xl font-black leading-[1.1] tracking-tight text-slate-950 md:text-5xl lg:text-6xl">
+            <h1 className="mt-6 text-4xl font-black leading-[1.1] tracking-tight text-slate-50 md:text-5xl lg:text-6xl">
               {post.title}
             </h1>
 
-            <p className="mt-5 text-lg leading-relaxed text-slate-600 md:text-xl">
+            <p className="mt-5 text-lg leading-relaxed text-slate-400 md:text-xl">
               {post.description}
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3 text-sm font-medium text-slate-600">
-              <span className="font-semibold text-slate-900">
+            <div className="mt-6 flex flex-wrap items-center gap-3 text-sm font-medium text-slate-400">
+              <span className="font-semibold text-slate-200">
                 {post.author}
               </span>
               <span aria-hidden>·</span>
@@ -178,35 +178,36 @@ export default async function BlogPostPage({
             className="
               mdx-content
               prose
+              prose-invert
               prose-lg
               mt-14
               max-w-none
 
               prose-headings:font-black
-              prose-headings:text-slate-950
+              prose-headings:text-slate-50
               prose-headings:tracking-tight
 
               prose-h2:mt-14
               prose-h2:mb-4
               prose-h2:text-3xl
               prose-h2:border-b
-              prose-h2:border-slate-200
+              prose-h2:border-slate-700
               prose-h2:pb-4
 
               prose-h3:mt-10
               prose-h3:text-2xl
 
               prose-p:my-5
-              prose-p:text-slate-700
+              prose-p:text-slate-300
               prose-p:leading-[1.85]
 
-              prose-strong:text-slate-950
-              prose-li:text-slate-700
+              prose-strong:text-slate-50
+              prose-li:text-slate-300
               prose-li:leading-8
 
-              prose-a:text-violet-600
+              prose-a:text-cyan-400
               prose-a:font-semibold
-              hover:prose-a:text-violet-800
+              hover:prose-a:text-cyan-300
 
               prose-table:my-8
             "

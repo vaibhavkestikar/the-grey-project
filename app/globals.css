@@ -5,15 +5,15 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #829cbc;
-  --color-dark: #1d3461;
-  --color-heading: #5b21b6;
-  --color-secondary: #376996;
-  --color-accent: #7c3aed;
+  --color-primary: #22d3ee;
+  --color-dark: #0f172a;
+  --color-heading: #f1f5f9;
+  --color-secondary: #38bdf8;
+  --color-accent: #a78bfa;
   --color-success: #10b981;
-  --color-bg: #f8fafc;
-  --color-ink: #111827;
-  --color-muted: #475569;
+  --color-bg: #070b12;
+  --color-ink: #e2e8f0;
+  --color-muted: #94a3b8;
 }
 
 html {
@@ -27,11 +27,9 @@ body {
   overflow-x: hidden;
   line-height: 1.6;
   font-family: var(--font-poppins), Poppins, ui-sans-serif, system-ui, sans-serif;
-  background-image: radial-gradient(
-    circle at top,
-    rgba(130, 156, 188, 0.12),
-    transparent 34%
-  );
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(34, 211, 238, 0.08), transparent 34%),
+    radial-gradient(circle at 85% 12%, rgba(167, 139, 250, 0.1), transparent 38%);
 }
 
 h1,
@@ -73,23 +71,23 @@ table {
   }
 
   .btn-cta {
-    @apply inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-brand-accent px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-violet-300/40 transition hover:bg-violet-700 active:scale-[0.98] disabled:opacity-50;
+    @apply inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-600 px-6 py-3.5 text-base font-semibold text-white shadow-[0_0_24px_rgba(34,211,238,0.35)] transition hover:scale-[1.02] hover:shadow-[0_0_32px_rgba(167,139,250,0.45)] active:scale-[0.98] disabled:opacity-50;
   }
 
   .btn-secondary {
-    @apply inline-flex min-h-[52px] items-center justify-center rounded-2xl border-2 border-brand-secondary/25 bg-white px-6 py-3.5 text-base font-semibold text-brand-dark transition hover:border-brand-secondary hover:bg-brand-primary/10 active:scale-[0.98];
+    @apply inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-cyan-500/30 bg-slate-900/60 px-6 py-3.5 text-base font-semibold text-slate-100 backdrop-blur transition hover:border-cyan-400/60 hover:bg-slate-800/80 active:scale-[0.98];
   }
 
   .btn-nav {
-    @apply inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-brand-dark transition hover:border-brand-secondary hover:text-brand-secondary;
+    @apply inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-200 transition hover:border-cyan-400/50 hover:text-cyan-300;
   }
 
   .auth-shell {
-    @apply relative z-10 w-full max-w-lg rounded-[2rem] border border-slate-200 bg-white p-6 shadow-xl sm:p-10;
+    @apply relative z-10 w-full max-w-lg rounded-[2rem] border border-cyan-500/20 bg-slate-900/80 p-6 shadow-[0_0_40px_rgba(34,211,238,0.1)] backdrop-blur-md sm:p-10;
   }
 
   .auth-input {
-    @apply w-full rounded-2xl border border-slate-200 px-5 py-4 text-base text-ink outline-none transition placeholder:text-ink-muted focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/25;
+    @apply w-full rounded-2xl border border-slate-700 bg-slate-950/60 px-5 py-4 text-base text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20;
   }
 
   .numbered-step-list {
@@ -104,7 +102,7 @@ table {
   .numbered-step-list > li::before {
     content: counter(numbered-step);
     counter-increment: numbered-step;
-    @apply flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold tabular-nums text-violet-700;
+    @apply flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-500/20 text-xs font-bold tabular-nums text-cyan-300 ring-1 ring-cyan-400/30;
   }
 
   .aligned-bullet-list > li {
@@ -113,6 +111,125 @@ table {
 
   .aligned-bullet-list > li::marker {
     content: "";
+  }
+
+  .site-theme,
+  .homepage-theme {
+    @apply bg-[#070b12] text-slate-200;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(34, 211, 238, 0.08), transparent 34%),
+      radial-gradient(circle at 85% 12%, rgba(167, 139, 250, 0.1), transparent 38%);
+  }
+
+  .site-theme h1,
+  .site-theme h2,
+  .site-theme h3,
+  .homepage-theme h1,
+  .homepage-theme h2,
+  .homepage-theme h3 {
+    @apply text-slate-50;
+  }
+
+  .site-page {
+    @apply min-h-screen overflow-x-hidden;
+  }
+
+  .site-badge {
+    @apply inline-flex rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-200;
+  }
+
+  .site-card {
+    @apply rounded-[2rem] border border-slate-700/70 bg-slate-900/80 shadow-[0_0_24px_rgba(34,211,238,0.06)] backdrop-blur-sm transition hover:border-cyan-400/40 hover:shadow-[0_0_32px_rgba(34,211,238,0.12)];
+  }
+
+  .site-section-border {
+    @apply border-slate-800;
+  }
+
+  /* Legacy light utility harmonization across existing pages */
+  .site-theme .text-slate-950,
+  .site-theme .text-slate-900 {
+    @apply text-slate-50;
+  }
+
+  .site-theme .text-slate-800 {
+    @apply text-slate-200;
+  }
+
+  .site-theme .text-slate-700 {
+    @apply text-slate-300;
+  }
+
+  .site-theme .text-slate-600 {
+    @apply text-slate-400;
+  }
+
+  .site-theme .border-slate-200 {
+    @apply border-slate-700/60;
+  }
+
+  .site-theme .bg-white {
+    @apply bg-slate-900/85;
+  }
+
+  .site-theme .bg-violet-100 {
+    @apply border border-violet-400/30 bg-violet-500/15 text-violet-200;
+  }
+
+  .site-theme .text-violet-700,
+  .site-theme .text-violet-600 {
+    @apply text-violet-300;
+  }
+
+  .site-theme .bg-violet-50 {
+    @apply border border-violet-400/20 bg-violet-500/10 text-violet-200;
+  }
+
+  .site-theme .from-violet-50 {
+    --tw-gradient-from: rgba(15, 23, 42, 0.95) var(--tw-gradient-from-position);
+    --tw-gradient-to: rgb(15 23 42 / 0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+
+  .site-theme .to-white {
+    --tw-gradient-to: #070b12 var(--tw-gradient-to-position);
+  }
+
+  .home-gradient-text {
+    background: linear-gradient(120deg, #22d3ee 0%, #a78bfa 45%, #c084fc 70%, #22d3ee 100%);
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .home-gradient-text-shine {
+    animation: gradient-shine 6s ease-in-out infinite;
+  }
+
+  .home-panel {
+    @apply rounded-[1.75rem] border border-cyan-500/20 bg-slate-900/70 shadow-[0_0_40px_rgba(34,211,238,0.08)] backdrop-blur-md;
+  }
+
+  .home-card {
+    @apply rounded-2xl border border-slate-700/70 bg-slate-900/80 backdrop-blur-sm transition hover:border-cyan-400/40 hover:shadow-[0_0_24px_rgba(34,211,238,0.12)];
+  }
+
+  .btn-home-cta {
+    @apply inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-600 px-6 py-3.5 text-base font-semibold text-white shadow-[0_0_24px_rgba(34,211,238,0.35)] transition hover:scale-[1.02] hover:shadow-[0_0_32px_rgba(167,139,250,0.45)] active:scale-[0.98];
+  }
+
+  .btn-home-secondary {
+    @apply inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-cyan-500/30 bg-slate-900/60 px-6 py-3.5 text-base font-semibold text-slate-100 backdrop-blur transition hover:border-cyan-400/60 hover:bg-slate-800/80 active:scale-[0.98];
+  }
+
+  .home-stat-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-slate-900/80 px-4 py-2 text-xs font-semibold text-cyan-100 shadow-[inset_0_0_20px_rgba(34,211,238,0.08)];
+  }
+
+  .site-theme .homepage-countdown > div > div,
+  .homepage-theme .homepage-countdown > div > div {
+    @apply border-amber-300/40 bg-amber-500/10 shadow-[0_0_16px_rgba(251,191,36,0.25)];
   }
 }
 
@@ -153,11 +270,20 @@ table {
   height: 800px;
   background: radial-gradient(
     circle,
-    rgba(55, 105, 150, 0.16),
+    rgba(34, 211, 238, 0.12),
+    rgba(167, 139, 250, 0.08) 45%,
     transparent 70%
   );
   filter: blur(100px);
   pointer-events: none;
+}
+
+.site-theme .gradient-text {
+  background: linear-gradient(120deg, #22d3ee 0%, #a78bfa 45%, #c084fc 70%, #22d3ee 100%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 @media (max-width: 768px) {
@@ -169,17 +295,17 @@ table {
 
 .premium-card {
   border-radius: 2rem;
-  border: 1px solid #e2e8f0;
-  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(12px);
-  box-shadow: 0 10px 40px rgba(29, 52, 97, 0.06);
+  box-shadow: 0 0 40px rgba(34, 211, 238, 0.08);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 @media (hover: hover) {
   .premium-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 20px 50px rgba(29, 52, 97, 0.08);
+    box-shadow: 0 0 48px rgba(167, 139, 250, 0.15);
   }
 }
 
@@ -193,11 +319,11 @@ table {
 }
 
 .mdx-content thead {
-  background: #f1f5f9;
+  background: rgba(30, 41, 59, 0.8);
 }
 
 .mdx-content tbody tr {
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid rgba(51, 65, 85, 0.8);
 }
 
 .mdx-content th {
@@ -234,16 +360,16 @@ table {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #0f172a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #829cbc;
+  background: #334155;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #376996;
+  background: #22d3ee;
 }
 
 .safe-bottom {

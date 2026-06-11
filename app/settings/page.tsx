@@ -174,14 +174,14 @@ function SettingsContent() {
 
   if (authLoading || profileLoading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
+      <main className="site-page flex min-h-screen items-center justify-center">
         <p className="text-slate-600">Loading your profile...</p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#f8fafc]">
+    <main className="site-page">
       <SiteNavbar />
 
       <section className="px-4 py-12 md:px-6 md:py-16">
@@ -336,7 +336,7 @@ export default function SettingsPage() {
   return (
     <Suspense
       fallback={
-        <main className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
+        <main className="site-page flex min-h-screen items-center justify-center">
           <p className="text-slate-600">Loading your profile...</p>
         </main>
       }

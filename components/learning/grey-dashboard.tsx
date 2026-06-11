@@ -48,12 +48,12 @@ type GreySummary = {
 };
 
 const toneClasses: Record<Badge["tone"], string> = {
-  violet: "border-violet-200 from-violet-50 to-fuchsia-50 text-violet-800",
-  blue: "border-blue-200 from-blue-50 to-cyan-50 text-blue-800",
-  emerald: "border-emerald-200 from-emerald-50 to-teal-50 text-emerald-800",
-  amber: "border-amber-200 from-amber-50 to-orange-50 text-amber-800",
-  red: "border-red-200 from-red-50 to-rose-50 text-red-800",
-  slate: "border-slate-200 from-slate-50 to-violet-50 text-slate-800",
+  violet: "border-violet-500/30 from-violet-500/15 to-fuchsia-500/15 text-violet-200",
+  blue: "border-cyan-500/30 from-cyan-500/15 to-blue-500/15 text-cyan-200",
+  emerald: "border-emerald-500/30 from-emerald-500/15 to-teal-500/15 text-emerald-200",
+  amber: "border-amber-500/30 from-amber-500/15 to-orange-500/15 text-amber-200",
+  red: "border-red-500/30 from-red-500/15 to-rose-500/15 text-red-200",
+  slate: "border-slate-600/40 from-slate-800/80 to-violet-500/10 text-slate-200",
 };
 
 const badgeMedallionClasses: Record<Badge["tone"], string> = {
@@ -128,8 +128,8 @@ export default function GreyDashboard() {
   if (loading) {
     return (
       <section className="premium-card mt-8 p-6 md:p-8">
-        <h2 className="text-xl font-bold text-slate-900">Grey Points</h2>
-        <p className="mt-3 text-sm text-slate-500">Loading your evidence trail...</p>
+        <h2 className="text-xl font-bold text-slate-50">Grey Points</h2>
+        <p className="mt-3 text-sm text-slate-400">Loading your evidence trail...</p>
       </section>
     );
   }
@@ -160,8 +160,8 @@ export default function GreyDashboard() {
               onClick={toggleSound}
               className={`rounded-full border px-4 py-2 text-sm font-bold shadow-sm transition ${
                 soundOn
-                  ? "border-emerald-300 bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
-                  : "border-red-300 bg-red-100 text-red-800 hover:bg-red-200"
+                  ? "border-cyan-400/40 bg-cyan-500/15 text-cyan-200 hover:bg-cyan-500/25"
+                  : "border-red-400/40 bg-red-500/15 text-red-300 hover:bg-red-500/25"
               }`}
             >
               {soundOn ? "Sound on" : "Sound off"}
@@ -194,8 +194,8 @@ export default function GreyDashboard() {
         <div>
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h3 className="text-lg font-black text-slate-950">Badges earned</h3>
-              <p className="mt-1 text-sm text-slate-600">
+              <h3 className="text-lg font-black text-slate-50">Badges earned</h3>
+              <p className="mt-1 text-sm text-slate-400">
                 Skill markers tied to real outcomes. Still allowed to look good.
               </p>
             </div>
@@ -217,7 +217,7 @@ export default function GreyDashboard() {
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="font-black">{badge.name}</p>
-                        <span className="rounded-full bg-white/70 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider opacity-75">
+                        <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-200">
                           Earned
                         </span>
                       </div>
@@ -230,8 +230,8 @@ export default function GreyDashboard() {
               ))}
             </div>
           ) : (
-            <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5">
-              <p className="text-sm text-slate-600">
+            <div className="mt-5 rounded-2xl border border-dashed border-slate-600 bg-slate-900/50 p-5">
+              <p className="text-sm text-slate-400">
                 No badges yet. Complete lessons and checkpoints to start building
                 your evidence trail.
               </p>
@@ -240,20 +240,20 @@ export default function GreyDashboard() {
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <h3 className="font-black text-slate-950">Path progress</h3>
+          <div className="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-5">
+            <h3 className="font-black text-slate-50">Path progress</h3>
             <div className="mt-4 space-y-4">
               {summary.pathProgress.map((path) => (
                 <div key={path.pathId}>
                   <div className="flex items-center justify-between gap-3 text-sm">
-                    <span className="font-semibold text-slate-800">{path.title}</span>
-                    <span className="text-slate-500">
+                    <span className="font-semibold text-slate-200">{path.title}</span>
+                    <span className="text-slate-400">
                       {path.completedLessons}/{path.totalLessons}
                     </span>
                   </div>
-                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-800">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-violet-600 to-blue-500"
+                      className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-violet-600"
                       style={{ width: `${path.percent}%` }}
                     />
                   </div>
@@ -262,21 +262,21 @@ export default function GreyDashboard() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <h3 className="font-black text-slate-950">Point values</h3>
-            <p className="mt-1 text-sm text-slate-600">
+          <div className="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-5">
+            <h3 className="font-black text-slate-50">Point values</h3>
+            <p className="mt-1 text-sm text-slate-400">
               Transparent by design. No casino math.
             </p>
             <div className="mt-4 space-y-2">
               {Object.entries(summary.pointValues).map(([key, value]) => (
                 <div
                   key={key}
-                  className="flex items-center justify-between rounded-xl bg-white px-3 py-2 text-sm"
+                  className="flex items-center justify-between rounded-xl border border-slate-700/50 bg-slate-800/80 px-3 py-2 text-sm"
                 >
-                  <span className="font-medium text-slate-700">
+                  <span className="font-medium text-slate-300">
                     {labelForPointRule(key)}
                   </span>
-                  <span className="font-black text-violet-700">+{value}</span>
+                  <span className="font-black text-cyan-300">+{value}</span>
                 </div>
               ))}
             </div>
@@ -284,21 +284,21 @@ export default function GreyDashboard() {
         </div>
       </div>
 
-      <div id="grey-store" className="border-t border-slate-100 p-6 md:p-8">
+      <div id="grey-store" className="border-t border-slate-700/60 p-6 md:p-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-violet-600">
+            <p className="text-xs font-bold uppercase tracking-widest text-cyan-400">
               Grey Store
             </p>
-            <h3 className="mt-1 text-xl font-black text-slate-950">
+            <h3 className="mt-1 text-xl font-black text-slate-50">
               Redeem practical assets
             </h3>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
               Spend Grey Points on professional resources that help you apply
               the lessons at work.
             </p>
           </div>
-          <p className="rounded-full bg-violet-50 px-4 py-2 text-sm font-bold text-violet-700">
+          <p className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-bold text-cyan-200">
             {profile.availablePoints} GP available
           </p>
         </div>
@@ -309,17 +309,17 @@ export default function GreyDashboard() {
             return (
               <article
                 key={item.id}
-                className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-5 shadow-sm"
+                className="relative overflow-hidden rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-slate-900/90 to-slate-950 p-5 shadow-[0_0_24px_rgba(34,211,238,0.06)]"
               >
-                <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-violet-100/70" />
+                <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-violet-500/10" />
                 <div className="flex items-start justify-between gap-3">
                   <div className="relative">
-                    <h4 className="font-black text-slate-950">{item.title}</h4>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                    <h4 className="font-black text-slate-50">{item.title}</h4>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-400">
                       {item.description}
                     </p>
                   </div>
-                  <span className="relative shrink-0 rounded-full bg-violet-100 px-3 py-1 text-xs font-bold text-violet-700">
+                  <span className="relative shrink-0 rounded-full border border-violet-500/30 bg-violet-500/15 px-3 py-1 text-xs font-bold text-violet-200">
                     {item.cost} GP
                   </span>
                 </div>
@@ -327,7 +327,7 @@ export default function GreyDashboard() {
                 {item.redeemed ? (
                   <a
                     href={`/api/grey/store/${item.id}/download`}
-                    className="mt-5 inline-flex rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white"
+                    className="btn-home-secondary mt-5 inline-flex px-5 py-3 text-sm"
                   >
                     Download PDF
                   </a>
@@ -336,7 +336,7 @@ export default function GreyDashboard() {
                     type="button"
                     disabled={locked || redeeming === item.id}
                     onClick={() => void redeem(item.id)}
-                    className="mt-5 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+                    className="btn-home-cta mt-5 px-5 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     {redeeming === item.id
                       ? "Redeeming..."

@@ -17,7 +17,7 @@ function FormattedStepBody({ text }: { text: string }) {
         ) {
           const inner = part.slice(1, -1);
           return (
-            <strong key={index} className="font-semibold text-ink">
+            <strong key={index} className="font-semibold text-cyan-200">
               {inner}
             </strong>
           );
@@ -45,19 +45,19 @@ type ListProps = {
 
 const variantStyles = {
   violet: {
-    row: "border-brand-primary/30 bg-brand-primary/5",
-    label: "text-brand-dark",
-    badge: "bg-brand-secondary/15 text-brand-dark",
+    row: "border-violet-500/25 bg-violet-500/10",
+    label: "text-violet-200",
+    badge: "bg-violet-500/20 text-violet-200 ring-1 ring-violet-400/30",
   },
   blue: {
-    row: "border-brand-primary/30 bg-brand-primary/10",
-    label: "text-brand-dark",
-    badge: "bg-brand-secondary/15 text-brand-dark",
+    row: "border-cyan-500/25 bg-cyan-500/10",
+    label: "text-cyan-200",
+    badge: "bg-cyan-500/20 text-cyan-200 ring-1 ring-cyan-400/30",
   },
   emerald: {
-    row: "border-brand-success/25 bg-brand-success/5",
-    label: "text-brand-success",
-    badge: "bg-brand-success/15 text-brand-success",
+    row: "border-violet-500/25 bg-violet-500/10",
+    label: "text-violet-200",
+    badge: "bg-violet-500/20 text-violet-200 ring-1 ring-violet-400/30",
   },
 };
 
@@ -87,7 +87,7 @@ export function LessonStepList({ items, variant = "violet" }: ListProps) {
                 {index + 1}
               </span>
             )}
-            <p className="min-w-0 flex-1 text-base leading-relaxed text-ink">
+            <p className="min-w-0 flex-1 text-base leading-relaxed text-slate-300">
               <FormattedStepBody text={body} />
             </p>
           </li>
@@ -105,14 +105,14 @@ export function LessonFlowSteps({ steps }: { steps: FlowStep[] }) {
       {steps.map((step, index) => (
         <div
           key={`${step.label}-${index}`}
-          className="rounded-xl border border-brand-primary/30 bg-white p-4 shadow-sm"
+          className="rounded-xl border border-cyan-500/20 bg-slate-900/70 p-4 shadow-[0_0_16px_rgba(34,211,238,0.06)]"
         >
-          <p className="text-xs font-bold uppercase tracking-wide text-brand-secondary">
+          <p className="text-xs font-bold uppercase tracking-wide text-cyan-400">
             Step {index + 1}
           </p>
-          <p className="mt-1 text-base font-semibold text-brand-dark">{step.label}</p>
+          <p className="mt-1 text-base font-semibold text-slate-100">{step.label}</p>
           {step.detail && (
-            <p className="mt-1 text-sm leading-relaxed text-ink-muted">
+            <p className="mt-1 text-sm leading-relaxed text-slate-400">
               {normalizeStepText(step.detail)}
             </p>
           )}

@@ -44,26 +44,26 @@ function LessonVisualBlock({ visual }: { visual: LessonVisual }) {
   if (visual.kind === "comparison") {
     return (
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-          <p className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-500">
+        <div className="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-5">
+          <p className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-400">
             {visual.leftLabel}
           </p>
           <ul className="space-y-2">
             {visual.leftPoints.map((p) => (
-              <li key={p} className="flex items-start gap-2 text-sm text-slate-700">
+              <li key={p} className="flex items-start gap-2 text-sm text-slate-300">
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
                 {p}
               </li>
             ))}
           </ul>
         </div>
-        <div className="rounded-2xl border border-violet-200 bg-violet-50 p-5">
-          <p className="mb-3 text-xs font-bold uppercase tracking-widest text-violet-500">
+        <div className="rounded-2xl border border-violet-500/30 bg-violet-500/10 p-5">
+          <p className="mb-3 text-xs font-bold uppercase tracking-widest text-violet-300">
             {visual.rightLabel}
           </p>
           <ul className="space-y-2">
             {visual.rightPoints.map((p) => (
-              <li key={p} className="flex items-start gap-2 text-sm text-violet-800">
+              <li key={p} className="flex items-start gap-2 text-sm text-violet-200">
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400" />
                 {p}
               </li>
@@ -86,10 +86,10 @@ function LessonVisualBlock({ visual }: { visual: LessonVisual }) {
         {visual.items.map((item) => (
           <div
             key={item.label}
-            className="rounded-2xl border border-violet-200 bg-violet-50 p-4 text-center"
+            className="rounded-2xl border border-cyan-500/25 bg-cyan-500/10 p-4 text-center"
           >
-            <p className="text-2xl font-black text-violet-700">{item.value}</p>
-            <p className="mt-1 text-xs font-semibold text-slate-500">{item.label}</p>
+            <p className="text-2xl font-black text-cyan-300">{item.value}</p>
+            <p className="mt-1 text-xs font-semibold text-slate-400">{item.label}</p>
           </div>
         ))}
       </div>
@@ -102,12 +102,12 @@ function LessonVisualBlock({ visual }: { visual: LessonVisual }) {
 
   if (visual.kind === "callout") {
     const colorClasses: Record<string, string> = {
-      violet: "border-violet-200 bg-violet-50 text-violet-900",
-      blue: "border-blue-200 bg-blue-50 text-blue-900",
-      amber: "border-amber-200 bg-amber-50 text-amber-900",
-      emerald: "border-emerald-200 bg-emerald-50 text-emerald-900",
-      red: "border-red-200 bg-red-50 text-red-900",
-      slate: "border-slate-200 bg-slate-50 text-slate-900",
+      violet: "border-violet-500/30 bg-violet-500/10 text-violet-200",
+      blue: "border-cyan-500/30 bg-cyan-500/10 text-cyan-200",
+      amber: "border-amber-500/30 bg-amber-500/10 text-amber-200",
+      emerald: "border-violet-500/30 bg-violet-500/10 text-violet-200",
+      red: "border-red-500/30 bg-red-500/10 text-red-200",
+      slate: "border-slate-600/50 bg-slate-800/60 text-slate-200",
     };
     const c = colorClasses[visual.color ?? "violet"];
     return (
@@ -157,15 +157,15 @@ function BuildBlock({ block }: { block: LessonBlock }) {
     <div>
       {block.icon ? (
         <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-100 text-2xl">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-500/20 text-2xl">
             {block.icon}
           </div>
           <div className="min-w-0 flex-1">
-            <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span className="inline-flex rounded-full border border-slate-600 bg-slate-800/60 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-400">
               Concept
             </span>
             {block.title && (
-              <h2 className="mt-2 text-2xl font-black text-slate-950">
+              <h2 className="mt-2 text-2xl font-black text-slate-50">
                 {block.title}
               </h2>
             )}
@@ -173,11 +173,11 @@ function BuildBlock({ block }: { block: LessonBlock }) {
         </div>
       ) : (
         <div>
-          <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-500">
+          <span className="inline-flex rounded-full border border-slate-600 bg-slate-800/60 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-400">
             Concept
           </span>
           {block.title && (
-            <h2 className="mt-2 text-2xl font-black text-slate-950">
+            <h2 className="mt-2 text-2xl font-black text-slate-50">
               {block.title}
             </h2>
           )}
@@ -185,7 +185,7 @@ function BuildBlock({ block }: { block: LessonBlock }) {
       )}
 
       {block.body && (
-        <p className="mt-4 text-lg leading-relaxed text-slate-600">{block.body}</p>
+        <p className="mt-4 text-lg leading-relaxed text-slate-400">{block.body}</p>
       )}
 
       {block.highlights && block.highlights.length > 0 && (
@@ -200,17 +200,17 @@ function BuildBlock({ block }: { block: LessonBlock }) {
 function PlayBlock({ block }: { block: LessonBlock }) {
   return (
     <div>
-      <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-700">
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-500/30 bg-violet-500/15 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-200">
         <span aria-hidden="true">✦</span> Interactive
       </span>
       {block.title && (
-        <h2 className="mt-3 text-2xl font-black text-slate-950">{block.title}</h2>
+        <h2 className="mt-3 text-2xl font-black text-slate-50">{block.title}</h2>
       )}
       {block.body && (
         <p className="mt-3 text-lg leading-relaxed text-slate-600">{block.body}</p>
       )}
       {block.playgroundId && (
-        <div className="mt-7 rounded-3xl border border-slate-200 bg-slate-50 p-4 md:p-6">
+        <div className="mt-7 rounded-3xl border border-slate-700/60 bg-slate-900/60 p-4 md:p-6">
           <PlaygroundRenderer
             id={block.playgroundId}
             variant={block.playgroundVariant}
@@ -234,11 +234,11 @@ function CheckpointBlock({
 }) {
   return (
     <div>
-      <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-700">
+      <span className="inline-flex rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-200">
         ✓ Quick Check
       </span>
       {block.title && (
-        <h2 className="mt-3 text-2xl font-black text-slate-950">{block.title}</h2>
+        <h2 className="mt-3 text-2xl font-black text-slate-50">{block.title}</h2>
       )}
       {block.question && (
         <div className="mt-6 rounded-2xl bg-slate-950 p-5">
@@ -251,15 +251,15 @@ function CheckpointBlock({
             const selected = checkpointAnswer === i;
             const correct = i === block.correctIndex;
             let ringClasses =
-              "border-slate-200 bg-white hover:border-violet-300 hover:bg-violet-50/50";
-            if (selected && correct) ringClasses = "border-emerald-500 bg-emerald-50";
-            if (selected && !correct) ringClasses = "border-red-300 bg-red-50";
+              "border-slate-700 bg-slate-900/70 text-slate-200 hover:border-cyan-500/40 hover:bg-slate-800/80";
+            if (selected && correct) ringClasses = "border-cyan-400/70 bg-cyan-500/15 text-slate-100";
+            if (selected && !correct) ringClasses = "border-red-400/60 bg-red-500/10 text-slate-100";
 
             const letterBg = selected && correct
-              ? "bg-emerald-200 text-emerald-800"
+              ? "bg-gradient-to-r from-cyan-500 to-violet-600 text-white"
               : selected && !correct
-                ? "bg-red-200 text-red-800"
-                : "bg-slate-100 text-slate-600";
+                ? "bg-red-500/80 text-white"
+                : "bg-slate-800 text-slate-300 ring-1 ring-slate-600";
 
             return (
               <button
@@ -281,9 +281,9 @@ function CheckpointBlock({
         </div>
       )}
       {checkpointDone && block.insight && (
-        <div className="mt-5 flex gap-3 rounded-2xl border border-violet-100 bg-violet-50 p-5">
+        <div className="mt-5 flex gap-3 rounded-2xl border border-violet-500/25 bg-violet-500/10 p-5">
           <span className="shrink-0 text-xl" aria-hidden="true">💡</span>
-          <p className="font-medium text-violet-900">{block.insight}</p>
+          <p className="font-medium text-violet-200">{block.insight}</p>
         </div>
       )}
     </div>
@@ -303,20 +303,20 @@ function ReflectBlock({
 }) {
   return (
     <div>
-      <div className="rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-7 md:p-10">
+      <div className="rounded-3xl border border-violet-500/30 bg-gradient-to-br from-slate-900/90 via-violet-950/50 to-slate-900/90 p-7 md:p-10">
         <div className="mb-4 text-5xl leading-none" aria-hidden="true">🎯</div>
-        <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700">
+        <span className="inline-flex rounded-full border border-violet-400/30 bg-violet-500/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-violet-200">
           Lesson Complete
         </span>
         {block.title && (
-          <h2 className="mt-3 text-2xl font-black text-slate-950">{block.title}</h2>
+          <h2 className="mt-3 text-2xl font-black text-slate-50">{block.title}</h2>
         )}
         {block.body && (
-          <p className="mt-4 text-lg leading-relaxed text-slate-700">{block.body}</p>
+          <p className="mt-4 text-lg leading-relaxed text-slate-300">{block.body}</p>
         )}
         {block.learned && block.learned.length > 0 && (
           <div className="mt-6">
-            <p className="mb-3 text-xs font-bold uppercase tracking-widest text-brand-success">
+            <p className="mb-3 text-xs font-bold uppercase tracking-widest text-violet-300">
               What you now know
             </p>
             <LessonStepList items={block.learned} variant="emerald" />
@@ -325,15 +325,15 @@ function ReflectBlock({
       </div>
 
       {showSignupCta && mode === "try" && (
-        <div className="mt-6 rounded-2xl border border-violet-200 bg-violet-50 p-6">
-          <p className="font-semibold text-violet-900">
+        <div className="mt-6 rounded-2xl border border-violet-500/25 bg-violet-500/10 p-6">
+          <p className="font-semibold text-violet-200">
             Save progress and unlock the full path
           </p>
           <div className="mt-4 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/register?next=/welcome"
               onClick={onCreateAccount}
-              className="inline-flex flex-1 items-center justify-center rounded-xl bg-violet-600 px-6 py-3 text-center font-semibold text-white"
+              className="btn-home-cta inline-flex flex-1 items-center justify-center px-6 py-3 text-center"
             >
               Create free account
             </Link>
@@ -347,26 +347,26 @@ function ReflectBlock({
 function VisualBlock({ block }: { block: LessonBlock }) {
   return (
     <div>
-      <span className="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+      <span className="inline-flex rounded-full border border-cyan-500/30 bg-cyan-500/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-cyan-200">
         Visual
       </span>
       {block.title && (
-        <h2 className="mt-3 text-2xl font-black text-slate-950">{block.title}</h2>
+        <h2 className="mt-3 text-2xl font-black text-slate-50">{block.title}</h2>
       )}
       {block.body && (
-        <p className="mt-4 text-lg leading-relaxed text-slate-600">{block.body}</p>
+        <p className="mt-4 text-lg leading-relaxed text-slate-400">{block.body}</p>
       )}
       {block.items && block.items.length > 0 && (
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           {block.items.map((item) => (
             <div
               key={item.label}
-              className="rounded-2xl border border-blue-100 bg-blue-50/60 p-5"
+              className="rounded-2xl border border-cyan-500/25 bg-cyan-500/10 p-5"
             >
-              <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
+              <p className="text-xs font-bold uppercase tracking-wider text-cyan-300">
                 {item.label}
               </p>
-              <p className="mt-3 rounded-xl border border-blue-100 bg-white p-4 text-sm leading-relaxed text-slate-800">
+              <p className="mt-3 rounded-xl border border-slate-700/60 bg-slate-900/70 p-4 text-sm leading-relaxed text-slate-300">
                 {item.content}
               </p>
               {item.note && (
@@ -400,14 +400,14 @@ const ROLE_ICONS: Record<string, string> = {
 function ApplyBlock({ block }: { block: LessonBlock }) {
   return (
     <div>
-      <div className="relative overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-7 md:p-10">
-        <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-emerald-200/30" />
+      <div className="relative overflow-hidden rounded-3xl border border-cyan-500/25 bg-gradient-to-br from-slate-900/90 via-cyan-950/30 to-violet-950/40 p-7 md:p-10">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-cyan-500/10" />
         <div className="relative">
-          <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700">
+          <span className="inline-flex rounded-full border border-cyan-500/30 bg-cyan-500/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-cyan-200">
             ⚡ Apply it to your work
           </span>
           {block.title && (
-            <h2 className="mt-3 text-2xl font-black text-slate-950">{block.title}</h2>
+            <h2 className="mt-3 text-2xl font-black text-slate-50">{block.title}</h2>
           )}
           {block.body && (
             <p className="mt-3 text-lg leading-relaxed text-slate-600">{block.body}</p>
@@ -420,30 +420,30 @@ function ApplyBlock({ block }: { block: LessonBlock }) {
           {block.roles.map(({ role, action }) => (
             <div
               key={role}
-              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              className="rounded-2xl border border-slate-700/60 bg-slate-900/70 p-4 shadow-sm"
             >
               <div className="flex items-center gap-2">
                 <span className="text-lg" aria-hidden="true">
                   {ROLE_ICONS[role] ?? "👤"}
                 </span>
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
                   {role}
                 </p>
               </div>
-              <p className="mt-2 text-sm leading-relaxed text-slate-700">{action}</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-300">{action}</p>
             </div>
           ))}
         </div>
       )}
 
       {block.microAction && (
-        <div className="mt-4 flex items-start gap-3 rounded-2xl border border-violet-200 bg-violet-50 p-5">
+        <div className="mt-4 flex items-start gap-3 rounded-2xl border border-violet-500/25 bg-violet-500/10 p-5">
           <span className="shrink-0 text-xl" aria-hidden="true">🎯</span>
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-violet-600">
+            <p className="text-xs font-bold uppercase tracking-wider text-violet-300">
               Try this now
             </p>
-            <p className="mt-1 font-medium leading-relaxed text-violet-900">
+            <p className="mt-1 font-medium leading-relaxed text-violet-200">
               {block.microAction}
             </p>
           </div>
@@ -768,17 +768,17 @@ export default function LessonEngine({
     for (const badge of result.badgesAwarded ?? []) {
       toast.custom(
         () => (
-          <div className="rounded-3xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-violet-50 p-4 shadow-xl">
+          <div className="rounded-3xl border border-violet-500/30 bg-gradient-to-br from-slate-900 via-violet-950 to-slate-900 p-4 shadow-xl">
             <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-amber-300 bg-gradient-to-br from-amber-200 to-violet-200 text-2xl font-black text-slate-950 shadow-inner">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-violet-400/50 bg-gradient-to-br from-cyan-500 to-violet-600 text-2xl font-black text-white shadow-inner">
                 GP
               </div>
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-amber-700">
+                <p className="text-xs font-black uppercase tracking-widest text-violet-300">
                   Badge earned
                 </p>
-                <p className="mt-1 text-lg font-black text-slate-950">{badge.name}</p>
-                <p className="mt-1 max-w-xs text-sm leading-relaxed text-slate-600">
+                <p className="mt-1 text-lg font-black text-slate-50">{badge.name}</p>
+                <p className="mt-1 max-w-xs text-sm leading-relaxed text-slate-400">
                   {badge.description}
                 </p>
               </div>
@@ -912,14 +912,14 @@ export default function LessonEngine({
   return (
     <div className="mx-auto w-full max-w-3xl">
       {reviewMode && (
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm">
-          <span className="font-semibold text-emerald-800">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 text-sm">
+          <span className="font-semibold text-cyan-200">
             Reviewing a completed lesson
           </span>
           <button
             type="button"
             onClick={() => onComplete?.()}
-            className="font-semibold text-emerald-700 underline"
+            className="font-semibold text-cyan-300 underline"
           >
             Back to completion
           </button>
@@ -928,16 +928,16 @@ export default function LessonEngine({
 
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-violet-600">
+          <p className="text-xs font-bold uppercase tracking-widest text-cyan-400">
             {lesson.durationMinutes} min · Curious Builders
           </p>
-          <h1 className="mt-1 text-2xl font-black text-slate-950 md:text-3xl">
+          <h1 className="mt-1 text-2xl font-black text-slate-50 md:text-3xl">
             {lesson.title}
           </h1>
-          <p className="mt-2 text-sm text-slate-500">{lesson.hook}</p>
+          <p className="mt-2 text-sm text-slate-400">{lesson.hook}</p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-2">
-          <span className="rounded-full bg-violet-100 px-3 py-1 text-sm font-bold text-violet-700">
+          <span className="rounded-full border border-violet-500/30 bg-violet-500/15 px-3 py-1 text-sm font-bold text-violet-200">
             {step + 1}/{lesson.blocks.length}
           </span>
           <button
@@ -945,8 +945,8 @@ export default function LessonEngine({
             onClick={toggleSound}
             className={`rounded-full border px-3 py-1 text-xs font-bold shadow-sm transition ${
               soundOn
-                ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                : "border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
+                ? "border-cyan-400/40 bg-cyan-500/15 text-cyan-200 hover:bg-cyan-500/25"
+                : "border-red-400/40 bg-red-500/15 text-red-300 hover:bg-red-500/25"
             }`}
             aria-label={soundOn ? "Turn Grey Points sound off" : "Turn Grey Points sound on"}
           >
@@ -955,9 +955,9 @@ export default function LessonEngine({
         </div>
       </div>
 
-      <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-200">
+      <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-800">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-violet-600 to-blue-500 transition-all duration-500"
+          className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-violet-600 transition-all duration-500"
           style={{ width: `${progressPct}%` }}
         />
       </div>
@@ -1011,13 +1011,13 @@ export default function LessonEngine({
       </AnimatePresence>
 
       {(step > 0 || !hideAnonymousTryFooter) && (
-      <div className="safe-bottom sticky bottom-0 z-20 -mx-4 border-t border-slate-200/80 bg-white/95 px-4 py-4 backdrop-blur-md md:static md:mx-0 md:mt-8 md:border-0 md:bg-transparent md:p-0">
+      <div className="safe-bottom sticky bottom-0 z-20 -mx-4 border-t border-slate-800/80 bg-slate-950/95 px-4 py-4 backdrop-blur-md md:static md:mx-0 md:mt-8 md:border-0 md:bg-transparent md:p-0">
         <div className="flex gap-3">
           {step > 0 && (
             <button
               type="button"
               onClick={prev}
-              className="rounded-2xl border border-slate-200 px-5 py-4 text-base font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900 min-h-[52px]"
+              className="btn-home-secondary min-h-[52px] px-5 py-4 text-base"
             >
               Back
             </button>
@@ -1027,7 +1027,7 @@ export default function LessonEngine({
             type="button"
             onClick={next}
             disabled={block?.type === "checkpoint" && !checkpointDone}
-            className="flex-1 rounded-2xl bg-brand-dark py-4 text-lg font-semibold text-white disabled:opacity-40 min-h-[52px]"
+            className="btn-home-cta min-h-[52px] flex-1 py-4 text-lg disabled:opacity-40"
           >
             {isLast ? "Complete lesson" : "Continue"}
           </button>
@@ -1036,7 +1036,7 @@ export default function LessonEngine({
         {isLast && effectiveMode !== "try" && !hideAnonymousTryFooter && (
           <Link
             href={nextHref}
-            className="mt-3 block text-center text-sm font-semibold text-violet-600"
+            className="mt-3 block text-center text-sm font-semibold text-cyan-400 hover:text-cyan-300"
           >
             {effectiveMode === "path"
               ? nextSlug

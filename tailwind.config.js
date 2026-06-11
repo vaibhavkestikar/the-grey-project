@@ -18,10 +18,10 @@ module.exports = {
           success: "#10B981",
         },
         ink: {
-          DEFAULT: "#111827",
-          muted: "#475569",
+          DEFAULT: "#E2E8F0",
+          muted: "#94A3B8",
         },
-        surface: "#F8FAFC",
+        surface: "#070B12",
       },
       fontSize: {
         base: ["16px", { lineHeight: "1.6" }],

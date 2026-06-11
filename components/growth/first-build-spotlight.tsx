@@ -117,7 +117,7 @@ export default function FirstBuildSpotlight() {
           <p className="text-xs font-bold uppercase tracking-wide text-amber-100">
             Launch countdown
           </p>
-          <div className="mt-3">
+          <div className="homepage-countdown mt-3">
             <CountdownTimer targetDate={FIRST_BUILD_LAUNCH_DATE} />
           </div>
         </>

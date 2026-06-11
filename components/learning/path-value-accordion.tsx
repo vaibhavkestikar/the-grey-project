@@ -25,10 +25,10 @@ const variantStyles: Record<
     text: "text-sm leading-relaxed text-orange-50",
   },
   muted: {
-    wrap: "border-slate-200 bg-slate-50/80",
-    summary: "text-violet-700",
-    label: "text-[11px] font-bold uppercase tracking-wider text-violet-600",
-    text: "text-sm leading-relaxed text-slate-700",
+    wrap: "border-slate-600/50 bg-slate-800/60",
+    summary: "text-cyan-100",
+    label: "text-[11px] font-bold uppercase tracking-wider text-cyan-300/80",
+    text: "text-sm leading-relaxed text-slate-300",
   },
 };
 

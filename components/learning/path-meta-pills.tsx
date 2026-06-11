@@ -6,7 +6,7 @@ type Props = {
 
 const pillStyles: Record<NonNullable<Props["variant"]>, string> = {
   default:
-    "border-violet-200 bg-violet-50 text-violet-800 ring-1 ring-violet-100",
+    "border-cyan-500/25 bg-cyan-500/10 text-cyan-200 ring-1 ring-cyan-400/20",
   light: "border-white/30 bg-white/15 text-white backdrop-blur",
   warm: "border-white/30 bg-white/15 text-amber-50 backdrop-blur",
 };

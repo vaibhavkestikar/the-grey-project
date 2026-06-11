@@ -10,19 +10,19 @@ export const metadata = {
 
 export default function FeedbackPage() {
   return (
-    <main className="min-h-screen bg-[#f8fafc]">
+    <main className="site-page">
       <SiteNavbar />
       <div className="mx-auto max-w-2xl px-4 py-10 md:py-16">
-        <Link href="/" className="text-sm font-medium text-slate-500 hover:text-violet-600">
+        <Link href="/" className="text-sm font-medium text-slate-500 hover:text-cyan-400">
           ← Back home
         </Link>
-        <p className="mt-6 text-sm font-bold uppercase tracking-widest text-violet-600">
+        <p className="mt-6 text-sm font-bold uppercase tracking-widest text-cyan-400">
           Feedback
         </p>
-        <h1 className="mt-2 text-4xl font-black text-slate-950 md:text-5xl">
+        <h1 className="mt-2 text-4xl font-black text-slate-50 md:text-5xl">
           Talk to the human
         </h1>
-        <p className="mt-4 text-lg text-slate-600">
+        <p className="mt-4 text-lg text-slate-400">
           The Grey Project is early, small, and built by one person who genuinely wants this to
           work. Your answers help calculate NPS, track what lands, and decide what ships next.
         </p>

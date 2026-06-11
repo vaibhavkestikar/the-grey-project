@@ -144,132 +144,104 @@ const questions = [
   },
 ];
 
+function optionClass(
+  submitted: boolean,
+  selected: number | undefined,
+  oIndex: number,
+  correctIndex: number
+) {
+  const isSelected = selected === oIndex;
+  const isCorrect = submitted && oIndex === correctIndex;
+  const isWrong = submitted && isSelected && oIndex !== correctIndex;
+
+  if (isCorrect) {
+    return "border-cyan-400/70 bg-cyan-500/15 text-slate-100";
+  }
+  if (isWrong) {
+    return "border-red-400/60 bg-red-500/10 text-slate-100";
+  }
+  if (isSelected) {
+    return "border-violet-400/70 bg-violet-500/15 text-slate-100";
+  }
+  return "border-slate-700 bg-slate-900/70 text-slate-300 hover:border-cyan-500/40 hover:bg-slate-800/80";
+}
+
 export default function QuizSection() {
-
-  const [selectedAnswers, setSelectedAnswers] =
-    useState<number[]>([]);
-
-  const [submitted, setSubmitted] =
-    useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
+  const [submitted, setSubmitted] = useState(false);
 
   const score = questions.reduce(
     (acc, q, i) =>
-      selectedAnswers[i] === q.answer
-        ? acc + 1
-        : acc,
+      selectedAnswers[i] === q.answer ? acc + 1 : acc,
     0
   );
 
   return (
-    <section className="mt-16 rounded-[2rem] border border-slate-200 bg-white p-10 shadow-sm">
+    <section className="premium-card mt-16 p-10">
 
-      <div className="mb-6 inline-flex rounded-full bg-violet-100 px-4 py-2 text-sm font-semibold text-violet-700">
+      <div className="site-badge mb-6">
         FINAL ASSESSMENT
       </div>
 
-      <h2 className="text-5xl font-black text-slate-900">
+      <h2 className="text-5xl font-black text-slate-50">
         Module 1 Assessment
       </h2>
 
-      <p className="mt-4 text-xl text-slate-600">
+      <p className="mt-4 text-xl text-slate-400">
         Evaluate your conceptual AI understanding deeply.
       </p>
 
       <div className="mt-12 space-y-12">
-
         {questions.map((question, qIndex) => (
-
           <div key={qIndex}>
-
-            <h3 className="text-2xl font-bold text-slate-900">
+            <h3 className="text-2xl font-bold text-slate-50">
               {qIndex + 1}. {question.question}
             </h3>
 
             <div className="mt-6 space-y-4">
-
-              {question.options.map(
-                (option, oIndex) => {
-
-                  const isCorrect =
-                    submitted &&
-                    oIndex === question.answer;
-
-                  const isWrong =
-                    submitted &&
-                    selectedAnswers[qIndex] ===
-                      oIndex &&
-                    oIndex !== question.answer;
-
-                  return (
-                    <button
-                      key={oIndex}
-                      disabled={submitted}
-                      onClick={() => {
-
-                        const updated = [
-                          ...selectedAnswers,
-                        ];
-
-                        updated[qIndex] = oIndex;
-
-                        setSelectedAnswers(
-                          updated
-                        );
-                      }}
-                      className={`block w-full rounded-2xl border p-5 text-left transition ${
-                        isCorrect
-                          ? "border-green-400 bg-green-50"
-                          : isWrong
-                          ? "border-red-400 bg-red-50"
-                          : selectedAnswers[
-                              qIndex
-                            ] === oIndex
-                          ? "border-violet-400 bg-violet-50"
-                          : "border-slate-200 hover:bg-slate-50"
-                      }`}
-                    >
-
-                      {option}
-
-                    </button>
-                  );
-                }
-              )}
-
+              {question.options.map((option, oIndex) => (
+                <button
+                  key={oIndex}
+                  disabled={submitted}
+                  onClick={() => {
+                    const updated = [...selectedAnswers];
+                    updated[qIndex] = oIndex;
+                    setSelectedAnswers(updated);
+                  }}
+                  className={`block w-full rounded-2xl border p-5 text-left transition ${optionClass(
+                    submitted,
+                    selectedAnswers[qIndex],
+                    oIndex,
+                    question.answer
+                  )}`}
+                >
+                  {option}
+                </button>
+              ))}
             </div>
-
           </div>
-
         ))}
-
       </div>
 
       {!submitted ? (
-
         <button
           onClick={() => setSubmitted(true)}
-          className="mt-12 rounded-2xl bg-violet-600 px-8 py-4 text-lg font-semibold text-white transition hover:bg-violet-700"
+          className="btn-home-cta mt-12 px-8 py-4 text-lg"
         >
           Submit Assessment
         </button>
-
       ) : (
-
-        <div className="mt-12 rounded-[2rem] bg-green-100 p-10">
-
-          <h3 className="text-4xl font-black text-green-800">
+        <div className="mt-12 rounded-[2rem] border border-cyan-500/30 bg-cyan-500/10 p-10">
+          <h3 className="text-4xl font-black text-cyan-200">
             Your Score: {score}/{questions.length}
           </h3>
 
-          <p className="mt-4 text-lg text-green-700">
+          <p className="mt-4 text-lg text-slate-300">
             Strong AI engineers understand systems deeply,
             not just tools and APIs.
           </p>
-
         </div>
-
       )}
-
     </section>
   );
 }

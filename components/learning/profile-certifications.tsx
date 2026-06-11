@@ -67,8 +67,8 @@ export default function ProfileCertifications({
   if (loading) {
     return (
       <div className="premium-card mt-8 p-6 md:p-8">
-        <h2 className="text-xl font-bold text-slate-900">Certifications</h2>
-        <p className="mt-4 text-sm text-slate-500">Loading certifications...</p>
+        <h2 className="text-xl font-bold text-slate-50">Certifications</h2>
+        <p className="mt-4 text-sm text-slate-400">Loading certifications...</p>
       </div>
     );
   }
@@ -76,14 +76,11 @@ export default function ProfileCertifications({
   if (certificates.length === 0) {
     return (
       <div className="premium-card mt-8 p-6 md:p-8">
-        <h2 className="text-xl font-bold text-slate-900">Certifications</h2>
-        <p className="mt-3 text-sm text-slate-600">
+        <h2 className="text-xl font-bold text-slate-50">Certifications</h2>
+        <p className="mt-3 text-sm text-slate-400">
           Complete a learning path to earn your first certificate.
         </p>
-        <Link
-          href="/learning"
-          className="mt-5 inline-flex rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white"
-        >
+        <Link href="/learning" className="btn-home-cta mt-5 inline-flex px-5 py-3 text-sm">
           Browse learning paths
         </Link>
       </div>
@@ -96,8 +93,8 @@ export default function ProfileCertifications({
     <section id="certifications" className="premium-card mt-8 p-6 md:p-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Certifications</h2>
-          <p className="mt-2 text-sm text-slate-600">
+          <h2 className="text-xl font-bold text-slate-50">Certifications</h2>
+          <p className="mt-2 text-sm text-slate-400">
             {issuedCount > 0
               ? `${issuedCount} certificate${issuedCount === 1 ? "" : "s"} earned. Download or share anytime.`
               : "Finish a path and claim your certificate below."}
@@ -120,24 +117,24 @@ export default function ProfileCertifications({
           return (
             <article
               key={cert.pathId}
-              className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 md:p-6"
+              className="rounded-2xl border border-slate-700/60 bg-slate-900/50 p-5 md:p-6"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-violet-600">
+                  <p className="text-xs font-bold uppercase tracking-widest text-cyan-400">
                     Learning path
                   </p>
-                  <h3 className="mt-1 text-lg font-black text-slate-900">
+                  <h3 className="mt-1 text-lg font-black text-slate-50">
                     {cert.pathTitle}
                   </h3>
                 </div>
                 <span
                   className={`rounded-full px-3 py-1 text-xs font-bold ${
                     cert.issued
-                      ? "bg-emerald-100 text-emerald-800"
+                      ? "border border-cyan-500/30 bg-cyan-500/15 text-cyan-200"
                       : cert.eligible
-                        ? "bg-amber-100 text-amber-800"
-                        : "bg-slate-200 text-slate-700"
+                        ? "border border-amber-500/30 bg-amber-500/15 text-amber-200"
+                        : "border border-slate-600 bg-slate-800 text-slate-300"
                   }`}
                 >
                   {cert.issued
@@ -157,8 +154,8 @@ export default function ProfileCertifications({
                   />
                 </div>
               ) : cert.eligible ? (
-                <div className="mt-6 rounded-2xl border border-violet-200 bg-white p-5">
-                  <p className="text-sm text-slate-600">
+                <div className="mt-6 rounded-2xl border border-violet-500/25 bg-slate-900/60 p-5">
+                  <p className="text-sm text-slate-400">
                     You finished every lesson. Add your name to generate your
                     certificate.
                   </p>
@@ -170,14 +167,14 @@ export default function ProfileCertifications({
                   />
                 </div>
               ) : (
-                <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-white p-5">
-                  <p className="text-sm text-slate-600">
+                <div className="mt-6 rounded-2xl border border-dashed border-slate-600 bg-slate-900/40 p-5">
+                  <p className="text-sm text-slate-400">
                     Complete all {cert.lessonCount} lessons to unlock your
                     certificate for this path.
                   </p>
                   <Link
                     href={`/learning/${cert.pathId}`}
-                    className="mt-4 inline-flex text-sm font-semibold text-violet-600 hover:text-violet-700"
+                    className="mt-4 inline-flex text-sm font-semibold text-cyan-400 hover:text-cyan-300"
                   >
                     Continue learning →
                   </Link>

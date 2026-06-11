@@ -51,62 +51,62 @@ const THEMES: Record<
 > = {
   violet: {
     shell:
-      "border-violet-200 shadow-xl shadow-violet-200/50",
+      "border-violet-500/30 shadow-xl shadow-violet-500/15",
     header:
       "bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 text-white",
     desc: "text-violet-100",
     tag: "border-white/25 bg-white/15 text-white backdrop-blur-sm",
-    body: "bg-gradient-to-b from-violet-50/90 to-white",
-    footerBorder: "border-violet-100",
-    expandable: "border-violet-200 bg-violet-50/70",
+    body: "bg-gradient-to-b from-slate-900/95 to-slate-950",
+    footerBorder: "border-slate-700/60",
+    expandable: "border-slate-700 bg-slate-900/80",
     accordion: "light",
   },
   amber: {
     shell:
-      "border-2 border-amber-300/70 shadow-2xl shadow-orange-200/70",
+      "border-2 border-amber-400/40 shadow-2xl shadow-amber-500/15",
     header:
       "bg-gradient-to-br from-amber-500 via-orange-500 to-rose-600 text-white",
     desc: "text-orange-50",
     tag: "border-white/25 bg-white/15 text-white backdrop-blur-sm",
-    body: "bg-gradient-to-b from-amber-50/90 to-white",
-    footerBorder: "border-amber-100",
-    expandable: "border-amber-200 bg-amber-50/80",
+    body: "bg-gradient-to-b from-slate-900/95 to-slate-950",
+    footerBorder: "border-slate-700/60",
+    expandable: "border-slate-700 bg-slate-900/80",
     accordion: "warm",
   },
   indigo: {
     shell:
-      "border-indigo-200 shadow-lg shadow-indigo-100/60",
+      "border-indigo-500/30 shadow-lg shadow-indigo-500/15",
     header:
       "bg-gradient-to-br from-indigo-600 via-brand-secondary to-brand-dark text-white",
     desc: "text-indigo-100",
     tag: "border-white/25 bg-white/15 text-white backdrop-blur-sm",
-    body: "bg-gradient-to-b from-indigo-50/80 to-white",
-    footerBorder: "border-indigo-100",
-    expandable: "border-indigo-200 bg-indigo-50/70",
+    body: "bg-gradient-to-b from-slate-900/95 to-slate-950",
+    footerBorder: "border-slate-700/60",
+    expandable: "border-slate-700 bg-slate-900/80",
     accordion: "light",
   },
   emerald: {
     shell:
-      "border-emerald-200 shadow-lg shadow-emerald-100/60",
+      "border-emerald-500/30 shadow-lg shadow-emerald-500/15",
     header:
       "bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 text-white",
     desc: "text-emerald-100",
     tag: "border-white/25 bg-white/15 text-white backdrop-blur-sm",
-    body: "bg-gradient-to-b from-emerald-50/80 to-white",
-    footerBorder: "border-emerald-100",
-    expandable: "border-emerald-200 bg-emerald-50/70",
+    body: "bg-gradient-to-b from-slate-900/95 to-slate-950",
+    footerBorder: "border-slate-700/60",
+    expandable: "border-slate-700 bg-slate-900/80",
     accordion: "light",
   },
   rose: {
     shell:
-      "border-rose-200 shadow-lg shadow-rose-100/60",
+      "border-rose-500/30 shadow-lg shadow-rose-500/15",
     header:
       "bg-gradient-to-br from-rose-600 via-fuchsia-600 to-violet-700 text-white",
     desc: "text-rose-100",
     tag: "border-white/25 bg-white/15 text-white backdrop-blur-sm",
-    body: "bg-gradient-to-b from-rose-50/80 to-white",
-    footerBorder: "border-rose-100",
-    expandable: "border-rose-200 bg-rose-50/70",
+    body: "bg-gradient-to-b from-slate-900/95 to-slate-950",
+    footerBorder: "border-slate-700/60",
+    expandable: "border-slate-700 bg-slate-900/80",
     accordion: "light",
   },
 };
@@ -146,7 +146,7 @@ export default function SimplePathCard({
 
   return (
     <article
-      className={`relative overflow-hidden rounded-[1.75rem] border bg-white ${palette.shell} ${className}`}
+      className={`relative overflow-hidden rounded-[1.75rem] border bg-slate-900/90 ${palette.shell} ${className}`}
     >
       {pathNumber ? <PathNumberRibbon number={pathNumber} /> : null}
       {hookRibbon ? <PathHookRibbon label={hookRibbon} /> : null}
@@ -242,7 +242,7 @@ export function PathCardExpandable({
       className={`group overflow-hidden rounded-xl border ${palette.expandable}`}
       open={defaultOpen}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-brand-dark marker:content-none">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-slate-200 marker:content-none">
         <span>{label}</span>
         <span aria-hidden className="text-xs text-ink-muted transition group-open:rotate-180">
           ▼
