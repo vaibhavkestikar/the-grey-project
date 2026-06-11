@@ -23,9 +23,9 @@ const variantStyles: Record<
     text: "mt-1 text-sm text-orange-50",
   },
   muted: {
-    card: "rounded-xl border border-slate-200 bg-slate-50/80 p-3",
-    label: "text-[11px] font-bold uppercase tracking-wider text-violet-600",
-    text: "mt-1 text-sm leading-snug text-slate-700",
+    card: "rounded-xl border border-slate-700/60 bg-slate-900/60 p-4 backdrop-blur-sm",
+    label: "text-[11px] font-bold uppercase tracking-wider text-violet-300",
+    text: "mt-2 text-sm leading-relaxed text-slate-300",
   },
 };
 

@@ -29,15 +29,15 @@ export default function TryPage() {
       <SiteNavbar />
 
       <div className="mx-auto max-w-3xl px-4 py-10 md:py-14">
-        <Link href="/" className="text-sm font-medium text-slate-500 hover:text-violet-600">
+        <Link href="/" className="text-sm font-medium text-slate-500 hover:text-cyan-400">
           ← Back home
         </Link>
 
         <LearningPathPill className="mt-6" />
-        <h1 className="mt-3 text-4xl font-black text-slate-950 md:text-5xl">
+        <h1 className="mt-3 text-4xl font-black text-slate-50 md:text-5xl">
           {CURIOUS_BUILDERS_PATH.title}
         </h1>
-        <p className="mt-4 text-lg text-slate-600">
+        <p className="mt-4 text-lg text-slate-400">
           {isAuthenticated ? (
             <>
               Welcome back. Your progress is saved — continue the full path from
@@ -74,33 +74,33 @@ export default function TryPage() {
         <div className="premium-card mt-12 p-8 text-center">
           {isAuthenticated ? (
             <>
-              <p className="font-semibold text-slate-900">
+              <p className="font-semibold text-slate-100">
                 You&apos;re signed in. Continue the full Curious Builders path.
               </p>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-slate-400">
                 Progress, Grey Points, badges, and your certificate are all tied
                 to your account.
               </p>
               <Link
                 href="/learning/curious-builders"
-                className="mt-4 inline-flex rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
+                className="btn-home-cta mt-4 inline-flex px-8 py-4"
               >
                 Go to learning path
               </Link>
             </>
           ) : (
             <>
-              <p className="font-semibold text-slate-900">
+              <p className="font-semibold text-slate-100">
                 Liked what you saw? Create a free account to unlock the rest, save
                 progress, and earn your completion certificate.
               </p>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-slate-400">
                 The full path stays free. No credit card. No &ldquo;limited time
                 offer&rdquo; nonsense.
               </p>
               <Link
                 href="/register"
-                className="mt-4 inline-flex rounded-2xl bg-violet-600 px-8 py-4 font-semibold text-white"
+                className="btn-home-cta mt-4 inline-flex px-8 py-4"
               >
                 Create free account
               </Link>
