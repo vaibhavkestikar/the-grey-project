@@ -713,7 +713,7 @@ export default function LessonEngine({
         : "/register"
       : nextSlug
         ? `/learning/curious-builders/${nextSlug}`
-        : "/learning/curious-builders";
+        : "/learning";
 
   function prev() {
     if (step === 0) return;
@@ -1041,7 +1041,7 @@ export default function LessonEngine({
             {effectiveMode === "path"
               ? nextSlug
                 ? "Continue to next lesson"
-                : "Back to learning path"
+                : "Back to all learning paths"
               : nextSlug && hasFreeNextLesson
                 ? "Continue to next lesson"
                 : "Create account to continue"}

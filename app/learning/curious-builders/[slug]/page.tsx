@@ -208,10 +208,10 @@ export default function PathLessonPage() {
       <SiteNavbar />
       <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
         <Link
-          href="/learning/curious-builders"
-          className="text-sm font-medium text-slate-500 hover:text-violet-600"
+          href="/learning"
+          className="text-sm font-medium text-slate-400 hover:text-cyan-400"
         >
-          ← Learning path
+          ← All learning paths
         </Link>
 
         {showCompletionScreen && showPathFeedback && !pathFeedbackDone ? (

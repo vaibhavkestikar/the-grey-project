@@ -148,7 +148,9 @@ const LESSON_LOADERS: Record<
 export const CURIOUS_BUILDERS_PATH = {
   id: PATH_ID,
   title: "Curious Builders",
-  subtitle: "7 interactive lessons. Python in your browser. 100% free.",
+  subtitle: "AI Fundamentals for Founders, Product Managers & Analysts",
+  tagline:
+    "7 Interactive Lessons · Python in Your Browser · 100% Free · No Setup Required",
   cardSummary:
     "From prediction to production ML. Interactive steps, browser Python, and a completion certificate.",
   description:

@@ -55,8 +55,8 @@ export default function TryLessonPage() {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-4 px-4">
         <p className="text-lg font-semibold text-slate-800">Lesson not found</p>
-        <Link href="/try" className="text-violet-600">
-          Back to lessons
+        <Link href="/" className="text-cyan-400 hover:text-cyan-300">
+          Back home
         </Link>
       </main>
     );
@@ -69,7 +69,7 @@ export default function TryLessonPage() {
   const nextLessonHref = isAuthenticated
     ? nextSlug
       ? `/learning/${PATH_ID}/${nextSlug}`
-      : `/learning/${PATH_ID}`
+      : "/learning"
     : nextFree
       ? `/try/${nextFree.slug}`
       : "/register";
@@ -87,11 +87,8 @@ export default function TryLessonPage() {
       <SiteNavbar />
 
       <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
-        <Link
-          href={isAuthenticated ? `/learning/${PATH_ID}` : "/try"}
-          className="text-sm font-medium text-slate-500 hover:text-violet-600"
-        >
-          ← Curious Builders
+        <Link href="/" className="text-sm font-medium text-slate-400 hover:text-cyan-400">
+          ← Back home
         </Link>
 
         {lessonLoading ? (

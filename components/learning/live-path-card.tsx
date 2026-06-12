@@ -58,14 +58,22 @@ export default function LivePathCard({ collapsible = true, compact = false }: Pr
       why={pathMeta.why}
       outcomes={pathMeta.outcomes}
       cta={
-        <Link href="/try/prediction" className="btn-cta w-full text-center">
-          Start Learning
-        </Link>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Link href="/try/prediction" className="btn-home-cta flex-1 text-center">
+            Start Learning
+          </Link>
+          <Link
+            href="/learning/curious-builders"
+            className="btn-home-secondary flex-1 text-center"
+          >
+            Explore Curriculum
+          </Link>
+        </div>
       }
       footer={
         compact ? (
           <div>
-            <p className="mb-3 text-sm font-bold text-violet-800">
+            <p className="mb-3 text-sm font-bold text-violet-200">
               {CURIOUS_BUILDERS_PATH.lessonCount} lessons + certificate
             </p>
             {lessonList}
