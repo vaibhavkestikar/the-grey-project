@@ -153,7 +153,11 @@ export default function SimplePathCard({
       {pathNumber ? <PathNumberRibbon number={pathNumber} /> : null}
       {hookRibbon ? <PathHookRibbon label={hookRibbon} /> : null}
       {secondaryHookRibbon ? (
-        <PathHookRibbon label={secondaryHookRibbon} variant="secondary" />
+        <PathHookRibbon
+          label={secondaryHookRibbon}
+          variant="secondary"
+          className="hidden sm:block"
+        />
       ) : null}
 
       <div className={`relative px-5 pb-5 pt-14 sm:px-6 sm:pb-6 sm:pt-16 ${palette.header}`}>
@@ -173,6 +177,11 @@ export default function SimplePathCard({
                 className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${statusToneClasses[statusTone]}`}
               >
                 {statusLabel}
+              </span>
+            ) : null}
+            {secondaryHookRibbon ? (
+              <span className="mt-2 inline-flex max-w-full rounded-lg bg-fuchsia-400 px-2.5 py-1 text-[10px] font-black uppercase leading-snug tracking-wide text-fuchsia-950 ring-2 ring-white/30 sm:hidden">
+                {secondaryHookRibbon}
               </span>
             ) : null}
             <h3 className="path-card-title mt-2 text-2xl font-black leading-tight sm:text-3xl">
