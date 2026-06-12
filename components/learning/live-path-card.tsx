@@ -64,7 +64,7 @@ export default function LivePathCard({ collapsible = true, compact = false }: Pr
           </Link>
           <Link
             href="/learning/curious-builders"
-            className="btn-home-secondary flex-1 text-center"
+            className="btn-explore-curriculum flex flex-1 items-center justify-center text-center"
           >
             Explore Curriculum
           </Link>

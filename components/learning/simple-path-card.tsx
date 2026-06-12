@@ -20,11 +20,12 @@ type Props = {
   pathNumber?: number;
   icon: string;
   title: string;
-  description: string;
+  description: ReactNode;
   tags: PathCardTag[];
   statusLabel?: string;
   statusTone?: "live" | "soon" | "neutral" | "urgent";
   hookRibbon?: string;
+  secondaryHookRibbon?: string;
   theme?: PathCardTheme;
   who: string;
   why: string;
@@ -131,6 +132,7 @@ export default function SimplePathCard({
   statusLabel,
   statusTone = "neutral",
   hookRibbon,
+  secondaryHookRibbon,
   theme = "violet",
   who,
   why,
@@ -150,6 +152,9 @@ export default function SimplePathCard({
     >
       {pathNumber ? <PathNumberRibbon number={pathNumber} /> : null}
       {hookRibbon ? <PathHookRibbon label={hookRibbon} /> : null}
+      {secondaryHookRibbon ? (
+        <PathHookRibbon label={secondaryHookRibbon} variant="secondary" />
+      ) : null}
 
       <div className={`relative px-5 pb-5 pt-14 sm:px-6 sm:pb-6 sm:pt-16 ${palette.header}`}>
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/10" />
@@ -173,11 +178,14 @@ export default function SimplePathCard({
             <h3 className="path-card-title mt-2 text-2xl font-black leading-tight sm:text-3xl">
               {title}
             </h3>
-            <p className={`mt-2 text-base leading-relaxed ${palette.desc}`}>
-              {description}
-            </p>
           </div>
         </div>
+
+        {description ? (
+          <div className={`relative mt-4 text-base leading-relaxed ${palette.desc}`}>
+            {description}
+          </div>
+        ) : null}
 
         <div className="relative mt-4 flex flex-wrap gap-2">
           {tags.map((tag, index) => {

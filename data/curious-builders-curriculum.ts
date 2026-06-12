@@ -1,6 +1,7 @@
 export const CURRICULUM_HERO = {
-  eyebrow: "Curious Builders",
-  title: "AI Fundamentals for Founders, Product Managers & Analysts",
+  eyebrow: "Learning path",
+  title: "Curious Builders",
+  subtitle: "AI Fundamentals for Founders, Product Managers & Analysts",
   meta: [
     "7 Interactive Lessons",
     "Python in Your Browser",

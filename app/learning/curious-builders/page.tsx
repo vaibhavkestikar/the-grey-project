@@ -68,6 +68,11 @@ export default function CuriousBuildersPathPage() {
           <h1 className="mt-3 text-3xl font-black leading-tight text-slate-50 sm:text-4xl md:text-5xl">
             {CURRICULUM_HERO.title}
           </h1>
+          {CURRICULUM_HERO.subtitle ? (
+            <p className="mt-3 max-w-2xl text-lg leading-relaxed text-slate-400 md:text-xl">
+              {CURRICULUM_HERO.subtitle}
+            </p>
+          ) : null}
 
           <div className="mt-5 flex flex-wrap gap-2">
             {CURRICULUM_HERO.meta.map((item) => (

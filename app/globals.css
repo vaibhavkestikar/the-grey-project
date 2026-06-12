@@ -223,6 +223,20 @@ table {
     @apply inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-cyan-500/30 bg-slate-900/60 px-6 py-3.5 text-base font-semibold text-slate-100 backdrop-blur transition hover:border-cyan-400/60 hover:bg-slate-800/80 active:scale-[0.98];
   }
 
+  .btn-explore-curriculum {
+    @apply inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-cyan-400/45 bg-gradient-to-r from-cyan-500/15 via-violet-500/10 to-cyan-500/15 px-6 py-3.5 text-base font-semibold text-slate-50 backdrop-blur transition hover:border-cyan-300/70 hover:from-cyan-500/25 hover:via-violet-500/20 hover:to-cyan-500/25 hover:shadow-[0_0_28px_rgba(34,211,238,0.35),0_0_48px_rgba(167,139,250,0.22)] active:scale-[0.98];
+    box-shadow:
+      0 0 22px rgba(34, 211, 238, 0.18),
+      inset 0 0 24px rgba(34, 211, 238, 0.06);
+  }
+
+  .btn-explore-curriculum-amber {
+    @apply border-amber-400/45 bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-fuchsia-500/15 hover:border-amber-300/70 hover:from-amber-500/25 hover:via-orange-500/20 hover:to-fuchsia-500/20 hover:shadow-[0_0_28px_rgba(251,191,36,0.35),0_0_48px_rgba(244,114,182,0.18)];
+    box-shadow:
+      0 0 22px rgba(251, 191, 36, 0.18),
+      inset 0 0 24px rgba(251, 191, 36, 0.06);
+  }
+
   .home-stat-pill {
     @apply inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-slate-900/80 px-4 py-2 text-xs font-semibold text-cyan-100 shadow-[inset_0_0_20px_rgba(34,211,238,0.08)];
   }

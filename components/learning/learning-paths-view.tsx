@@ -20,7 +20,7 @@ type Props = {
   variant?: "default" | "homepage";
 };
 
-const STAT_PILLS = ["Grey Points", "Skill badges", "Practical PDFs"];
+const STAT_PILLS = ["Grey Points", "Skill badges", "Certificate"];
 
 function StatPill({ label, index }: { label: string; index: number }) {
   return (

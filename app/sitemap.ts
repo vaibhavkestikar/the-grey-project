@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/try/classical-vs-ml",
     "/learning",
     "/learning/curious-builders",
+    "/learning/first-build",
     "/blog",
     "/about",
     "/feedback",
