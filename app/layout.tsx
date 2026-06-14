@@ -7,6 +7,7 @@ import { Poppins } from "next/font/google";
 import { Suspense } from "react";
 
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 
 import {
@@ -88,6 +89,7 @@ export default function RootLayout({
         </AuthProvider>
 
         <Analytics />
+        <SpeedInsights />
 
       </body>
 
