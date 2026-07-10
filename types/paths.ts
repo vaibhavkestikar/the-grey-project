@@ -15,7 +15,7 @@ export type AudiencePath = {
   features?: string[];
 };
 
-export const FIRST_BUILD_LAUNCH_DATE = "2026-07-12T00:00:00+05:30";
+export const FIRST_BUILD_LAUNCH_DATE = "2026-08-24T00:00:00+05:30";
 export const FIRST_BUILD_LIMITED_SPOTS = 200;
 export const FREE_LESSON_COUNT = 3;
 
