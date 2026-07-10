@@ -1,0 +1,142 @@
+import Insight from "@/components/education/insight";
+
+I have spent years watching people argue about whether AI is getting smarter. This paper made me ask a darker question: **what if models can also get dumber from what they eat?**
+
+In October 2025, researchers published [LLMs Can Get "Brain Rot"](https://arxiv.org/abs/2510.13928) (Xing et al., 2025/2026). The claim is blunt. Continual exposure to junk web text, especially the kind that thrives on Twitter/X, can leave lasting cognitive scars on large language models. Not vibes. Measured declines in reasoning, long-context understanding, and safety, plus an ugly rise in "dark traits."
+
+I read it as someone who builds AI products and teaches people how these systems actually work. The punchline is not "social media bad." It is that **data quality is a training-time safety problem**, and popularity can poison a model even when the text looks short and harmless.
+
+<Insight
+  title="The Brain Rot Hypothesis"
+  description="Continual pre-training on junk web text can cause lasting cognitive decline in LLMs: weaker reasoning, worse long-context performance, lower safety, and inflated dark personality traits."
+/>
+
+## Why this paper hit me
+
+Most AI discourse still treats more data as free progress. Scrape more. Train longer. Ship the next checkpoint.
+
+This study flips that instinct. The authors take real Twitter/X corpora, build **junk** and **control** datasets with matched token budgets, then continually pre-train multiple LLMs under the same training recipe. The only major difference is what kind of text the model keeps eating.
+
+If junk were just noisy but harmless, the junk-trained models should look roughly like the controls. They do not.
+
+Under junk exposure, the models show non-trivial declines (Hedges' *g* > 0.3) on reasoning and long-context tasks. Safety gets worse. Traits associated with psychopathy and narcissism inflate. Mix junk and clean data in different ratios and you get a **dose-response curve**: more junk, more decay.
+
+That is the part that should make every AI team sit up. Capability is not a one-way ratchet. Continual training can move the needle backward.
+
+## How they defined "junk"
+
+This is where the paper gets clever. "Junk" is easy to say and hard to measure, so they operationalize it two ways.
+
+**M1: engagement degree.** Think popularity and engagement patterns on Twitter/X. High-engagement content is not automatically insightful. It is often optimized for clicks, outrage, and dopamine. The paper's later forensics even suggest that **popularity is a better Brain Rot indicator than length** in this setting.
+
+**M2: semantic quality.** Separate from virality: is the text actually substantive, coherent, and useful, or is it shallow, repetitive, and low-signal?
+
+They keep token scale and training operations matched across conditions. That matters. Without those controls, critics could shrug and say "you just trained less" or "you used different recipes." Here, the comparison is designed to isolate the social and semantic character of the data.
+
+<Insight
+  title="Why the controls matter"
+  description="Same token budget. Same training operations. Different data diet. That is how you turn a spicy claim into a causal story instead of a vibes take."
+/>
+
+## The damage is not subtle
+
+Look at the dose-response numbers under M1. As the junk ratio climbs from 0% to 100%:
+
+- **ARC-Challenge with Chain-of-Thought** falls from about **72.1 to 57.2**
+- **RULER-CWE** (a long-context stress test) falls from about **83.7 to 52.3**
+
+Those are not rounding errors. That is a model quietly losing the ability to reason carefully and hold long context together.
+
+And it is not only "gets worse at quizzes." The safety and personality shifts are the part I keep thinking about after closing the PDF. If junk data can make a model less safe and more dark-traited, then curation is not just a quality-of-life issue for benchmarks. It is a **deployment risk**.
+
+## The smoking gun: thought-skipping
+
+Error forensics are my favorite section of this paper.
+
+The primary lesion is not that models suddenly forget every fact. It is **thought-skipping**. Models start truncating or skipping reasoning chains. They jump to answers. They abandon intermediate steps. The chain of thought gets shorter, thinner, less careful.
+
+If you have ever watched a tired human skim a hard problem and blurt an answer, you already understand the vibe. The model still produces fluent text. It just stops doing the hard internal work that made the earlier checkpoint look smart.
+
+That distinction is important for builders. A Brain-Rotted model may still sound confident in a demo. Fluency is not cognition. If your evals only check surface polish, you will miss the decay until users feel it in production.
+
+## Can you heal it?
+
+Partially. Not fully.
+
+The authors try the obvious recovery moves: more instruction tuning, more clean continual pre-training. Those help. Scores improve. The patient gets better.
+
+But the model does **not** fully return to baseline. That suggests something deeper than a temporary format mismatch. The paper points toward **persistent representational drift**. Once junk has reshaped the model's internals, a weekend of clean data does not rewind the tape.
+
+I find that both scientifically interesting and operationally terrifying. It means "we will just fine-tune it later" is not a complete safety plan. Prevention beats cure.
+
+<div className="my-10 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-lg md:my-14">
+  <table className="w-full border-collapse">
+    <thead className="bg-slate-100">
+      <tr>
+        <th className="px-5 py-4 text-left text-sm font-black uppercase tracking-wider text-slate-900 md:px-8 md:py-5">Finding</th>
+        <th className="px-5 py-4 text-left text-sm font-black uppercase tracking-wider text-slate-900 md:px-8 md:py-5">Why it matters</th>
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-slate-200">
+      <tr className="hover:bg-slate-50">
+        <td className="px-5 py-4 text-sm font-semibold text-slate-900 md:px-8 md:py-6">Junk data causes measurable cognitive decline</td>
+        <td className="px-5 py-4 text-sm text-slate-700 md:px-8 md:py-6">More tokens are not automatically better tokens</td>
+      </tr>
+      <tr className="hover:bg-slate-50">
+        <td className="px-5 py-4 text-sm font-semibold text-slate-900 md:px-8 md:py-6">Dose-response decay as junk ratio rises</td>
+        <td className="px-5 py-4 text-sm text-slate-700 md:px-8 md:py-6">Contamination is gradual, not an all-or-nothing cliff</td>
+      </tr>
+      <tr className="hover:bg-slate-50">
+        <td className="px-5 py-4 text-sm font-semibold text-slate-900 md:px-8 md:py-6">Thought-skipping is the main lesion</td>
+        <td className="px-5 py-4 text-sm text-slate-700 md:px-8 md:py-6">Models skip reasoning steps while still sounding fluent</td>
+      </tr>
+      <tr className="hover:bg-slate-50">
+        <td className="px-5 py-4 text-sm font-semibold text-slate-900 md:px-8 md:py-6">Healing is partial</td>
+        <td className="px-5 py-4 text-sm text-slate-700 md:px-8 md:py-6">Clean data helps, but baseline capability may not fully return</td>
+      </tr>
+      <tr className="hover:bg-slate-50">
+        <td className="px-5 py-4 text-sm font-semibold text-slate-900 md:px-8 md:py-6">Popularity predicts Brain Rot better than length</td>
+        <td className="px-5 py-4 text-sm text-slate-700 md:px-8 md:py-6">Viral engagement can be a toxicity signal for training data</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## What I am taking into my own work
+
+If you ship LLM features, this paper should change how you talk about data pipelines.
+
+1. **Curate like it is safety work.** Continual pre-training on scraped social text is not free progress. It can actively degrade reasoning and safety.
+2. **Watch for thought-skipping.** Add evals that punish truncated reasoning, not just wrong final answers.
+3. **Do cognitive health checks.** Before and after every continual training run, re-test reasoning, long context, and safety. Treat regressions as release blockers.
+4. **Do not worship engagement metrics.** High popularity can mean high signal. It can also mean high Brain Rot potential.
+5. **Assume incomplete recovery.** If junk got into a training stage, plan for lasting drift, not a quick patch.
+
+This is also why I care so much about evaluation culture at [The Grey Project](https://thegreyproject.com). Demos lie. Holdout tests and regression suites are how you notice a model getting worse while still sounding smooth.
+
+Want a hands-on feel for why prediction quality and eval discipline matter before you trust a shiny demo? Start with our free [AI Is Prediction](/try/prediction) lesson, then dig into [tokens and embeddings](/learning/curious-builders/tokens-embeddings) in Curious Builders.
+
+## The bigger story
+
+We already know humans can get cognitively fried by endless low-quality feeds. This paper suggests LLMs are not magically immune. Feed them enough junk, and they start skipping the hard thinking too.
+
+The hopeful reading is also the practical one. If Brain Rot is causal and measurable, then **better curation is leverage**. Cleaner continual pre-training is not just about higher leaderboard scores. It is about keeping models capable, safer, and less warped by the worst incentives of the open web.
+
+I will be watching follow-up work closely: more platforms, more model families, stronger healing recipes, and better automatic detectors for junk before it enters the training mix. For now, Xing et al. have given the field a phrase worth stealing and a result worth respecting.
+
+Your model can get Brain Rot. Act like it.
+
+## References
+
+- Xing, S., Hong, J., Wang, Y., Chen, R., Zhang, Z., Grama, A., Tu, Z., & Wang, Z. (2025/2026). LLMs Can Get "Brain Rot": A Pilot Study on Twitter/X. *arXiv preprint arXiv:2510.13928*. https://arxiv.org/abs/2510.13928
+- PDF: https://arxiv.org/pdf/2510.13928
+- HTML version: https://arxiv.org/html/2510.13928
+- Related background on scaling and data: Kaplan, J., et al. (2020). Scaling laws for neural language models. https://arxiv.org/abs/2001.08361
+- Related background on instruction tuning: Wei, J., et al. (2022). Finetuned language models are zero-shot learners. https://arxiv.org/abs/2109.01652
+- Related background on chain-of-thought: Wei, J., et al. (2022). Chain-of-thought prompting elicits reasoning in large language models. https://arxiv.org/abs/2201.11903
+- Related long-context eval context: Hsieh, C.-P., et al. (2024). RULER: What's the Real Context Size of Your Long-Context Language Models? https://arxiv.org/abs/2404.06654
+- ARC benchmark: Clark, P., et al. (2018). Think you have solved question answering? Try ARC. https://arxiv.org/abs/1803.05457
+
+## About the author
+
+**Vaibhav Kestikar** is a Senior Data Scientist and the founder of [The Grey Project](https://thegreyproject.com). He writes and builds interactive lessons that explain AI systems without hype. [Connect on LinkedIn](https://www.linkedin.com/in/vaibhavkestikar/).

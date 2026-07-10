@@ -13,6 +13,27 @@ export type BlogPost = {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: "llm-brain-rot",
+    title: 'LLMs Can Get "Brain Rot": What Junk Twitter Data Does to AI',
+    description:
+      "A new arXiv study shows continual training on junk Twitter/X text can permanently weaken LLM reasoning, long-context skills, and safety. Here is what the Brain Rot Hypothesis means for builders.",
+    author: "Vaibhav Kestikar",
+    readTime: "8 min read",
+    publishedAt: "2026-07-10",
+    image: "/blog/brainrot.png",
+    keywords: [
+      "LLM Brain Rot",
+      "junk training data",
+      "Twitter X AI",
+      "continual pre-training",
+      "LLM reasoning decline",
+      "data quality",
+      "AI safety",
+      "thought-skipping",
+    ],
+    category: "AI research",
+  },
+  {
     slug: "attention-is-all-you-need",
     title:
       "Attention Is All You Need: How the Transformer Paper Built Modern AI",
