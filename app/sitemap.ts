@@ -7,17 +7,13 @@ const BASE = "https://www.thegreyproject.com";
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     "",
-    "/try",
-    "/try/prediction",
-    "/try/classical-vs-ml",
-    "/learning",
-    "/learning/curious-builders",
-    "/learning/first-build",
+    "/workshops",
+    "/workshops/theory",
+    "/workshops/agentic-project",
+    "/for-colleges",
     "/blog",
     "/about",
     "/feedback",
-    "/register",
-    "/login",
   ].map((path) => ({
     url: `${BASE}${path}`,
     lastModified: new Date(),

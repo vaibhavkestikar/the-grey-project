@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import AuthHeader from "@/components/auth/auth-header";
-import PostSignupActions from "@/components/learning/post-signup-actions";
-import { mergeGuestProgressOnSignIn } from "@/lib/learning/merge-guest-progress";
 import { createClient } from "@/lib/supabase/client";
 
 async function waitForVerifiedUser(
@@ -57,7 +56,6 @@ export default function WelcomePage() {
         "";
       setName(first);
       setReady(true);
-      void mergeGuestProgressOnSignIn();
     })();
   }, [router, supabase]);
 
@@ -78,10 +76,19 @@ export default function WelcomePage() {
             Welcome to The Grey Project{name ? `, ${name}` : ""}
           </h1>
           <p className="mt-6 text-xl text-slate-600">
-            Your brain is about to get an upgrade. Let&apos;s understand AI together,
-            for real this time.
+            Your account is ready. Browse workshops or manage your profile.
           </p>
-          <PostSignupActions />
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <Link href="/workshops" className="btn-cta min-h-[48px] px-6 py-3">
+              See workshops
+            </Link>
+            <Link
+              href="/account"
+              className="rounded-xl border border-slate-200 px-6 py-3 font-semibold text-slate-800"
+            >
+              Go to account
+            </Link>
+          </div>
         </div>
       </main>
     </>

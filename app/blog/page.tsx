@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import SiteNavbar from "@/components/marketing/site-navbar";
+import SiteFooter from "@/components/marketing/site-footer";
 import { blogPosts } from "@/data/blog-posts";
 
 export const metadata = {
@@ -83,6 +84,7 @@ export default function BlogPage() {
           </div>
         </div>
       </section>
+      <SiteFooter />
     </main>
   );
 }

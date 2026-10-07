@@ -24,12 +24,11 @@ export function isRecoveryRedirectExempt(pathname: string): boolean {
 export function shouldAbandonRecoveryOnNavigate(pathname: string): boolean {
   if (isRecoveryRedirectExempt(pathname)) return true;
   if (pathname === "/") return true;
-  if (pathname.startsWith("/learning")) return true;
+  if (pathname.startsWith("/workshops")) return true;
+  if (pathname.startsWith("/for-colleges")) return true;
   if (pathname.startsWith("/about")) return true;
   if (pathname.startsWith("/blog")) return true;
-  if (pathname.startsWith("/try")) return true;
   if (pathname.startsWith("/feedback")) return true;
-  if (pathname.startsWith("/roadmap")) return true;
   return false;
 }
 
