@@ -6,7 +6,8 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 
 import SiteNavbar from "@/components/marketing/site-navbar";
-import BlogLearningCta from "@/components/growth/blog-learning-cta";
+import SiteFooter from "@/components/marketing/site-footer";
+import BlogWorkshopCta from "@/components/marketing/blog-workshop-cta";
 import { blogPosts, getBlogPost } from "@/data/blog-posts";
 import { mdxComponents } from "@/components/mdx-components";
 
@@ -86,17 +87,6 @@ export default async function BlogPostPage({
       },
     },
   });
-
-  const relatedLesson =
-    slug === "inside-chatgpt"
-      ? {
-          href: "/learning/curious-builders/tokens-embeddings",
-          title: "How AI reads: tokens and embeddings",
-        }
-      : {
-          href: "/try/prediction",
-          title: "AI Is Prediction, free sample",
-        };
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -215,12 +205,10 @@ export default async function BlogPostPage({
             {content}
           </div>
 
-          <BlogLearningCta
-            relatedLessonHref={relatedLesson.href}
-            relatedLessonTitle={relatedLesson.title}
-          />
+          <BlogWorkshopCta />
         </div>
       </article>
+      <SiteFooter />
     </main>
   );
 }

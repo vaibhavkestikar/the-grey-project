@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "The Grey Project",
   description:
-    "Master AI from the ground up with intuitive explanations and real understanding.",
+    "Paid, live AI workshops for engineering colleges. Industry landscape plus a hands-on agentic project.",
   url: "https://www.thegreyproject.com",
   ogImage: "/images/og-image.png",
   links: {

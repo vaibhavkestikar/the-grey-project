@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { toast } from "sonner";
 
@@ -13,8 +13,6 @@ import AuthHeader from "@/components/auth/auth-header";
 import { getAuthCallbackUrl } from "@/lib/auth/redirect-url";
 
 import { trackAuthFunnelEvent } from "@/lib/auth/funnel";
-
-import { syncGuestFreeLessonsForSignup } from "@/lib/learning/guest-progress";
 
 import { track } from "@/services/analytics/track";
 
@@ -44,10 +42,6 @@ export default function RegisterPage() {
       ? roleOther.trim() || "Other"
       : form.current_job_role;
 
-  useEffect(() => {
-    syncGuestFreeLessonsForSignup();
-  }, []);
-
   async function handleRegister(
     e: React.FormEvent
   ) {
@@ -57,7 +51,6 @@ export default function RegisterPage() {
     try {
 
       setLoading(true);
-      syncGuestFreeLessonsForSignup();
 
       track("signup_started");
 
@@ -185,7 +178,7 @@ export default function RegisterPage() {
           </h1>
 
           <p className="mt-4 text-base text-ink-muted md:text-lg">
-            Learn AI deeply from first principles.
+            Create an account to manage your profile. Colleges book workshops through the inquiry form.
           </p>
 
           <form

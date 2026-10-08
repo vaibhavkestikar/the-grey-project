@@ -24,7 +24,7 @@ export default function GeneralFeedbackForm() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (nps === null || overall === null || clarity === null || interactivity === null) {
-      toast.error("A few taps left. The rating buttons are not decorative.");
+      toast.error("Please complete the ratings before sending.");
       return;
     }
 
@@ -52,17 +52,15 @@ export default function GeneralFeedbackForm() {
 
     track("feedback_submitted", { type: "site", nps });
     setSubmitted(true);
-    toast.success("Received. Genuinely. Thank you.");
+    toast.success("Received. Thank you.");
   }
 
   if (submitted) {
     return (
       <div className="premium-card p-8 text-center md:p-12">
-        <p className="text-5xl">🙏</p>
-        <h2 className="mt-6 text-2xl font-black text-slate-950">You just made my week better</h2>
+        <h2 className="mt-6 text-2xl font-black text-slate-950">Received. Thank you.</h2>
         <p className="mt-4 text-slate-600">
-          I read every response myself. Yes, still just one person in a room. Your notes go straight
-          into what we ship next.
+          Notes go into how we run the next campus workshop.
         </p>
         <Link
           href="/"
@@ -82,7 +80,7 @@ export default function GeneralFeedbackForm() {
             Your email
           </label>
           <p className="mt-1 text-sm text-slate-500">
-            So I can reply if you want. No newsletter ambush. Promise.
+            Optional if you want a reply. Not used for a mailing list.
           </p>
           <input
             id="feedback-email"
@@ -98,10 +96,10 @@ export default function GeneralFeedbackForm() {
 
       <fieldset>
         <legend className="text-lg font-black text-slate-950">
-          Would you tell a friend to try The Grey Project?
+          Would you recommend The Grey Project workshop to a college colleague?
         </legend>
         <p className="mt-2 text-sm text-slate-600">
-          Classic NPS question. 0 means run. 10 means you already did.
+          0 is not at all. 10 is definitely.
         </p>
         <div className="mt-4">
           <NpsInput value={nps} onChange={setNps} />
@@ -109,17 +107,17 @@ export default function GeneralFeedbackForm() {
       </fieldset>
 
       <fieldset>
-        <legend className="text-lg font-black text-slate-950">How was your visit overall?</legend>
-        <p className="mt-2 text-sm text-slate-600">Gut feel. No wrong answers.</p>
+        <legend className="text-lg font-black text-slate-950">How was this visit overall?</legend>
+        <p className="mt-2 text-sm text-slate-600">A quick overall rating.</p>
         <div className="mt-4">
           <RatingInput value={overall} onChange={setOverall} />
         </div>
       </fieldset>
 
       <fieldset>
-        <legend className="text-lg font-black text-slate-950">Did the ideas actually make sense?</legend>
+        <legend className="text-lg font-black text-slate-950">Was the copy clear?</legend>
         <p className="mt-2 text-sm text-slate-600">
-          Clarity check. Did anything click, or was it all confident hand waving?
+          Could a TPO or student tell what the workshop is?
         </p>
         <div className="mt-4">
           <RatingInput
@@ -131,43 +129,43 @@ export default function GeneralFeedbackForm() {
       </fieldset>
 
       <fieldset>
-        <legend className="text-lg font-black text-slate-950">Did the interactive bits help?</legend>
+        <legend className="text-lg font-black text-slate-950">Was it easy to inquire or book?</legend>
         <p className="mt-2 text-sm text-slate-600">
-          Sandboxes, checkpoints, play widgets. Useful or just pretty?
+          Forms, navigation, and calls to action.
         </p>
         <div className="mt-4">
           <RatingInput
             value={interactivity}
             onChange={setInteractivity}
-            labels={["Nope", "Barely", "A little", "Yes", "Chef kiss"]}
+            labels={["Hard", "Awkward", "OK", "Clear", "Easy"]}
           />
         </div>
       </fieldset>
 
       <div>
         <label className="text-lg font-black text-slate-950" htmlFor="open-feedback">
-          What made you smile? What made you rage quit?
+          Anything we should change?
         </label>
         <textarea
           id="open-feedback"
           rows={4}
           value={openFeedback}
           onChange={(e) => setOpenFeedback(e.target.value)}
-          placeholder="Be gentle. I'm new at this and I bruise easily."
+          placeholder="Format, timing, missing details…"
           className="mt-3 w-full rounded-2xl border border-slate-200 px-5 py-4 outline-none focus:border-violet-500"
         />
       </div>
 
       <div>
         <label className="text-lg font-black text-slate-950" htmlFor="build-next">
-          If you were CEO for a day, what would you build next?
+          What would make this easier to book for a college?
         </label>
         <textarea
           id="build-next"
           rows={3}
           value={buildNext}
           onChange={(e) => setBuildNext(e.target.value)}
-          placeholder="More paths? Dark mode? A button that makes coffee?"
+          placeholder="Dates, batch size, faculty involvement…"
           className="mt-3 w-full rounded-2xl border border-slate-200 px-5 py-4 outline-none focus:border-violet-500"
         />
       </div>
@@ -177,7 +175,7 @@ export default function GeneralFeedbackForm() {
         disabled={loading}
         className="w-full rounded-2xl bg-violet-600 py-4 text-lg font-semibold text-white disabled:opacity-50"
       >
-        {loading ? "Sending to the one human..." : "Send feedback"}
+        {loading ? "Sending…" : "Send feedback"}
       </button>
     </form>
   );

@@ -10,7 +10,6 @@ import {
 import { User } from "@supabase/supabase-js";
 
 import { createClient } from "@/lib/supabase/client";
-import { mergeGuestProgressOnSignIn } from "@/lib/learning/merge-guest-progress";
 
 type AuthContextType = {
   user: User | null;
@@ -36,24 +35,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       setUser(initialUser);
       setLoading(false);
-
-      if (initialUser) {
-        void mergeGuestProgressOnSignIn();
-      }
     }
 
     void initAuth();
 
     const {
       data: authListener,
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       const nextUser = session?.user ?? null;
       setUser(nextUser);
       setLoading(false);
-
-      if (event === "SIGNED_IN" && nextUser) {
-        void mergeGuestProgressOnSignIn();
-      }
     });
 
     return () => {

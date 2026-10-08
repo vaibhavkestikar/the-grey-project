@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import AuthHeader from "@/components/auth/auth-header";
-import PostSignupActions from "@/components/learning/post-signup-actions";
 import NumberedStepList from "@/components/ui/numbered-step-list";
 import { getAuthCallbackUrl } from "@/lib/auth/redirect-url";
 import { trackAuthFunnelEvent } from "@/lib/auth/funnel";
@@ -92,9 +91,19 @@ export default function VerifyEmailView() {
             <p className="text-5xl">✓</p>
             <h1 className="mt-6 text-3xl font-black">Email verified</h1>
             <p className="mt-4 text-slate-600">
-              Your account is ready. Pick up where your free sample left off.
+              Your account is ready. See workshops or open your profile.
             </p>
-            <PostSignupActions />
+            <div className="mt-8 flex flex-col gap-3">
+              <Link href="/workshops" className="btn-cta min-h-[48px] px-6 py-3">
+                See workshops
+              </Link>
+              <Link
+                href="/account"
+                className="rounded-xl border border-slate-200 px-6 py-3 font-semibold text-slate-800"
+              >
+                Go to account
+              </Link>
+            </div>
           </div>
         </main>
       </>
