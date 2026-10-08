@@ -64,8 +64,7 @@ export default function LoginForm() {
     }
 
     router.refresh();
-    const next = searchParams.get("next");
-    router.push(next?.startsWith("/") ? next : "/account");
+    router.push("/learning");
   }
 
   return (
@@ -75,7 +74,7 @@ export default function LoginForm() {
         <div className="hero-glow left-1/2 top-0 -translate-x-1/2" />
         <div className="auth-shell">
           <h1 className="text-3xl font-black text-ink sm:text-4xl">Welcome Back</h1>
-          <p className="mt-3 text-base text-ink-muted">Sign in to manage your profile.</p>
+          <p className="mt-3 text-base text-ink-muted">Continue your AI journey.</p>
 
           {callbackError && (
             <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">

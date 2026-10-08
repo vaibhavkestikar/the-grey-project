@@ -4,18 +4,15 @@ import Link from "next/link";
 import { useState } from "react";
 import { Home, Menu, X } from "lucide-react";
 
-import { WORKSHOP_INQUIRY_HREF } from "@/data/workshops";
-
-const NAV = [
-  { href: "/", label: "Home" },
-  { href: "/workshops", label: "Workshops" },
-  { href: "/for-colleges", label: "For Colleges" },
-  { href: "/blog", label: "Blog" },
-  { href: "/feedback", label: "Feedback" },
-] as const;
+import { useAuth } from "@/components/providers/auth-provider";
+import GreyPointsNavPill from "@/components/learning/grey-points-nav-pill";
+import { firstNameFromEmail } from "@/lib/utils/name";
 
 export default function SiteNavbar() {
+  const { user, loading } = useAuth();
   const [open, setOpen] = useState(false);
+
+  const firstName = firstNameFromEmail(user?.email);
 
   return (
     <header className="sticky top-0 z-50 border-b border-cyan-500/20 bg-slate-950/85 backdrop-blur-xl">
@@ -30,15 +27,23 @@ export default function SiteNavbar() {
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-slate-300 transition hover:text-cyan-300"
-            >
-              {item.label}
+          <Link href="/" className="text-sm font-medium text-slate-300 transition hover:text-cyan-300">
+            Home
+          </Link>
+          <Link href="/learning" className="text-sm font-medium text-slate-300 transition hover:text-cyan-300">
+            Learning paths
+          </Link>
+          <Link href="/blog" className="text-sm font-medium text-slate-300 transition hover:text-cyan-300">
+            Blog
+          </Link>
+          <Link href="/feedback" className="text-sm font-medium text-slate-300 transition hover:text-cyan-300">
+            Feedback
+          </Link>
+          {user && (
+            <Link href="/account" className="text-sm font-medium text-slate-300 transition hover:text-cyan-300">
+              Profile
             </Link>
-          ))}
+          )}
         </nav>
 
         <div className="flex items-center gap-2 lg:gap-3">
@@ -49,15 +54,46 @@ export default function SiteNavbar() {
           >
             <Home className="h-5 w-5" />
           </Link>
-          <Link
-            href={WORKSHOP_INQUIRY_HREF}
-            className="hidden min-h-[44px] items-center rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_16px_rgba(34,211,238,0.35)] lg:inline-flex"
-          >
-            Book a workshop
-          </Link>
+          {!loading && !user && (
+            <>
+              <Link
+                href="/login"
+                className="hidden rounded-xl border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:border-cyan-400/50 hover:text-cyan-300 lg:inline-flex lg:px-4"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/register"
+                className="hidden rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 px-3 py-2 text-sm font-semibold text-white shadow-[0_0_16px_rgba(34,211,238,0.35)] lg:inline-flex lg:px-5 lg:py-2.5"
+              >
+                Register
+              </Link>
+            </>
+          )}
+          {!loading && user && (
+            <>
+              <GreyPointsNavPill />
+              <span className="hidden text-sm font-semibold text-slate-200 lg:inline">
+                Hi, {firstName}
+              </span>
+              <Link
+                href="/learning"
+                className="hidden rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_16px_rgba(34,211,238,0.35)] lg:inline-flex"
+              >
+                Continue
+              </Link>
+              <Link
+                href="/logout"
+                className="hidden rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:border-red-400/50 hover:text-red-300 lg:inline-flex"
+              >
+                Logout
+              </Link>
+            </>
+          )}
+
           <button
             type="button"
-            className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-700 text-slate-200 lg:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 text-slate-200 lg:hidden"
             onClick={() => setOpen(!open)}
             aria-label="Menu"
           >
@@ -66,27 +102,81 @@ export default function SiteNavbar() {
         </div>
       </div>
 
-      {open ? (
+      {open && (
         <div className="border-t border-slate-800 bg-slate-950 px-4 py-4 lg:hidden">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="block min-h-[48px] rounded-xl px-4 py-3 font-medium text-slate-200 hover:bg-slate-900"
-              onClick={() => setOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {user && (
+            <div className="flex items-center justify-between gap-3 px-4 pb-2">
+              <p className="text-sm font-semibold text-slate-200">
+                Hi, {firstName}
+              </p>
+              <GreyPointsNavPill />
+            </div>
+          )}
           <Link
-            href={WORKSHOP_INQUIRY_HREF}
-            className="mt-2 block min-h-[48px] rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 px-4 py-3 text-center font-semibold text-white"
+            href="/"
+            className="block rounded-xl px-4 py-3 font-medium text-slate-200 hover:bg-slate-900"
             onClick={() => setOpen(false)}
           >
-            Book a workshop
+            Home
           </Link>
+          <Link
+            href="/learning"
+            className="block rounded-xl px-4 py-3 font-medium text-slate-200 hover:bg-slate-900"
+            onClick={() => setOpen(false)}
+          >
+            Learning paths
+          </Link>
+          <Link
+            href="/blog"
+            className="block rounded-xl px-4 py-3 font-medium text-slate-200 hover:bg-slate-900"
+            onClick={() => setOpen(false)}
+          >
+            Blog
+          </Link>
+          <Link
+            href="/feedback"
+            className="block rounded-xl px-4 py-3 font-medium text-slate-200 hover:bg-slate-900"
+            onClick={() => setOpen(false)}
+          >
+            Feedback
+          </Link>
+          {user && (
+            <Link
+              href="/account"
+              className="block rounded-xl px-4 py-3 font-medium text-slate-200 hover:bg-slate-900"
+              onClick={() => setOpen(false)}
+            >
+              Profile
+            </Link>
+          )}
+          {!user ? (
+            <>
+              <Link
+                href="/login"
+                className="mt-2 block rounded-xl border border-slate-700 px-4 py-3 text-center font-semibold text-slate-200"
+                onClick={() => setOpen(false)}
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/register"
+                className="mt-2 block rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 px-4 py-3 text-center font-semibold text-white"
+                onClick={() => setOpen(false)}
+              >
+                Register
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/logout"
+              className="mt-2 block rounded-xl border border-red-500/30 px-4 py-3 text-center font-semibold text-red-300"
+              onClick={() => setOpen(false)}
+            >
+              Logout
+            </Link>
+          )}
         </div>
-      ) : null}
+      )}
     </header>
   );
 }

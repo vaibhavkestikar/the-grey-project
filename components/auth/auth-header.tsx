@@ -18,10 +18,10 @@ export default function AuthHeader() {
             Home
           </Link>
           <Link
-            href="/workshops"
+            href="/learning"
             className="btn-cta !min-h-[44px] !px-4 !py-2.5 !text-sm"
           >
-            Workshops
+            Learning
           </Link>
         </div>
       </div>

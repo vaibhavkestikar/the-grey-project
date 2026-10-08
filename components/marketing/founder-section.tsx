@@ -1,9 +1,6 @@
 "use client";
 
-import Link from "next/link";
-
 import SectionReveal from "@/components/marketing/home/section-reveal";
-import { WORKSHOP_INQUIRY_HREF } from "@/data/workshops";
 
 export default function FounderSection() {
   return (
@@ -29,33 +26,29 @@ export default function FounderSection() {
           </div>
         </div>
         <div>
-          <p className="text-sm font-bold uppercase tracking-widest text-cyan-400">Facilitator</p>
-          <h2 className="mt-4 text-3xl font-black text-slate-50 md:text-5xl">Vaibhav Kestikar</h2>
+          <p className="text-sm font-bold uppercase tracking-widest text-cyan-400">
+            The human behind the grey
+          </p>
+          <h2 className="mt-4 text-3xl font-black text-slate-50 md:text-5xl">
+            Vaibhav Kestikar
+          </h2>
           <p className="mt-6 text-lg leading-relaxed text-slate-300">
-            Senior Data Scientist (Zscaler; previously Tesco Bengaluru and Mu Sigma). The Grey
-            Project runs live AI workshops for engineering colleges — industry context first, then a
-            project students can defend.
+            Senior Data Scientist. I got tired of explaining AI to smart people
+            who&apos;d been lied to by LinkedIn posts. So I built The Grey Project:
+            depth, visuals, and zero hype. The way I wish someone had taught me.
           </p>
           <p className="mt-4 text-base text-slate-400">
-            Full bio and roles on the{" "}
-            <Link href="/about" className="font-semibold text-cyan-200 hover:text-cyan-100">
-              about page
-            </Link>
-            .
+            If you&apos;ve ever nodded along in a meeting while secretly Googling
+            &ldquo;what is a transformer model&rdquo;? This is for you.
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href={WORKSHOP_INQUIRY_HREF} className="btn-home-cta min-h-[48px] text-center">
-              Book a workshop
-            </Link>
-            <a
-              href="https://www.linkedin.com/in/vaibhavkestikar/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-home-secondary min-h-[48px] text-center"
-            >
-              LinkedIn
-            </a>
-          </div>
+          <a
+            href="https://www.linkedin.com/in/vaibhavkestikar/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 inline-flex rounded-2xl border border-cyan-500/30 bg-slate-900/70 px-8 py-4 font-semibold text-slate-100 shadow-[0_0_24px_rgba(34,211,238,0.12)] transition hover:border-cyan-400/60 hover:text-cyan-200 hover:shadow-[0_0_32px_rgba(34,211,238,0.2)]"
+          >
+            Connect on LinkedIn
+          </a>
         </div>
       </SectionReveal>
     </section>

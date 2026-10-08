@@ -4,18 +4,16 @@ import Link from "next/link";
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
-  Building2,
-  GraduationCap,
-  Hammer,
-  Landmark,
+  BarChart3,
+  Briefcase,
+  Scale,
+  Trophy,
+  Users,
   type LucideIcon,
 } from "lucide-react";
-import dynamic from "next/dynamic";
 
-import NeuralCanvas from "@/components/marketing/home/neural-canvas";
-import FloatingTokens from "@/components/marketing/home/floating-tokens";
-import SectionReveal from "@/components/marketing/home/section-reveal";
-import { WORKSHOP_INQUIRY_HREF } from "@/data/workshops";
+import { useAuth } from "@/components/providers/auth-provider";
+import dynamic from "next/dynamic";
 
 const LlmPipelineDemo = dynamic(
   () => import("@/components/playgrounds/llm-pipeline-demo"),
@@ -26,6 +24,9 @@ const LlmPipelineDemo = dynamic(
     ),
   }
 );
+import NeuralCanvas from "@/components/marketing/home/neural-canvas";
+import FloatingTokens from "@/components/marketing/home/floating-tokens";
+import SectionReveal from "@/components/marketing/home/section-reveal";
 
 type UspItem = {
   icon: LucideIcon;
@@ -33,45 +34,62 @@ type UspItem = {
   text: string;
   iconWrap: string;
   accent: string;
+  wide?: boolean;
 };
 
 const USP_ITEMS: UspItem[] = [
   {
-    icon: Landmark,
-    title: "Live, on campus",
-    text: "Paid workshops delivered in person to engineering colleges — not another self-paced catalog.",
+    icon: Trophy,
+    title: "Gamified progress",
+    text: "Grey Points, leaderboards, and code you can flex on LinkedIn.",
+    iconWrap: "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30",
+    accent: "text-emerald-300",
+  },
+  {
+    icon: Scale,
+    title: "Balanced learning",
+    text: "Practical decisions plus code. Not a 600-slide PDF.",
     iconWrap: "bg-cyan-500/20 text-cyan-300 ring-1 ring-cyan-400/30",
     accent: "text-cyan-300",
   },
   {
-    icon: GraduationCap,
-    title: "Two sessions",
-    text: "Industry landscape first, then a hands-on agentic project students can put on a resume.",
+    icon: Users,
+    title: "Real pressure",
+    text: "Job-like chaos: stakeholders, budgets, latency, and oh-no incidents.",
     iconWrap: "bg-violet-500/20 text-violet-300 ring-1 ring-violet-400/30",
     accent: "text-violet-300",
   },
   {
-    icon: Building2,
-    title: "Built for TPOs",
-    text: "Flat workshop fee for the college — not a per-student checkout. One inquiry, one quote.",
+    icon: BarChart3,
+    title: "Business impact",
+    text: "Variables that show what your choice actually costs. Ouch.",
     iconWrap: "bg-sky-500/20 text-sky-300 ring-1 ring-sky-400/30",
     accent: "text-sky-300",
   },
   {
-    icon: Hammer,
-    title: "A real deliverable",
-    text: "Students leave with a project and a certificate of completion for LinkedIn — not points.",
+    icon: Briefcase,
+    title: "Built for shippers",
+    text: "For students, developers, founders, PMs, and builders shipping real AI.",
     iconWrap: "bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/30",
     accent: "text-amber-300",
+    wide: true,
   },
 ];
 
+const demoHeading = "See an LLM answer a question, step by step";
+
+/** Headline rendered as "tokens" that assemble into place one by one. */
 function TokenHeadline() {
-  const lineOne = ["Live", "AI", "workshops"];
-  const lineTwo = ["for", "engineering", "colleges"];
+  const lineOne = ["Uncover", "the", "Grey"];
+  const lineTwo = ["in", "AI"];
 
   const tokenVariants = {
-    hidden: { opacity: 0, y: 34, scale: 0.82, filter: "blur(10px)" },
+    hidden: {
+      opacity: 0,
+      y: 34,
+      scale: 0.82,
+      filter: "blur(10px)",
+    },
     show: (index: number) => ({
       opacity: 1,
       y: 0,
@@ -87,14 +105,14 @@ function TokenHeadline() {
 
   return (
     <h1
-      aria-label="Live AI workshops for engineering colleges"
+      aria-label="Uncover the Grey in AI"
       className="text-4xl font-black leading-[1.05] tracking-tight text-slate-50 sm:text-5xl md:text-6xl lg:text-7xl"
     >
       <span aria-hidden className="block">
-        {lineOne.map((word) => (
+        {lineOne.map((word, index) => (
           <motion.span
             key={word}
-            custom={lineOne.indexOf(word)}
+            custom={index}
             variants={tokenVariants}
             initial="hidden"
             animate="show"
@@ -133,6 +151,7 @@ const fadeUp = {
 };
 
 export default function HomeHero() {
+  const { user, loading } = useAuth();
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -172,8 +191,7 @@ export default function HomeHero() {
               animate="show"
               className="mt-5 max-w-xl text-lg leading-relaxed text-slate-300 sm:text-xl"
             >
-              Hands-on AI education, delivered live. Industry landscape, then a project
-              students actually ship — for TPOs, clubs, and college admins first.
+              AI isn&apos;t magic. It&apos;s understandable once you see the grey.
             </motion.p>
 
             <motion.p
@@ -183,23 +201,26 @@ export default function HomeHero() {
               animate="show"
               className="mt-5 max-w-xl rounded-2xl border border-cyan-500/30 bg-slate-900/70 px-4 py-3 text-base font-semibold leading-relaxed text-cyan-100 shadow-[inset_0_0_30px_rgba(34,211,238,0.08)] sm:text-lg"
             >
-              Uncovering the grey in AI — on campus, with a deliverable.
+              Learn like you work, with friction that builds real capability.
             </motion.p>
 
             <SectionReveal className="mt-8" delay={0.15}>
               <div className="home-panel p-5 md:p-6">
                 <div>
                   <h3 className="text-lg font-black text-slate-50 sm:text-xl">
-                    Why colleges book this
+                    Why The Grey Project
                   </h3>
                   <p className="mt-1 text-sm font-medium text-slate-400">
-                    Practical sessions. Flat fee. Certificate of completion.
+                    Not another passive course catalog.
                   </p>
                 </div>
 
                 <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-                  {USP_ITEMS.map(({ icon: Icon, title, text, iconWrap, accent }) => (
-                    <li key={title} className="home-card flex gap-3 p-4">
+                  {USP_ITEMS.map(({ icon: Icon, title, text, iconWrap, accent, wide }) => (
+                    <li
+                      key={title}
+                      className={`home-card flex gap-3 p-4 ${wide ? "sm:col-span-2" : ""}`}
+                    >
                       <span
                         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${iconWrap}`}
                       >
@@ -218,24 +239,26 @@ export default function HomeHero() {
             </SectionReveal>
 
             <SectionReveal className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap" delay={0.2}>
-              <Link href={WORKSHOP_INQUIRY_HREF} className="btn-home-cta min-h-[48px] text-center">
-                Book a workshop for your college
+              <Link href="/try/prediction" className="btn-home-cta text-center">
+                Start free lesson
               </Link>
-              <Link
-                href="/workshops/agentic-project"
-                className="btn-home-secondary min-h-[48px] text-center"
-              >
-                See what students build
+              {!loading && !user && (
+                <Link href="/login" className="btn-home-secondary hidden text-center sm:inline-flex">
+                  Sign in
+                </Link>
+              )}
+              <Link href="/learning" className="btn-home-secondary text-center">
+                View learning paths
               </Link>
             </SectionReveal>
           </div>
 
           <SectionReveal className="min-w-0 lg:sticky lg:top-24" delay={0.1}>
             <h2 className="text-center text-lg font-black leading-snug text-slate-50 sm:text-xl lg:text-left lg:text-2xl">
-              How a model actually answers
+              {demoHeading}
             </h2>
             <p className="mb-4 mt-3 text-center text-base text-slate-400 lg:hidden">
-              A short look at tokens and output — the same clarity we bring into the room.
+              Tap a prompt. Watch tokens, attention, and output unfold.
             </p>
             <motion.div
               className="relative mt-0 lg:mt-0"
